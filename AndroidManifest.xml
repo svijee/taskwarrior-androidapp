@@ -20,6 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TaskAddActivity"
+            android:label="@string/title_activity_task_add" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.svij.taskwarriorapp.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
