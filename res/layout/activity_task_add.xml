@@ -9,8 +9,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:hint="@string/typeTask"
-        >
+        android:hint="@string/typeTask" >
+
         <requestFocus />
     </EditText>
 
