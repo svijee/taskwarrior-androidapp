@@ -7,5 +7,6 @@
     <string name="title_activity_task_add">Add Task</string>
     <string name="typeTask">task add …</string>
     <string name="done">Done</string>
-
+	<string name="pickDate">Pick a date</string>
+	<string name="dueDate">Due date</string>
 </resources>

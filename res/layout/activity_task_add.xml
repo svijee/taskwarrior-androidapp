@@ -14,12 +14,34 @@
         <requestFocus />
     </EditText>
 
+    <EditText
+        android:id="@+id/etTaskDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/etTaskAdd"
+        android:layout_toLeftOf="@+id/btPickDate"
+        android:ems="10"
+        android:inputType="date"
+        android:hint="@string/dueDate" />
+
+    <Button
+        android:id="@+id/btPickDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/etTaskDate"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/etTaskDate"
+        android:onClick="showDatePickerDialog"
+        android:text="@string/pickDate" />
+
     <Button
         android:id="@+id/btDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/etTaskAdd"
+        android:layout_below="@+id/btPickDate"
+        android:layout_toRightOf="@+id/etTaskDate"
         android:onClick="onClick"
         android:text="@string/done" />
 

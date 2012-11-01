@@ -15,7 +15,7 @@ public class TaskDataSource {
 	private SQLiteDatabase database;
 	private SQLiteHelper dbHelper;
 	private String[] allColumns = { SQLiteHelper.COLUMN_ID,
-			SQLiteHelper.COLUMN_DESCRIPTION };
+			SQLiteHelper.COLUMN_DESCRIPTION, SQLiteHelper.COLUMN_DUEDATE };
 
 	public TaskDataSource(Context context) {
 		dbHelper = new SQLiteHelper(context);
@@ -29,18 +29,18 @@ public class TaskDataSource {
 		dbHelper.close();
 	}
 
-	public Task createTask(String task_description) {
+	public Task createTask(String task_description, String date) {
 		ContentValues values = new ContentValues();
-	    values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
-	    long insertId = database.insert(SQLiteHelper.TABLE_TASKS, null,
-	        values);
-	    Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS,
-	        allColumns, SQLiteHelper.COLUMN_ID + " = " + insertId, null,
-	        null, null, null);
-	    cursor.moveToFirst();
-	    Task newTask = cursorToTask(cursor);
-	    cursor.close();
-	    return newTask;
+		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
+		values.put(SQLiteHelper.COLUMN_DUEDATE, date);
+		long insertId = database.insert(SQLiteHelper.TABLE_TASKS, null, values);
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
+				SQLiteHelper.COLUMN_ID + " = " + insertId, null, null, null,
+				null);
+		cursor.moveToFirst();
+		Task newTask = cursorToTask(cursor);
+		cursor.close();
+		return newTask;
 	}
 
 	public void deleteTask(Task task) {
@@ -68,9 +68,11 @@ public class TaskDataSource {
 
 	private Task cursorToTask(Cursor cursor) {
 		Task task = new Task();
-		Log.i("Cursor.getCoun(0): ", Integer.toString(cursor.getCount()));
+		Log.i("Cursor.getColumnCount(0): ",
+				Integer.toString(cursor.getColumnCount()));
 		task.setId(cursor.getLong(0));
 		task.setDescription(cursor.getString(1));
+		task.setDuedate(cursor.getString(2));
 		return task;
 	}
 }
