@@ -46,7 +46,7 @@ public class TaskAddActivity extends FragmentActivity {
 
 		EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
 		EditText etTaskDate = (EditText) findViewById(R.id.etTaskDate);
-		datasource.createTask(etTaskAdd.getText().toString(), etTaskDate.getText().toString());
+		datasource.createTask(etTaskAdd.getText().toString(), etTaskDate.getText().toString(), "pending");
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}

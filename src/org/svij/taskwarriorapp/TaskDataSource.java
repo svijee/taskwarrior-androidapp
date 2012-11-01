@@ -15,7 +15,8 @@ public class TaskDataSource {
 	private SQLiteDatabase database;
 	private SQLiteHelper dbHelper;
 	private String[] allColumns = { SQLiteHelper.COLUMN_ID,
-			SQLiteHelper.COLUMN_DESCRIPTION, SQLiteHelper.COLUMN_DUEDATE };
+			SQLiteHelper.COLUMN_DESCRIPTION, SQLiteHelper.COLUMN_DUEDATE,
+			SQLiteHelper.COLUMN_ENTRY, SQLiteHelper.COLUMN_STATUS };
 
 	public TaskDataSource(Context context) {
 		dbHelper = new SQLiteHelper(context);
@@ -29,10 +30,12 @@ public class TaskDataSource {
 		dbHelper.close();
 	}
 
-	public Task createTask(String task_description, String date) {
+	public Task createTask(String task_description, String date, String status) {
 		ContentValues values = new ContentValues();
 		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
 		values.put(SQLiteHelper.COLUMN_DUEDATE, date);
+		values.put(SQLiteHelper.COLUMN_ENTRY, System.currentTimeMillis() / 1000);
+		values.put(SQLiteHelper.COLUMN_STATUS, status);
 		long insertId = database.insert(SQLiteHelper.TABLE_TASKS, null, values);
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
 				SQLiteHelper.COLUMN_ID + " = " + insertId, null, null, null,
@@ -73,6 +76,8 @@ public class TaskDataSource {
 		task.setId(cursor.getLong(0));
 		task.setDescription(cursor.getString(1));
 		task.setDuedate(cursor.getString(2));
+		task.setEntry(cursor.getLong(3));
+		task.setStatus(cursor.getString(4));
 		return task;
 	}
 }

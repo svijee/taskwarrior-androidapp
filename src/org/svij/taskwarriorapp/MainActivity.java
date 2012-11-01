@@ -46,8 +46,12 @@ public class MainActivity extends ListActivity {
 
 	@Override
 	protected void onResume() {
-		datasource.open();
-		super.onResume();
+		try {
+			datasource.open();
+		} catch(Exception e) {
+		} finally {
+			super.onResume();
+		}
 	}
 
 	@Override
