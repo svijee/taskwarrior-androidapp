@@ -1,34 +1,38 @@
 package org.svij.taskwarriorapp;
 
 import java.util.List;
-import android.app.ListActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
-public class MainActivity extends ListActivity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class MainActivity extends SherlockFragmentActivity {
 	TaskDataSource datasource;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		datasource = new TaskDataSource(this);
-		datasource.open();
+		if (getSupportFragmentManager().findFragmentById(android.R.id.content) == null) {
+			ArrayListFragment list = new ArrayListFragment();
+			getSupportFragmentManager().beginTransaction()
+					.add(android.R.id.content, list).commit();
+		}
 
-		List<Task> values = datasource.getAllTasks();
-
-		ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(this,
-				android.R.layout.simple_list_item_1, values);
-		setListAdapter(adapter);
 	}
 
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_main, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
 
@@ -48,7 +52,7 @@ public class MainActivity extends ListActivity {
 	protected void onResume() {
 		try {
 			datasource.open();
-		} catch(Exception e) {
+		} catch (Exception e) {
 		} finally {
 			super.onResume();
 		}
@@ -56,7 +60,44 @@ public class MainActivity extends ListActivity {
 
 	@Override
 	protected void onPause() {
-		datasource.close();
 		super.onPause();
+	}
+
+	public static class ArrayListFragment extends SherlockListFragment {
+		TaskDataSource datasource;
+
+		@Override
+		public void onActivityCreated(Bundle savedInstanceState) {
+			super.onActivityCreated(savedInstanceState);
+
+			datasource = new TaskDataSource(getActivity());
+			datasource.open();
+
+			List<Task> values = datasource.getAllTasks();
+			ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(getActivity(),
+					android.R.layout.simple_list_item_1, values);
+			setListAdapter(adapter);
+		}
+
+		@Override
+		public void onListItemClick(ListView l, View v, int position, long id) {
+			Log.i("FragmentList", "Item clicked: " + id);
+		}
+
+		@Override
+		public void onResume() {
+			try {
+				datasource.open();
+			} catch (Exception e) {
+			} finally {
+				super.onResume();
+			}
+		}
+
+		@Override
+		public void onPause() {
+			datasource.close();
+			super.onPause();
+		}
 	}
 }

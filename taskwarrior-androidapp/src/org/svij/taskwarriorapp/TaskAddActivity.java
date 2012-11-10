@@ -5,25 +5,27 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.app.Activity;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class TaskAddActivity extends Activity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class TaskAddActivity extends SherlockFragmentActivity {
 	private TaskDataSource datasource;
 
 	public void onCreate(Bundle savedInstanceState) {
+		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_add);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		TextView tvDueDate = (TextView) findViewById(R.id.tvDueDate);
 		tvDueDate.setOnClickListener(new View.OnClickListener() {
@@ -32,14 +34,15 @@ public class TaskAddActivity extends Activity {
 			public void onClick(View v) {
 				DatePickerFragment date = new DatePickerFragment();
 				date.setCallBack(onDate);
-				date.show(getFragmentManager(), "date_dialog");
+				date.show(getSupportFragmentManager().beginTransaction(),
+						"date_dialog");
 			}
 		});
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_task_add, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_task_add, menu);
 		return true;
 	}
 
@@ -63,12 +66,6 @@ public class TaskAddActivity extends Activity {
 				.getText().toString(), "pending");
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
-	}
-
-	public void showDatePickerDialog(View view) {
-		DatePickerFragment date = new DatePickerFragment();
-		date.setCallBack(onDate);
-		date.show(getFragmentManager(), "Date Picker");
 	}
 
 	@Override
