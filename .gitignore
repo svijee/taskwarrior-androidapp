@@ -1,0 +1,9 @@
+*.apk
+.DS_Store
+.metadata
+.settings
+gen
+bin
+dist
+target
+gen-external-apklibsa
