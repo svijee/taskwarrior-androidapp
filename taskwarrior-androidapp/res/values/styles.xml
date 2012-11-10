@@ -2,4 +2,12 @@
 
     <style name="AppTheme" parent="android:Theme.Light" />
 
+    <style name="TextAppearance" parent="android:TextAppearance"></style>
+
+    <style name="Dropdown.TextView" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
+        <item name="android:textSize">20dp</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
 </resources>

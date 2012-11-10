@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class TaskAddActivity extends Activity {
 	private TaskDataSource datasource;
@@ -23,6 +24,17 @@ public class TaskAddActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_add);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		TextView tvDueDate = (TextView) findViewById(R.id.tvDueDate);
+		tvDueDate.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				DatePickerFragment date = new DatePickerFragment();
+				date.setCallBack(onDate);
+				date.show(getFragmentManager(), "date_dialog");
+			}
+		});
 	}
 
 	@Override
@@ -46,8 +58,9 @@ public class TaskAddActivity extends Activity {
 		datasource.open();
 
 		EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
-		EditText etTaskDate = (EditText) findViewById(R.id.etTaskDate);
-		datasource.createTask(etTaskAdd.getText().toString(), etTaskDate.getText().toString(), "pending");
+		TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
+		datasource.createTask(etTaskAdd.getText().toString(), etTaskDate
+				.getText().toString(), "pending");
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
@@ -80,7 +93,7 @@ public class TaskAddActivity extends Activity {
 				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 				Date date = (Date) formatter.parse(date_rawstring);
 				String date_string = formatter.format(date);
-				EditText etTaskDate = (EditText) findViewById(R.id.etTaskDate);
+				TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
 				etTaskDate.setText(date_string);
 			} catch (ParseException e) {
 				e.printStackTrace();

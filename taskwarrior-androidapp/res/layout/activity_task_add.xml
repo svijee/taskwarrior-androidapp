@@ -3,45 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <TextView
+        android:id="@+id/tvTaskDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="@string/tvTaskDescription" 
+        android:textSize="20dp" />
+
     <EditText
         android:id="@+id/etTaskAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:hint="@string/typeTask" >
-
+        android:layout_below="@+id/tvTaskDescription"
+        android:hint="@string/typeTask"
+		android:textSize="20dp" >
         <requestFocus />
     </EditText>
 
-    <EditText
-        android:id="@+id/etTaskDate"
+    <TextView
+        android:id="@+id/tvDueDateStatic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/etTaskAdd"
-        android:layout_toLeftOf="@+id/btPickDate"
-        android:ems="10"
-        android:inputType="date"
-        android:hint="@string/dueDate" />
+        android:text="@string/dueDate"
+        android:textSize="20dp" />
 
-    <Button
-        android:id="@+id/btPickDate"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/tvDueDate"
+        style="@style/Dropdown.TextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/etTaskDate"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/etTaskDate"
-        android:onClick="showDatePickerDialog"
-        android:text="@string/pickDate" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvDueDateStatic"
+        android:gravity="center"
+        android:hint="@string/pickDate" />
 
     <Button
         android:id="@+id/btDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/btPickDate"
-        android:layout_toRightOf="@+id/etTaskDate"
+        android:layout_below="@+id/tvDueDate"
         android:onClick="onClick"
         android:text="@string/done" />
 

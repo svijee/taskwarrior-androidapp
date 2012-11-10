@@ -9,4 +9,6 @@
     <string name="done">Done</string>
 	<string name="pickDate">Pick a date</string>
 	<string name="dueDate">Due date</string>
+	<string name="lb_date">Date</string>
+	<string name="tvTaskDescription">Task Description</string>
 </resources>
