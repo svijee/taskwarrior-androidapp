@@ -43,13 +43,4 @@
         android:gravity="center"
         android:hint="@string/pickDate" />
 
-    <Button
-        android:id="@+id/btDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/tvDueDate"
-        android:onClick="onClick"
-        android:text="@string/done" />
-
 </RelativeLayout>

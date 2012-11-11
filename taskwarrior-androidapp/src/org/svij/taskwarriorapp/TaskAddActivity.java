@@ -52,20 +52,24 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 		case android.R.id.home:
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
+		case R.id.task_add_done:
+			datasource = new TaskDataSource(this);
+			datasource.open();
+
+			EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
+			TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
+			datasource.createTask(etTaskAdd.getText().toString(), etTaskDate
+					.getText().toString(), "pending");
+			Intent intent_done = new Intent(this, TasksActivity.class);
+			startActivity(intent_done);
+			return true;
+		case R.id.task_add_cancel:
+			Intent intent_cancel = new Intent(this, TasksActivity.class);
+			startActivity(intent_cancel);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	public void onClick(View view) {
-		datasource = new TaskDataSource(this);
-		datasource.open();
-
-		EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
-		TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
-		datasource.createTask(etTaskAdd.getText().toString(), etTaskDate
-				.getText().toString(), "pending");
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
 	}
 
 	@Override

@@ -11,5 +11,9 @@
     <string name="dueDate">Due date</string>
     <string name="lb_date">Date</string>
     <string name="tvTaskDescription">Task Description</string>
+    <string name="menu_delete">Delete</string>
+    <string name="menu_edit">Edit</string>
+    <string name="task_selected">Task selected</string>
+    <string name="title_activity_tasks_list_fragment">TasksListFragment</string>
 
 </resources>

@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/context_menu_edit_task"
+        android:icon="@drawable/ic_action_edit"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:title="@string/menu_edit"/>
+    <item
+        android:id="@+id/context_menu_delete_task"
+        android:icon="@drawable/ic_action_delete"
+        android:orderInCategory="2"
+        android:showAsAction="always"
+        android:title="@string/menu_delete"/>
+
+</menu>

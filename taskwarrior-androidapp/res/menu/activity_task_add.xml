@@ -1,6 +1,17 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_settings"
-        android:title="@string/menu_settings"
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/task_add_cancel"
+        android:icon="@drawable/ic_action_cancel"
+        android:showAsAction="always"/>
+    <item
+        android:id="@+id/task_add_done"
+        android:icon="@drawable/ic_action_done"
+        android:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_settings"
         android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:showAsAction="never"
+        android:title="@string/menu_settings"/>
+
 </menu>
