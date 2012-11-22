@@ -30,24 +30,27 @@ public class TaskDataSource {
 		dbHelper.close();
 	}
 
-	public Task createTask(String task_description, String date, String status) {
+	public void createTask(String task_description, String date, String status) {
 		ContentValues values = new ContentValues();
 		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
 		values.put(SQLiteHelper.COLUMN_DUEDATE, date);
 		values.put(SQLiteHelper.COLUMN_ENTRY, System.currentTimeMillis() / 1000);
 		values.put(SQLiteHelper.COLUMN_STATUS, status);
-		long insertId = database.insert(SQLiteHelper.TABLE_TASKS, null, values);
-		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
-				SQLiteHelper.COLUMN_ID + " = " + insertId, null, null, null,
-				null);
-		cursor.moveToFirst();
-		Task newTask = cursorToTask(cursor);
-		cursor.close();
-		return newTask;
+		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
 	}
 
-	public void deleteTask(Task task) {
-		long id = task.getId();
+	public void editTask(long id, String task_description, String date,
+			String status) {
+		ContentValues values = new ContentValues();
+		values.put(SQLiteHelper.COLUMN_ID, id);
+		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
+		values.put(SQLiteHelper.COLUMN_DUEDATE, date);
+		values.put(SQLiteHelper.COLUMN_STATUS, status);
+		database.update(SQLiteHelper.TABLE_TASKS, values,
+				SQLiteHelper.COLUMN_ID + " = " + id, null);
+	}
+
+	public void deleteTask(long id) {
 		System.out.println("Task deleted with id: " + id);
 		database.delete(SQLiteHelper.TABLE_TASKS, SQLiteHelper.COLUMN_ID
 				+ " = " + id, null);
@@ -67,6 +70,15 @@ public class TaskDataSource {
 
 		cursor.close();
 		return tasks;
+	}
+
+	public Task getTask(long id) {
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
+				SQLiteHelper.COLUMN_ID + "=" + id, null, null, null, null);
+		cursor.moveToFirst();
+		Task task = cursorToTask(cursor);
+		cursor.close();
+		return task;
 	}
 
 	private Task cursorToTask(Cursor cursor) {

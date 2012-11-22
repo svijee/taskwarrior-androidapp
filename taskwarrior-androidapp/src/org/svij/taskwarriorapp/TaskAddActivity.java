@@ -20,6 +20,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class TaskAddActivity extends SherlockFragmentActivity {
 	private TaskDataSource datasource;
+	private long taskID = 0;
 
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
@@ -38,6 +39,19 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 						"date_dialog");
 			}
 		});
+
+		Bundle extras = getIntent().getExtras();
+
+		if (extras != null) {
+			taskID = extras.getLong("taskID");
+			datasource = new TaskDataSource(this);
+			datasource.open();
+			Task task = datasource.getTask(taskID);
+			datasource.close();
+			TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
+			etTaskAdd.setText(task.getDescription());
+			tvDueDate.setText(task.getDuedate());
+		}
 	}
 
 	@Override
@@ -58,8 +72,14 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 
 			EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
 			TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
-			datasource.createTask(etTaskAdd.getText().toString(), etTaskDate
-					.getText().toString(), "pending");
+
+			if (taskID == 0) {
+				datasource.createTask(etTaskAdd.getText().toString(),
+						etTaskDate.getText().toString(), "pending");
+			} else {
+				datasource.editTask(taskID, etTaskAdd.getText().toString(),
+						etTaskDate.getText().toString(), "pending");
+			}
 			Intent intent_done = new Intent(this, TasksActivity.class);
 			startActivity(intent_done);
 			return true;

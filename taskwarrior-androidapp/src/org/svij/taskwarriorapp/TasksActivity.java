@@ -6,19 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.internal.widget.IcsAdapterView;
-import com.actionbarsherlock.internal.widget.IcsAdapterView.OnItemLongClickListener;
 import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.ActionMode.Callback;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.ActionMode.Callback;
 
 public class TasksActivity extends SherlockFragmentActivity {
 	TaskDataSource datasource;
@@ -97,11 +94,11 @@ public class TasksActivity extends SherlockFragmentActivity {
 			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.context_menu_edit_task:
-					showAddTaskActivity(selectedItemId);
+					showAddTaskActivity(getTaskWithId(selectedItemId));
 					return true;
 
 				case R.id.context_menu_delete_task:
-					tryDeleteTask(selectedItemId);
+					deleteTask(getTaskWithId(selectedItemId));
 					mode.finish();
 					return true;
 
@@ -116,11 +113,19 @@ public class TasksActivity extends SherlockFragmentActivity {
 			}
 
 			private void showAddTaskActivity(long selectedItemId) {
-
+				Intent intent = new Intent(getActivity(), TaskAddActivity.class);
+				intent.putExtra("taskID", selectedItemId);
+				startActivity(intent);
 			}
 
-			private void tryDeleteTask(long selectedItemId) {
+			private void deleteTask(long selectedItemId) {
+				datasource.deleteTask(selectedItemId);
+				refreshListView();
+			}
 
+			private long getTaskWithId(long selectedItemId) {
+				return ((Task) getListAdapter().getItem(
+						(int) selectedItemId - 1)).getId();
 			}
 		};
 
@@ -131,6 +136,10 @@ public class TasksActivity extends SherlockFragmentActivity {
 			datasource = new TaskDataSource(getActivity());
 			datasource.open();
 
+			refreshListView();
+		}
+
+		public void refreshListView() {
 			List<Task> values = datasource.getAllTasks();
 			adapter = new ArrayAdapter<Task>(getActivity(),
 					android.R.layout.simple_list_item_1, values);
@@ -142,7 +151,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 			Log.i("FragmentList", "Item clicked: " + id);
 
 			inEditMode = true;
-			selectedItemId = id;
+			selectedItemId = id + 1;
 			// Start the CAB using the ActionMode.Callback defined above
 			actionMode = getSherlockActivity().startActionMode(
 					actionModeCallbacks);
