@@ -1,4 +1,4 @@
-package org.svij.taskwarriorapp;
+package org.svij.taskwarriorapp.ui;
 
 import java.util.Calendar;
 import android.app.DatePickerDialog;

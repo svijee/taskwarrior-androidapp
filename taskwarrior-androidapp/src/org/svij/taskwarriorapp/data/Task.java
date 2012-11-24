@@ -1,4 +1,4 @@
-package org.svij.taskwarriorapp;
+package org.svij.taskwarriorapp.data;
 
 public class Task {
 	private long id;

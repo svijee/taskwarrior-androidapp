@@ -1,7 +1,9 @@
-package org.svij.taskwarriorapp;
+package org.svij.taskwarriorapp.db;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.svij.taskwarriorapp.data.Task;
 
 import android.content.ContentValues;
 import android.content.Context;

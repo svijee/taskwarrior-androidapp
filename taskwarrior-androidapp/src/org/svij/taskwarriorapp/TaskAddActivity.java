@@ -5,6 +5,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.svij.taskwarriorapp.R;
+import org.svij.taskwarriorapp.data.Task;
+import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.ui.DatePickerFragment;
+
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
 import android.os.Bundle;

@@ -2,6 +2,10 @@ package org.svij.taskwarriorapp;
 
 import java.util.List;
 
+import org.svij.taskwarriorapp.R;
+import org.svij.taskwarriorapp.data.Task;
+import org.svij.taskwarriorapp.db.TaskDataSource;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
