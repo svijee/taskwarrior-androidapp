@@ -3,7 +3,8 @@
     <item
         android:id="@+id/task_add"
         android:icon="@drawable/ic_action_new"
-        android:showAsAction="always"/>
+        android:showAsAction="always"
+        android:title="@string/ab_createTask"/>
     <item
         android:id="@+id/menu_settings"
         android:orderInCategory="100"

@@ -73,7 +73,9 @@ public class TasksActivity extends SherlockFragmentActivity {
 	public static class ArrayListFragment extends SherlockListFragment {
 		TaskDataSource datasource;
 		ArrayAdapter<Task> adapter = null;
+		@SuppressWarnings("unused")
 		private boolean inEditMode = false;
+		@SuppressWarnings("unused")
 		private ActionMode actionMode = null;
 		private int selectedViewPosition = -1;
 		private long selectedItemId = -1;
@@ -106,6 +108,11 @@ public class TasksActivity extends SherlockFragmentActivity {
 					mode.finish();
 					return true;
 
+				case R.id.context_menu_done_task:
+					doneTask(getTaskWithId(selectedItemId));
+					mode.finish();
+					return true;
+
 				default:
 					return false;
 				}
@@ -124,6 +131,11 @@ public class TasksActivity extends SherlockFragmentActivity {
 
 			private void deleteTask(long selectedItemId) {
 				datasource.deleteTask(selectedItemId);
+				refreshListView();
+			}
+
+			private void doneTask(long selectedItemId) {
+				datasource.doneTask(selectedItemId);
 				refreshListView();
 			}
 

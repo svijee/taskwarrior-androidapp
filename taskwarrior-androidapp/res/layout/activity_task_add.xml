@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:text="@string/tvTaskDescription"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <EditText
         android:id="@+id/etTaskAdd"
@@ -19,7 +19,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tvTaskDescription"
         android:hint="@string/typeTask"
-        android:textSize="20dp" >
+        android:textSize="20sp" >
 
         <requestFocus />
     </EditText>
@@ -31,7 +31,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/etTaskAdd"
         android:text="@string/dueDate"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/tvDueDate"
@@ -41,6 +41,40 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/tvDueDateStatic"
         android:gravity="center"
-        android:hint="@string/pickDate" />
+        android:hint="@string/setDate" />
+
+    <TextView
+        android:id="@+id/tvProjectStatic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvDueDate"
+        android:text="@string/project"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/etProject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvProjectStatic"
+        android:hint="@string/setProject" />
+
+    <TextView
+        android:id="@+id/tvPriorityStatic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/etProject"
+        android:text="@string/priority"
+        android:textSize="20sp" />
+
+    <Spinner
+        android:id="@+id/spPriority"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPriorityStatic"
+        android:entries="@array/priority_list"
+        android:textSize="20sp" />
 
 </RelativeLayout>

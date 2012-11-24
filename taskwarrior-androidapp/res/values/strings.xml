@@ -1,19 +1,32 @@
 <resources>
 
     <string name="app_name">Taskwarrior-App</string>
-    <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Taskwarrior</string>
     <string name="title_activity_task_add">Add Task</string>
     <string name="typeTask">task add …</string>
     <string name="done">Done</string>
-    <string name="pickDate">Pick a date</string>
     <string name="dueDate">Due date</string>
+    <string name="setDate">Pick a date</string>
+    <string name="project">Project</string>
+    <string name="setProject">Set a project</string>
+    <string name="priority">Priority</string>
+    <string name="setPriority">Set priority</string>
     <string name="lb_date">Date</string>
     <string name="tvTaskDescription">Task Description</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_edit">Edit</string>
+    <string name="menu_done">Done</string>
     <string name="task_selected">Task selected</string>
-    <string name="title_activity_tasks_list_fragment">TasksListFragment</string>
+    <string name="ab_submit">Submit task</string>
+    <string name="ab_cancel">Cancel task</string>
+    <string name="ab_createTask">Create task</string>
+
+    <string-array name="priority_list">
+        <item>no priority</item>
+        <item>High</item>
+        <item>Middle</item>
+        <item>Low</item>
+    </string-array>
 
 </resources>

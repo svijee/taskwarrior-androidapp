@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.DatePickerFragment;
@@ -14,9 +13,11 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -53,9 +54,16 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			datasource.open();
 			Task task = datasource.getTask(taskID);
 			datasource.close();
+
 			TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
+			EditText etProject = (EditText) findViewById(R.id.etProject);
+			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
+
 			etTaskAdd.setText(task.getDescription());
 			tvDueDate.setText(task.getDuedate());
+			etProject.setText(task.getProject());
+			Log.i("PriorityID", ":" + task.getPriorityID());
+			spPriority.setSelection(task.getPriorityID());
 		}
 	}
 
@@ -77,13 +85,19 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 
 			EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
 			TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
+			EditText etProject = (EditText) findViewById(R.id.etProject);
+			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
 
 			if (taskID == 0) {
 				datasource.createTask(etTaskAdd.getText().toString(),
-						etTaskDate.getText().toString(), "pending");
+						etTaskDate.getText().toString(), "pending", etProject
+								.getText().toString(), spPriority
+								.getSelectedItem().toString());
 			} else {
 				datasource.editTask(taskID, etTaskAdd.getText().toString(),
-						etTaskDate.getText().toString(), "pending");
+						etTaskDate.getText().toString(), "pending", etProject
+								.getText().toString(), spPriority
+								.getSelectedItem().toString());
 			}
 			Intent intent_done = new Intent(this, TasksActivity.class);
 			startActivity(intent_done);

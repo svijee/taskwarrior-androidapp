@@ -1,13 +1,57 @@
 package org.svij.taskwarriorapp.data;
 
+/*
+ * A Task represents a taskwarrior task.
+ *
+ * @author Sujeevan Vijayakumaran <mail@svij.org>
+ */
 public class Task {
+
+	/*
+	 * Unique identifier for a task. Will be replaced by a uuid in the future.
+	 */
 	private long id;
+
+	/*
+	 * Description of a task
+	 */
 	private String description;
+
+	/*
+	 * A tasks due date
+	 */
 	private String duedate;
+
+	/*
+	 * Entry timestamp – This is automatically generated when creating a task
+	 */
 	private long entry;
+
+	/*
+	 * Priority of a task
+	 */
 	private String priority;
+
+	/*
+	 * Priority ID – needed for the spinner in Edit-Mode
+	 */
+	private int priorityID;
+
+	/*
+	 * Project of a task
+	 */
 	private String project;
+
+	/*
+	 * Status of a task It can be "pending", "completed" or "deleted"
+	 */
 	private String status;
+
+	/*
+	 * End timestamp This is automatically generated when marking a task as "done"
+	 *
+	 */
+	private long end;
 
 	public long getId() {
 		return id;
@@ -43,11 +87,9 @@ public class Task {
 
 	@Override
 	public String toString() {
-		if (duedate.length() == 0) {
-			return id + ".) " + description + " – Entry: " + entry + " – Status: " + status;
-		} else {
-			return id + ".) " + description + " – Due: " + duedate;
-		}
+		return id + ".) " + description + " – Entry: " + entry + " – Status: "
+				+ status + " – Due: " + duedate + " – Project:" + project
+				+ "– Priority: " + priority + "– End:" + end;
 	}
 
 	public String getDuedate() {
@@ -72,5 +114,31 @@ public class Task {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public long getEnd() {
+		return end;
+	}
+
+	public void setEnd(long end) {
+		this.end = end;
+	}
+
+	public int getPriorityID() {
+		if (priority.equals("no priority")) {
+			priorityID = 0;
+		} else if (priority.equals("High")) {
+			priorityID = 1;
+		} else if (priority.equals("Middle")) {
+			priorityID = 2;
+		} else if (priority.equals("Low")) {
+			priorityID = 3;
+		}
+
+		return priorityID;
+	}
+
+	public void setPriorityID(int priorityID) {
+		this.priorityID = priorityID;
 	}
 }
