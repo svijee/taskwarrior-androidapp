@@ -21,7 +21,9 @@
     <string name="ab_submit">Submit task</string>
     <string name="ab_cancel">Cancel task</string>
     <string name="ab_createTask">Create task</string>
-
+	<string name="project">Project</string>
+	<string name="duedate">Due</string>
+	<string name="priority">Priority</string>
     <string-array name="priority_list">
         <item>no priority</item>
         <item>High</item>

@@ -1,8 +1,6 @@
 package org.svij.taskwarriorapp.db;
 
-import java.sql.SQLInput;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.svij.taskwarriorapp.data.Task;
 
@@ -80,8 +78,8 @@ public class TaskDataSource {
 		values = null;
 	}
 
-	public List<Task> getAllTasks() {
-		List<Task> tasks = new ArrayList<Task>();
+	public ArrayList<Task> getAllTasks() {
+		ArrayList<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
 				null, null, null, null, null);
 
@@ -96,8 +94,8 @@ public class TaskDataSource {
 		return tasks;
 	}
 
-	public List<Task> getPendingTasks() {
-		List<Task> tasks = new ArrayList<Task>();
+	public ArrayList<Task> getPendingTasks() {
+		ArrayList<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
 				SQLiteHelper.COLUMN_STATUS + " = 'pending'", null, null, null,
 				null);

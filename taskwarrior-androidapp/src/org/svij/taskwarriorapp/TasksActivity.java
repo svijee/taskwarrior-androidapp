@@ -1,9 +1,9 @@
 package org.svij.taskwarriorapp;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
+import org.svij.taskwarriorapp.db.TaskArrayAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
 import android.content.Intent;
@@ -156,9 +156,8 @@ public class TasksActivity extends SherlockFragmentActivity {
 		}
 
 		public void refreshListView() {
-			List<Task> values = datasource.getAllTasks();
-			adapter = new ArrayAdapter<Task>(getActivity(),
-					android.R.layout.simple_list_item_1, values);
+			ArrayList<Task> values = datasource.getAllTasks();
+			adapter = new TaskArrayAdapter(getActivity(), R.layout.task_row, values);
 			setListAdapter(adapter);
 		}
 
@@ -169,6 +168,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 			inEditMode = true;
 			selectedItemId = id + 1;
 			// Start the CAB using the ActionMode.Callback defined above
+			Log.i("ListItem clicked: ", Integer.toString(position));
 			actionMode = getSherlockActivity().startActionMode(
 					actionModeCallbacks);
 
