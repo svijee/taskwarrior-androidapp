@@ -20,6 +20,7 @@ public class TaskDataSource {
 			SQLiteHelper.COLUMN_ENTRY, SQLiteHelper.COLUMN_STATUS,
 			SQLiteHelper.COLUMN_END, SQLiteHelper.COLUMN_PROJECT,
 			SQLiteHelper.COLUMN_PRIORITY };
+	private String[] projectColumn = { SQLiteHelper.COLUMN_PROJECT };
 
 	public TaskDataSource(Context context) {
 		dbHelper = new SQLiteHelper(context);
@@ -85,7 +86,7 @@ public class TaskDataSource {
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			Task task = cursorToTask(cursor);
+			Task task = cursorToTask(cursor, allColumns);
 			tasks.add(task);
 			cursor.moveToNext();
 		}
@@ -102,7 +103,40 @@ public class TaskDataSource {
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			Task task = cursorToTask(cursor);
+			Task task = cursorToTask(cursor, allColumns);
+			tasks.add(task);
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+		return tasks;
+	}
+
+	public ArrayList<Task> getProjects() {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		Cursor cursor = database.query(true, SQLiteHelper.TABLE_TASKS,
+				projectColumn, SQLiteHelper.COLUMN_STATUS + " = 'pending'",
+				null, null, null, null, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Task task = cursorToTask(cursor, projectColumn);
+			tasks.add(task);
+			cursor.moveToNext();
+		}
+
+		cursor.close();
+		return tasks;
+	}
+
+	public ArrayList<Task> getProjectsTasks(String project) {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
+				SQLiteHelper.COLUMN_PROJECT + "= '" + project + "'", null, null, null, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			Task task = cursorToTask(cursor, allColumns);
 			tasks.add(task);
 			cursor.moveToNext();
 		}
@@ -115,22 +149,27 @@ public class TaskDataSource {
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
 				SQLiteHelper.COLUMN_ID + "=" + id, null, null, null, null);
 		cursor.moveToFirst();
-		Task task = cursorToTask(cursor);
+		Task task = cursorToTask(cursor, allColumns);
 		cursor.close();
 		return task;
 	}
 
-	private Task cursorToTask(Cursor cursor) {
+	private Task cursorToTask(Cursor cursor, String[] columns) {
 		Task task = new Task();
-		Log.i("Columns ", Integer.toString(cursor.getColumnCount()));
-		task.setId(cursor.getLong(0));
-		task.setDescription(cursor.getString(1));
-		task.setDuedate(cursor.getString(2));
-		task.setEntry(cursor.getLong(3));
-		task.setStatus(cursor.getString(4));
-		task.setEnd(cursor.getLong(5));
-		task.setProject(cursor.getString(6));
-		task.setPriority(cursor.getString(7));
+
+		if (columns.equals(projectColumn)) {
+			task.setProject(cursor.getString(0));
+		} else {
+			task.setId(cursor.getLong(0));
+			task.setDescription(cursor.getString(1));
+			task.setDuedate(cursor.getString(2));
+			task.setEntry(cursor.getLong(3));
+			task.setStatus(cursor.getString(4));
+			task.setEnd(cursor.getLong(5));
+			task.setProject(cursor.getString(6));
+			task.setPriority(cursor.getString(7));
+		}
+
 		return task;
 	}
 }
