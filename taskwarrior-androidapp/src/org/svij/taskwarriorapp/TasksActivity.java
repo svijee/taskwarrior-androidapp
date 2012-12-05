@@ -13,10 +13,10 @@ import org.svij.taskwarriorapp.ui.MenuListView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -160,9 +160,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 
 		TaskDataSource datasource;
 		ArrayAdapter<Task> adapter = null;
-		@SuppressWarnings("unused")
 		private boolean inEditMode = false;
-		@SuppressWarnings("unused")
 		private ActionMode actionMode = null;
 		private int selectedViewPosition = -1;
 		private long selectedItemId = -1;
@@ -239,6 +237,27 @@ public class TasksActivity extends SherlockFragmentActivity {
 			datasource = new TaskDataSource(getActivity());
 			datasource.open();
 
+			ListView listview = getListView();
+			listview.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent,
+						View view, int position, long id) {
+					if (actionMode != null) {
+						return false;
+					}
+					inEditMode = true;
+					selectedItemId = id + 1;
+					// Start the CAB using the ActionMode.Callback defined
+					// above
+					actionMode = getSherlockActivity().startActionMode(
+							actionModeCallbacks);
+
+					selectItem(position);
+					return true;
+				}
+			});
+
 			refreshListView();
 		}
 
@@ -247,20 +266,6 @@ public class TasksActivity extends SherlockFragmentActivity {
 			adapter = new TaskArrayAdapter(getActivity(), R.layout.task_row,
 					values);
 			setListAdapter(adapter);
-		}
-
-		@Override
-		public void onListItemClick(ListView l, View v, int position, long id) {
-			Log.i("FragmentList", "Item clicked: " + id);
-
-			inEditMode = true;
-			selectedItemId = id + 1;
-			// Start the CAB using the ActionMode.Callback defined above
-			Log.i("ListItem clicked: ", Integer.toString(position));
-			actionMode = getSherlockActivity().startActionMode(
-					actionModeCallbacks);
-
-			selectItem(position);
 		}
 
 		@Override
