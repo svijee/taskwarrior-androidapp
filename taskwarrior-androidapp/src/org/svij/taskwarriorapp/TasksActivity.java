@@ -11,8 +11,10 @@ import org.svij.taskwarriorapp.db.TaskArrayAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.MenuListView;
 
+import android.R.color;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SyncStateContract.Columns;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,7 +33,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 public class TasksActivity extends SherlockFragmentActivity {
-	private ArrayListFragment listFragment = new ArrayListFragment();
+	private static final String PROJECT = "project";
+	private ArrayListFragment listFragment;
 	private MenuDrawerManager mMenuDrawer;
 	private MenuAdapter mAdapter;
 	private MenuListView mList;
@@ -42,14 +45,19 @@ public class TasksActivity extends SherlockFragmentActivity {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
 
-		setMenu();
-
-		if (getSupportFragmentManager().findFragmentById(android.R.id.content) == null) {
+		if (savedInstanceState != null) {
+			listFragment = (ArrayListFragment) getSupportFragmentManager()
+					.getFragment(savedInstanceState,
+							ArrayListFragment.class.getName());
+			listFragment.setColumn(savedInstanceState.getString(PROJECT));
+		} else {
+			listFragment = new ArrayListFragment();
 			getSupportFragmentManager().beginTransaction()
 					.add(android.R.id.content, listFragment).commit();
 		}
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		setMenu();
 	}
 
 	private void setMenu() {
@@ -64,12 +72,17 @@ public class TasksActivity extends SherlockFragmentActivity {
 		items.add(new Category("Projects"));
 
 		TaskDataSource datasource = new TaskDataSource(this);
+
 		datasource.open();
 		ArrayList<Task> values = datasource.getProjects();
 		datasource.close();
 
 		for (Task task : values) {
-			items.add(new Item(task.getProject()));
+			if (task.getProject().trim().length() == 0) {
+				items.add(new Item("no project"));
+			} else {
+				items.add(new Item(task.getProject()));
+			}
 		}
 
 		// A custom ListView is needed so the drawer can be notified when it's
@@ -141,6 +154,14 @@ public class TasksActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		getSupportFragmentManager().putFragment(outState,
+				ArrayListFragment.class.getName(), listFragment);
+		outState.putString(PROJECT, listFragment.getColumn());
 	}
 
 	/*

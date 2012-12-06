@@ -1,25 +1,17 @@
 package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import net.simonvt.widget.MenuDrawer;
-import net.simonvt.widget.MenuDrawerManager;
 
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskArrayAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
-import org.svij.taskwarriorapp.ui.MenuListView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 import com.actionbarsherlock.app.SherlockListFragment;
@@ -146,17 +138,18 @@ public class ArrayListFragment extends SherlockListFragment {
 				return true;
 			}
 		});
-		column = "all";
+
 		setListView();
 	}
 
 	public void setListView() {
 		ArrayList<Task> values;
 
-		if (column.equals("all")) {
-			values = datasource.getAllTasks();
+		if (column == null || column == "task next" || column == "task long") {
+			values = datasource.getPendingTasks();
+		} else if (column == "no project") {
+			values = datasource.getProjectsTasks("");
 		} else {
-			//TODO: Fix Bug: NullPointer-Exception occurs if screen orientation is changed atleast once!
 			values = datasource.getProjectsTasks(column);
 		}
 		adapter = new TaskArrayAdapter(getActivity(), R.layout.task_row, values);
@@ -196,6 +189,7 @@ public class ArrayListFragment extends SherlockListFragment {
 			datasource = null;
 		}
 	}
+
 	public void finishEditMode() {
 		inEditMode = false;
 		deselectPreviousSelectedItem();
