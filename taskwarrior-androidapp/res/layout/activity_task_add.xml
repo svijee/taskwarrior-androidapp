@@ -1,80 +1,87 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true" >
 
-    <TextView
-        android:id="@+id/tvTaskDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:text="@string/tvTaskDescription"
-        android:textSize="20sp" />
-
-    <EditText
-        android:id="@+id/etTaskAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/tvTaskDescription"
-        android:hint="@string/typeTask"
-        android:textSize="20sp" >
-
-        <requestFocus />
-    </EditText>
-
-    <TextView
-        android:id="@+id/tvDueDateStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/etTaskAdd"
-        android:text="@string/dueDate"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/tvDueDate"
-        style="@style/Dropdown.TextView"
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tvDueDateStatic"
-        android:gravity="center"
-        android:hint="@string/setDate" />
+        android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/tvProjectStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tvDueDate"
-        android:text="@string/project"
-        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/tvTaskDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/tvTaskDescription"
+            android:textSize="20sp" />
 
-    <EditText
-        android:id="@+id/etProject"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tvProjectStatic"
-        android:hint="@string/setProject" />
+        <EditText
+            android:id="@+id/etTaskAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tvTaskDescription"
+            android:hint="@string/typeTask"
+            android:textSize="20sp" >
 
-    <TextView
-        android:id="@+id/tvPriorityStatic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/etProject"
-        android:text="@string/priority"
-        android:textSize="20sp" />
+            <requestFocus />
+        </EditText>
 
-    <Spinner
-        android:id="@+id/spPriority"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvPriorityStatic"
-        android:entries="@array/priority_list"
-        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/tvDueDateStatic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/etTaskAdd"
+            android:text="@string/dueDate"
+            android:textSize="20sp" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/tvDueDate"
+            style="@style/Dropdown.TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvDueDateStatic"
+            android:gravity="center"
+            android:hint="@string/setDate" />
+
+        <TextView
+            android:id="@+id/tvProjectStatic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvDueDate"
+            android:text="@string/project"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/etProject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvProjectStatic"
+            android:hint="@string/setProject" />
+
+        <TextView
+            android:id="@+id/tvPriorityStatic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/etProject"
+            android:text="@string/priority"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/spPriority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvPriorityStatic"
+            android:entries="@array/priority_list"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+</ScrollView>

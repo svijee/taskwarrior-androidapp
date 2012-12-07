@@ -99,12 +99,13 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 								.getText().toString(), spPriority
 								.getSelectedItem().toString());
 			}
-			Intent intent_done = new Intent(this, TasksActivity.class);
-			startActivity(intent_done);
+
+			this.finish();
+			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.task_add_cancel:
-			Intent intent_cancel = new Intent(this, TasksActivity.class);
-			startActivity(intent_cancel);
+			this.finish();
+			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
