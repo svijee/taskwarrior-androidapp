@@ -1,25 +1,22 @@
 package org.svij.taskwarriorapp;
 
-import java.util.ArrayList;
-
 import org.svij.taskwarriorapp.data.Task;
-import org.svij.taskwarriorapp.db.TaskArrayAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.ActionMode.Callback;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.ActionMode.Callback;
 
 public class ArrayListFragment extends SherlockListFragment {
 
@@ -123,14 +120,11 @@ public class ArrayListFragment extends SherlockListFragment {
 		super.onActivityCreated(savedInstanceState);
 
 		ListView listview = getListView();
-		listview.setOnItemLongClickListener(new OnItemLongClickListener() {
+		listview.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
+			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				if (actionMode != null) {
-					return false;
-				}
 				inEditMode = true;
 				selectedItemId = id + 1;
 				// Start the CAB using the ActionMode.Callback defined
@@ -139,7 +133,6 @@ public class ArrayListFragment extends SherlockListFragment {
 						actionModeCallbacks);
 
 				selectItem(position);
-				return true;
 			}
 		});
 
@@ -185,7 +178,6 @@ public class ArrayListFragment extends SherlockListFragment {
 		inEditMode = false;
 		deselectPreviousSelectedItem();
 		actionMode = null;
-		selectedItemId = -1;
 	}
 
 	private void selectItem(int position) {
