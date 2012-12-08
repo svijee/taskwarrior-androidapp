@@ -10,7 +10,6 @@ import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.DatePickerFragment;
 
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;

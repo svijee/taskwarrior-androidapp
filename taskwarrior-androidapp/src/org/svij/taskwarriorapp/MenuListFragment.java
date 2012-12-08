@@ -65,7 +65,6 @@ public class MenuListFragment extends SherlockListFragment {
 
 			return convertView;
 		}
-
 	}
 
 	@Override
@@ -114,10 +113,10 @@ public class MenuListFragment extends SherlockListFragment {
 			values = datasource.getProjectsTasks(column);
 		}
 		adapter = new TaskArrayAdapter(getActivity(), R.layout.task_row, values);
-		ArrayListFragment listFragment = (ArrayListFragment) getActivity().getSupportFragmentManager()
-				.findFragmentById(android.R.id.content);
+		ArrayListFragment listFragment = (ArrayListFragment) getActivity()
+				.getSupportFragmentManager().findFragmentById(
+						android.R.id.content);
 		listFragment.setListAdapter(adapter);
-
 	}
 
 	public String getColumn() {
@@ -127,11 +126,11 @@ public class MenuListFragment extends SherlockListFragment {
 	public void setColumn(String column) {
 		this.column = column;
 	}
-	
+
 	public SlidingMenu getMenu() {
 		return menu;
 	}
-	
+
 	public void setMenu(SlidingMenu menu) {
 		this.menu = menu;
 	}

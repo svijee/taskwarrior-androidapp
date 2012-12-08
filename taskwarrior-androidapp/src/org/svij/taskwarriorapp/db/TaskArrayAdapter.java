@@ -29,6 +29,7 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 		public TextView taskProject;
 		public TextView taskDueDate;
 		public TextView taskPriority;
+		public TextView taskStatus;
 	}
 
 	@Override
@@ -44,6 +45,7 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 			holder.taskProject = (TextView) v.findViewById(R.id.tvRowTaskProject);
 			holder.taskDueDate = (TextView) v.findViewById(R.id.tvRowTaskDueDate);
 			holder.taskPriority = (TextView) v.findViewById(R.id.tvRowTaskPriority);
+			holder.taskStatus = (TextView) v.findViewById(R.id.tvRowTaskStatus);
 
 			v.setTag(holder);
 		} else
@@ -56,6 +58,9 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 			holder.taskDueDate.setText(task.getDuedate());
 			if (!task.getPriority().equals("no priority")) {
 				holder.taskPriority.setText(getContext().getString(R.string.priority) + ": " + task.getPriority());
+			}
+			if (task.getStatus().equals("done")) {
+				holder.taskStatus.setText(getContext().getString(R.string.status) + ": " + task.getStatus());
 			}
 		}
 

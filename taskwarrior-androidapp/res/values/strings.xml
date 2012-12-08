@@ -24,6 +24,8 @@
 	<string name="project">Project</string>
 	<string name="duedate">Due</string>
 	<string name="priority">Priority</string>
+	<string name="status">Status</string>
+
     <string-array name="priority_list">
         <item>no priority</item>
         <item>High</item>
