@@ -47,7 +47,7 @@ public class ArrayListFragment extends SherlockListFragment {
 	private ActionMode actionMode = null;
 	private int selectedViewPosition = -1;
 	private long selectedItemId = -1;
-	private String column;
+	private MenuListFragment menuFragment;
 
 	private ActionMode.Callback actionModeCallbacks = new Callback() {
 
@@ -100,12 +100,16 @@ public class ArrayListFragment extends SherlockListFragment {
 
 		private void deleteTask(long selectedItemId) {
 			datasource.deleteTask(selectedItemId);
-			setListView();
+			menuFragment = (MenuListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.menu_frame);
+			menuFragment.setMenuList();
+			menuFragment.setTaskList();
 		}
 
 		private void doneTask(long selectedItemId) {
 			datasource.doneTask(selectedItemId);
-			setListView();
+			menuFragment = (MenuListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.menu_frame);
+			menuFragment.setMenuList();
+			menuFragment.setTaskList();
 		}
 
 		private long getTaskWithId(long selectedItemId) {
@@ -139,21 +143,8 @@ public class ArrayListFragment extends SherlockListFragment {
 			}
 		});
 
-		setListView();
-	}
-
-	public void setListView() {
-		ArrayList<Task> values;
-
-		if (column == null || column == "task next" || column == "task long") {
-			values = datasource.getPendingTasks();
-		} else if (column == "no project") {
-			values = datasource.getProjectsTasks("");
-		} else {
-			values = datasource.getProjectsTasks(column);
-		}
-		adapter = new TaskArrayAdapter(getActivity(), R.layout.task_row, values);
-		setListAdapter(adapter);
+		menuFragment = (MenuListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.menu_frame);
+		menuFragment.setTaskList();
 	}
 
 	@Override
@@ -223,13 +214,5 @@ public class ArrayListFragment extends SherlockListFragment {
 					android.R.color.transparent));
 			v.setSelected(false);
 		}
-	}
-
-	public String getColumn() {
-		return column;
-	}
-
-	public void setColumn(String column) {
-		this.column = column;
 	}
 }

@@ -40,6 +40,6 @@ Taskwarrior for Android is using following Libraries, which are licensed under
 Apache License 2.0:
 
  * ActionBarSherlock – by Jake Wharton
- * Android menu-drawer – by Simon Vig Therkildsen
+ * SlidingMenu – by Jeremy Feinstein
  
-See LICENSE in the subdirectories com_actionbar and menu_drawer.
+See LICENSE in the subdirectories com_actionbar and SlidingMenu.
