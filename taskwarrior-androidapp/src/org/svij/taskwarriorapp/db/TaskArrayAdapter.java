@@ -1,7 +1,7 @@
 package org.svij.taskwarriorapp.db;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
-
 import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
 
@@ -41,10 +41,14 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = vi.inflate(R.layout.task_row, null);
 			holder = new ViewHolder();
-			holder.taskDescription = (TextView) v.findViewById(R.id.tvRowTaskDescription);
-			holder.taskProject = (TextView) v.findViewById(R.id.tvRowTaskProject);
-			holder.taskDueDate = (TextView) v.findViewById(R.id.tvRowTaskDueDate);
-			holder.taskPriority = (TextView) v.findViewById(R.id.tvRowTaskPriority);
+			holder.taskDescription = (TextView) v
+					.findViewById(R.id.tvRowTaskDescription);
+			holder.taskProject = (TextView) v
+					.findViewById(R.id.tvRowTaskProject);
+			holder.taskDueDate = (TextView) v
+					.findViewById(R.id.tvRowTaskDueDate);
+			holder.taskPriority = (TextView) v
+					.findViewById(R.id.tvRowTaskPriority);
 			holder.taskStatus = (TextView) v.findViewById(R.id.tvRowTaskStatus);
 
 			v.setTag(holder);
@@ -55,12 +59,21 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 		if (task != null) {
 			holder.taskDescription.setText(task.getDescription());
 			holder.taskProject.setText(task.getProject());
-			holder.taskDueDate.setText(task.getDuedate());
+
+			if (!(task.getDuedate().getTime() == 0)) {
+				holder.taskDueDate.setText(DateFormat.getDateInstance(
+						DateFormat.SHORT).format(task.getDuedate()));
+			}
+
 			if (!task.getPriority().equals("no priority")) {
-				holder.taskPriority.setText(getContext().getString(R.string.priority) + ": " + task.getPriority());
+				holder.taskPriority.setText(getContext().getString(
+						R.string.priority)
+						+ ": " + task.getPriority());
 			}
 			if (task.getStatus().equals("done")) {
-				holder.taskStatus.setText(getContext().getString(R.string.status) + ": " + task.getStatus());
+				holder.taskStatus.setText(getContext().getString(
+						R.string.status)
+						+ ": " + task.getStatus());
 			}
 		}
 

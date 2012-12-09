@@ -40,6 +40,7 @@ public class ArrayListFragment extends SherlockListFragment {
 
 	TaskDataSource datasource;
 	ArrayAdapter<Task> adapter = null;
+	@SuppressWarnings("unused")
 	private boolean inEditMode = false;
 	private ActionMode actionMode = null;
 	private int selectedViewPosition = -1;

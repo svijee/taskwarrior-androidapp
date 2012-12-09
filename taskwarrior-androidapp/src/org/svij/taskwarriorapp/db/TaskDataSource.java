@@ -1,6 +1,7 @@
 package org.svij.taskwarriorapp.db;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.svij.taskwarriorapp.data.Task;
 
@@ -34,7 +35,7 @@ public class TaskDataSource {
 		dbHelper.close();
 	}
 
-	public void createTask(String task_description, String date, String status,
+	public void createTask(String task_description, long date, String status,
 			String project, String priority) {
 		ContentValues values = new ContentValues();
 		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
@@ -46,7 +47,7 @@ public class TaskDataSource {
 		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
 	}
 
-	public void editTask(long id, String task_description, String date,
+	public void editTask(long id, String task_description, long date,
 			String status, String project, String priority) {
 		ContentValues values = new ContentValues();
 		values.put(SQLiteHelper.COLUMN_ID, id);
@@ -132,7 +133,9 @@ public class TaskDataSource {
 	public ArrayList<Task> getProjectsTasks(String project) {
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
-				SQLiteHelper.COLUMN_PROJECT + "= '" + project + "' and " + SQLiteHelper.COLUMN_STATUS + " = 'pending'", null, null, null, null);
+				SQLiteHelper.COLUMN_PROJECT + "= '" + project + "' and "
+						+ SQLiteHelper.COLUMN_STATUS + " = 'pending'", null,
+				null, null, null);
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
@@ -162,7 +165,8 @@ public class TaskDataSource {
 		} else {
 			task.setId(cursor.getLong(0));
 			task.setDescription(cursor.getString(1));
-			task.setDuedate(cursor.getString(2));
+			Date date = new Date(cursor.getLong(2));
+			task.setDuedate(date);
 			task.setEntry(cursor.getLong(3));
 			task.setStatus(cursor.getString(4));
 			task.setEnd(cursor.getLong(5));

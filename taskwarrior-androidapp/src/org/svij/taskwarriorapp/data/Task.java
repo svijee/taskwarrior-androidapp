@@ -1,5 +1,7 @@
 package org.svij.taskwarriorapp.data;
 
+import java.util.Date;
+
 /*
  * A Task represents a taskwarrior task.
  *
@@ -20,7 +22,7 @@ public class Task {
 	/*
 	 * A tasks due date
 	 */
-	private String duedate;
+	private Date duedate;
 
 	/*
 	 * Entry timestamp – This is automatically generated when creating a task
@@ -92,11 +94,11 @@ public class Task {
 				+ "– Priority: " + priority + "– End:" + end;
 	}
 
-	public String getDuedate() {
+	public Date getDuedate() {
 		return duedate;
 	}
 
-	public void setDuedate(String duedate) {
+	public void setDuedate(Date duedate) {
 		this.duedate = duedate;
 	}
 

@@ -1,9 +1,7 @@
 package org.svij.taskwarriorapp;
 
 import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskDataSource;
@@ -26,6 +24,7 @@ import com.actionbarsherlock.view.MenuItem;
 public class TaskAddActivity extends SherlockFragmentActivity {
 	private TaskDataSource datasource;
 	private long taskID = 0;
+	private long timestamp;
 
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
@@ -59,7 +58,10 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
 
 			etTaskAdd.setText(task.getDescription());
-			tvDueDate.setText(task.getDuedate());
+			if (!(task.getDuedate().getTime() == 0)) {
+				tvDueDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
+						.format(task.getDuedate()));
+			}
 			etProject.setText(task.getProject());
 			Log.i("PriorityID", ":" + task.getPriorityID());
 			spPriority.setSelection(task.getPriorityID());
@@ -83,20 +85,17 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			datasource.open();
 
 			EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
-			TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
 			EditText etProject = (EditText) findViewById(R.id.etProject);
 			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
 
 			if (taskID == 0) {
 				datasource.createTask(etTaskAdd.getText().toString(),
-						etTaskDate.getText().toString(), "pending", etProject
-								.getText().toString(), spPriority
-								.getSelectedItem().toString());
+						timestamp, "pending", etProject.getText().toString(),
+						spPriority.getSelectedItem().toString());
 			} else {
 				datasource.editTask(taskID, etTaskAdd.getText().toString(),
-						etTaskDate.getText().toString(), "pending", etProject
-								.getText().toString(), spPriority
-								.getSelectedItem().toString());
+						timestamp, "pending", etProject.getText().toString(),
+						spPriority.getSelectedItem().toString());
 			}
 
 			this.finish();
@@ -122,24 +121,16 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	}
 
 	OnDateSetListener onDate = new OnDateSetListener() {
-
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			String date_rawstring = String.valueOf(year) + "-"
-					+ String.valueOf(monthOfYear + 1) + "-"
-					+ String.valueOf(dayOfMonth);
+			GregorianCalendar cal = new GregorianCalendar(year, monthOfYear,
+					dayOfMonth);
+			timestamp = cal.getTimeInMillis();
 
-			try {
-				DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-				Date date = (Date) formatter.parse(date_rawstring);
-				String date_string = formatter.format(date);
-				TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
-				etTaskDate.setText(date_string);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
+			etTaskDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
+					.format(timestamp));
 
 		}
-
 	};
 }
