@@ -72,6 +72,10 @@ public class MenuListFragment extends SherlockListFragment {
 		column = (((TextView) view).getText().toString());
 		setTaskList();
 		menu.toggle();
+		ArrayListFragment listFragment = (ArrayListFragment) getActivity().getSupportFragmentManager().findFragmentById(android.R.id.content);
+		if (listFragment.getActionMode() != null) {
+			listFragment.getActionMode().finish();
+		}
 	}
 
 	public void setMenuList() {

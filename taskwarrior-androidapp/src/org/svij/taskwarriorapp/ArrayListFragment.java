@@ -97,21 +97,23 @@ public class ArrayListFragment extends SherlockListFragment {
 
 		private void deleteTask(long selectedItemId) {
 			datasource.deleteTask(selectedItemId);
-			menuFragment = (MenuListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.menu_frame);
-			menuFragment.setMenuList();
-			menuFragment.setTaskList();
+			updateMenuAndTaskList();
 		}
 
 		private void doneTask(long selectedItemId) {
 			datasource.doneTask(selectedItemId);
-			menuFragment = (MenuListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.menu_frame);
-			menuFragment.setMenuList();
-			menuFragment.setTaskList();
+			updateMenuAndTaskList();
 		}
 
 		private long getTaskWithId(long selectedItemId) {
 			return ((Task) getListAdapter().getItem((int) selectedItemId - 1))
 					.getId();
+		}
+
+		private void updateMenuAndTaskList() {
+			menuFragment = (MenuListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.menu_frame);
+			menuFragment.setMenuList();
+			menuFragment.setTaskList();
 		}
 	};
 
@@ -129,8 +131,8 @@ public class ArrayListFragment extends SherlockListFragment {
 				selectedItemId = id + 1;
 				// Start the CAB using the ActionMode.Callback defined
 				// above
-				actionMode = getSherlockActivity().startActionMode(
-						actionModeCallbacks);
+				setActionMode(getSherlockActivity().startActionMode(
+						actionModeCallbacks));
 
 				selectItem(position);
 			}
@@ -177,7 +179,7 @@ public class ArrayListFragment extends SherlockListFragment {
 	public void finishEditMode() {
 		inEditMode = false;
 		deselectPreviousSelectedItem();
-		actionMode = null;
+		setActionMode(null);
 	}
 
 	private void selectItem(int position) {
@@ -206,5 +208,13 @@ public class ArrayListFragment extends SherlockListFragment {
 					android.R.color.transparent));
 			v.setSelected(false);
 		}
+	}
+
+	public ActionMode getActionMode() {
+		return actionMode;
+	}
+
+	public void setActionMode(ActionMode actionMode) {
+		this.actionMode = actionMode;
 	}
 }
