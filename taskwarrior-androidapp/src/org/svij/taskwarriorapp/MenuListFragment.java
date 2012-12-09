@@ -117,6 +117,7 @@ public class MenuListFragment extends SherlockListFragment {
 				.getSupportFragmentManager().findFragmentById(
 						android.R.id.content);
 		listFragment.setListAdapter(adapter);
+		datasource.close();
 	}
 
 	public String getColumn() {
