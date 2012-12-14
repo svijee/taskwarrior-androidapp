@@ -2,6 +2,7 @@ package org.svij.taskwarriorapp.db;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
 
@@ -16,7 +17,7 @@ public class TaskDataSource {
 
 	private SQLiteDatabase database;
 	private SQLiteHelper dbHelper;
-	private String[] allColumns = { SQLiteHelper.COLUMN_ID,
+	private String[] allColumns = { SQLiteHelper.COLUMN_UUID,
 			SQLiteHelper.COLUMN_DESCRIPTION, SQLiteHelper.COLUMN_DUEDATE,
 			SQLiteHelper.COLUMN_ENTRY, SQLiteHelper.COLUMN_STATUS,
 			SQLiteHelper.COLUMN_END, SQLiteHelper.COLUMN_PROJECT,
@@ -38,6 +39,7 @@ public class TaskDataSource {
 	public void createTask(String task_description, long date, String status,
 			String project, String priority) {
 		ContentValues values = new ContentValues();
+		values.put(SQLiteHelper.COLUMN_UUID, UUID.randomUUID().toString());
 		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
 		values.put(SQLiteHelper.COLUMN_DUEDATE, date);
 		values.put(SQLiteHelper.COLUMN_ENTRY, System.currentTimeMillis() / 1000);
@@ -47,36 +49,36 @@ public class TaskDataSource {
 		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
 	}
 
-	public void editTask(long id, String task_description, long date,
+	public void editTask(UUID uuid, String task_description, long date,
 			String status, String project, String priority) {
 		ContentValues values = new ContentValues();
-		values.put(SQLiteHelper.COLUMN_ID, id);
+		values.put(SQLiteHelper.COLUMN_UUID, uuid.toString());
 		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
 		values.put(SQLiteHelper.COLUMN_DUEDATE, date);
 		values.put(SQLiteHelper.COLUMN_STATUS, status);
 		values.put(SQLiteHelper.COLUMN_PROJECT, project);
 		values.put(SQLiteHelper.COLUMN_PRIORITY, priority);
 		database.update(SQLiteHelper.TABLE_TASKS, values,
-				SQLiteHelper.COLUMN_ID + " = " + id, null);
+				SQLiteHelper.COLUMN_UUID + " = '" + uuid.toString() + "'", null);
 		values = null;
 	}
 
-	public void deleteTask(long id) {
-		Log.i("Deleted:", "Task with id: " + id);
+	public void deleteTask(UUID uuid) {
+		Log.i("Deleted:", "Task with uuid: " + uuid.toString());
 		ContentValues values = new ContentValues();
 		values.put(SQLiteHelper.COLUMN_STATUS, "deleted");
 		database.update(SQLiteHelper.TABLE_TASKS, values,
-				SQLiteHelper.COLUMN_ID + " = " + id, null);
+				SQLiteHelper.COLUMN_UUID + " = '" + uuid.toString() + "'", null);
 	}
 
-	public void doneTask(long id) {
-		Log.i("Done:", "Task with id: " + id);
+	public void doneTask(UUID uuid) {
+		Log.i("Done:", "Task with id: " + uuid.toString());
 		ContentValues values = new ContentValues();
 		values.put(SQLiteHelper.COLUMN_STATUS, "done");
 		values.put(SQLiteHelper.COLUMN_END, System.currentTimeMillis() / 1000);
 		Log.i("DoneTime:", ":" + System.currentTimeMillis() / 1000);
 		database.update(SQLiteHelper.TABLE_TASKS, values,
-				SQLiteHelper.COLUMN_ID + " = " + id, null);
+				SQLiteHelper.COLUMN_UUID + " = '" + uuid.toString() + "'", null);
 		values = null;
 	}
 
@@ -148,9 +150,9 @@ public class TaskDataSource {
 		return tasks;
 	}
 
-	public Task getTask(long id) {
+	public Task getTask(UUID uuid) {
 		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
-				SQLiteHelper.COLUMN_ID + "=" + id, null, null, null, null);
+				SQLiteHelper.COLUMN_UUID + "= '" + uuid.toString() + "'", null, null, null, null);
 		cursor.moveToFirst();
 		Task task = cursorToTask(cursor, allColumns);
 		cursor.close();
@@ -163,7 +165,7 @@ public class TaskDataSource {
 		if (columns.equals(projectColumn)) {
 			task.setProject(cursor.getString(0));
 		} else {
-			task.setId(cursor.getLong(0));
+			task.setId(UUID.fromString(cursor.getString(0)));
 			task.setDescription(cursor.getString(1));
 			Date date = new Date(cursor.getLong(2));
 			task.setDuedate(date);

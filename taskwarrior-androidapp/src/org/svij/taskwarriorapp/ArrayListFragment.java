@@ -1,5 +1,7 @@
 package org.svij.taskwarriorapp;
 
+import java.util.UUID;
+
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
@@ -90,25 +92,25 @@ public class ArrayListFragment extends SherlockListFragment {
 			finishEditMode();
 		}
 
-		private void showAddTaskActivity(long selectedItemId) {
+		private void showAddTaskActivity(UUID uuid) {
 			Intent intent = new Intent(getActivity(), TaskAddActivity.class);
-			intent.putExtra("taskID", selectedItemId);
+			intent.putExtra("taskID", uuid.toString());
 			startActivity(intent);
 		}
 
-		private void deleteTask(long selectedItemId) {
-			datasource.deleteTask(selectedItemId);
+		private void deleteTask(UUID uuid) {
+			datasource.deleteTask(uuid);
 			updateMenuAndTaskList();
 		}
 
-		private void doneTask(long selectedItemId) {
-			datasource.doneTask(selectedItemId);
+		private void doneTask(UUID uuid) {
+			datasource.doneTask(uuid);
 			updateMenuAndTaskList();
 		}
 
-		private long getTaskWithId(long selectedItemId) {
+		private UUID getTaskWithId(long selectedItemId) {
 			return ((Task) getListAdapter().getItem((int) selectedItemId - 1))
-					.getId();
+					.getUuid();
 		}
 
 		private void updateMenuAndTaskList() {

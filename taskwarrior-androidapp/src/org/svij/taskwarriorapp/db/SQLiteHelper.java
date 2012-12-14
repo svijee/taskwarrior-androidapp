@@ -8,7 +8,7 @@ import android.util.Log;
 public class SQLiteHelper extends SQLiteOpenHelper {
 
 	public static final String TABLE_TASKS = "tasks";
-	public static final String COLUMN_ID = "_id";
+	public static final String COLUMN_UUID = "_id";
 	public static final String COLUMN_DESCRIPTION = "description";
 	public static final String COLUMN_DUEDATE = "duedate";
 	public static final String COLUMN_ENTRY = "entry";
@@ -21,7 +21,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 
 	private static final String DATABASE_CREATE = "CREATE TABLE " + TABLE_TASKS
-			+ "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ "(" + COLUMN_UUID + " String PRIMARY KEY, "
 			+ COLUMN_DESCRIPTION + " TEXT, " + COLUMN_DUEDATE + " LONG, "
 			+ COLUMN_ENTRY + " LONG NOT NULL," + COLUMN_END + " LONG, "
 			+ COLUMN_PRIORITY + " TEXT, " + COLUMN_PROJECT + " TEXT, "

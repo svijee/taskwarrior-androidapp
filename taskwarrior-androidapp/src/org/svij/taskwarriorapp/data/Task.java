@@ -1,6 +1,7 @@
 package org.svij.taskwarriorapp.data;
 
 import java.util.Date;
+import java.util.UUID;
 
 /*
  * A Task represents a taskwarrior task.
@@ -12,7 +13,7 @@ public class Task {
 	/*
 	 * Unique identifier for a task. Will be replaced by a uuid in the future.
 	 */
-	private long id;
+	private UUID uuid;
 
 	/*
 	 * Description of a task
@@ -55,12 +56,12 @@ public class Task {
 	 */
 	private long end;
 
-	public long getId() {
-		return id;
+	public UUID getUuid() {
+		return uuid;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setId(UUID uuid) {
+		this.uuid = uuid;
 	}
 
 	public String getDescription() {
@@ -89,7 +90,7 @@ public class Task {
 
 	@Override
 	public String toString() {
-		return id + ".) " + description + " – Entry: " + entry + " – Status: "
+		return uuid + ".) " + description + " – Entry: " + entry + " – Status: "
 				+ status + " – Due: " + duedate + " – Project:" + project
 				+ "– Priority: " + priority + "– End:" + end;
 	}

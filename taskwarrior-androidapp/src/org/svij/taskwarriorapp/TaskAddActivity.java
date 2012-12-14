@@ -2,6 +2,7 @@ package org.svij.taskwarriorapp;
 
 import java.text.DateFormat;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskDataSource;
@@ -23,7 +24,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class TaskAddActivity extends SherlockFragmentActivity {
 	private TaskDataSource datasource;
-	private long taskID = 0;
+	private String taskID = "";
 	private long timestamp;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,10 +48,10 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 		Bundle extras = getIntent().getExtras();
 
 		if (extras != null) {
-			taskID = extras.getLong("taskID");
+			taskID = extras.getString("taskID");
 			datasource = new TaskDataSource(this);
 			datasource.open();
-			Task task = datasource.getTask(taskID);
+			Task task = datasource.getTask(UUID.fromString(taskID));
 			datasource.close();
 
 			TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
@@ -88,12 +89,12 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			EditText etProject = (EditText) findViewById(R.id.etProject);
 			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
 
-			if (taskID == 0) {
+			if (taskID == "") {
 				datasource.createTask(etTaskAdd.getText().toString(),
 						timestamp, "pending", etProject.getText().toString(),
 						spPriority.getSelectedItem().toString());
 			} else {
-				datasource.editTask(taskID, etTaskAdd.getText().toString(),
+				datasource.editTask(UUID.fromString(taskID), etTaskAdd.getText().toString(),
 						timestamp, "pending", etProject.getText().toString(),
 						spPriority.getSelectedItem().toString());
 			}
