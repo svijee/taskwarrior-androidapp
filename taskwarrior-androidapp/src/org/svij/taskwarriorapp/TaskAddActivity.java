@@ -1,14 +1,17 @@
 package org.svij.taskwarriorapp;
 
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.DatePickerFragment;
+import org.svij.taskwarriorapp.ui.TimePickerFragment;
 
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -17,6 +20,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -26,6 +30,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	private TaskDataSource datasource;
 	private String taskID = "";
 	private long timestamp;
+	private GregorianCalendar cal = new GregorianCalendar();
 
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
@@ -42,6 +47,18 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 				date.setCallBack(onDate);
 				date.show(getSupportFragmentManager().beginTransaction(),
 						"date_dialog");
+			}
+		});
+
+		TextView tvDueTime = (TextView) findViewById(R.id.tvDueTime);
+		tvDueTime.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				TimePickerFragment date = new TimePickerFragment();
+				date.setCallBack(onTime);
+				date.show(getSupportFragmentManager().beginTransaction(),
+						"time_dialog");
 			}
 		});
 
@@ -62,6 +79,13 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			if (!(task.getDuedate().getTime() == 0)) {
 				tvDueDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
 						.format(task.getDuedate()));
+				if (!DateFormat.getTimeInstance().format(task.getDuedate())
+						.equals("00:00:00")) {
+					tvDueTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(
+							task.getDuedate()));
+				}
+				cal.setTime(task.getDuedate());
+				timestamp = cal.getTimeInMillis();
 			}
 			etProject.setText(task.getProject());
 			Log.i("PriorityID", ":" + task.getPriorityID());
@@ -94,9 +118,10 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 						timestamp, "pending", etProject.getText().toString(),
 						spPriority.getSelectedItem().toString());
 			} else {
-				datasource.editTask(UUID.fromString(taskID), etTaskAdd.getText().toString(),
-						timestamp, "pending", etProject.getText().toString(),
-						spPriority.getSelectedItem().toString());
+				datasource.editTask(UUID.fromString(taskID), etTaskAdd
+						.getText().toString(), timestamp, "pending", etProject
+						.getText().toString(), spPriority.getSelectedItem()
+						.toString());
 			}
 
 			this.finish();
@@ -122,16 +147,37 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	}
 
 	OnDateSetListener onDate = new OnDateSetListener() {
+
+		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			GregorianCalendar cal = new GregorianCalendar(year, monthOfYear,
-					dayOfMonth);
+			TextView tvDueTime = (TextView) findViewById(R.id.tvDueTime);
+			if (tvDueTime.getText().toString().equals("")) {
+				cal = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+			} else {
+				cal.set(year, monthOfYear, dayOfMonth);
+			}
 			timestamp = cal.getTimeInMillis();
 
 			TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
 			etTaskDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
 					.format(timestamp));
 
+		}
+	};
+
+	OnTimeSetListener onTime = new OnTimeSetListener() {
+
+		@Override
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+			cal.set(Calendar.MINUTE, minute);
+			cal.set(Calendar.SECOND, 0);
+
+			timestamp = cal.getTimeInMillis();
+
+			TextView etTaskTime = (TextView) findViewById(R.id.tvDueTime);
+			etTaskTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timestamp));
 		}
 	};
 }

@@ -50,11 +50,21 @@
             android:hint="@string/setDate" />
 
         <TextView
+            android:id="@+id/tvDueTime"
+            style="@style/Dropdown.TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvDueDate"
+            android:gravity="center"
+            android:hint="@string/setTime" />
+
+        <TextView
             android:id="@+id/tvProjectStatic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/tvDueDate"
+            android:layout_below="@+id/tvDueTime"
             android:text="@string/project"
             android:textSize="20sp" />
 

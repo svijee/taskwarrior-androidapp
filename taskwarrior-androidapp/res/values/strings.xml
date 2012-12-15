@@ -8,6 +8,8 @@
     <string name="done">Done</string>
     <string name="dueDate">Due date</string>
     <string name="setDate">Pick a date</string>
+    <string name="dueTime">Due time</string>
+    <string name="setTime">Pick a time</string>
     <string name="project">Project</string>
     <string name="setProject">Set a project</string>
     <string name="priority">Priority</string>
@@ -21,10 +23,10 @@
     <string name="ab_submit">Submit task</string>
     <string name="ab_cancel">Cancel task</string>
     <string name="ab_createTask">Create task</string>
-	<string name="project">Project</string>
-	<string name="duedate">Due</string>
-	<string name="priority">Priority</string>
-	<string name="status">Status</string>
+    <string name="project">Project</string>
+    <string name="duedate">Due</string>
+    <string name="priority">Priority</string>
+    <string name="status">Status</string>
 
     <string-array name="priority_list">
         <item>no priority</item>

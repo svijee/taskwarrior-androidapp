@@ -61,8 +61,15 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 			holder.taskProject.setText(task.getProject());
 
 			if (!(task.getDuedate().getTime() == 0)) {
-				holder.taskDueDate.setText(DateFormat.getDateInstance(
-						DateFormat.SHORT).format(task.getDuedate()));
+				if (!DateFormat.getTimeInstance().format(task.getDuedate())
+						.equals("00:00:00")) {
+					holder.taskDueDate.setText(DateFormat.getDateTimeInstance(
+							DateFormat.MEDIUM, DateFormat.SHORT).format(
+							task.getDuedate()));
+				} else {
+					holder.taskDueDate.setText(DateFormat.getDateInstance()
+							.format(task.getDuedate()));
+				}
 			}
 
 			if (!task.getPriority().equals("no priority")) {
