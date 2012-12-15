@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -81,8 +82,8 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 						.format(task.getDuedate()));
 				if (!DateFormat.getTimeInstance().format(task.getDuedate())
 						.equals("00:00:00")) {
-					tvDueTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(
-							task.getDuedate()));
+					tvDueTime.setText(DateFormat.getTimeInstance(
+							DateFormat.SHORT).format(task.getDuedate()));
 				}
 				cal.setTime(task.getDuedate());
 				timestamp = cal.getTimeInMillis();
@@ -113,19 +114,28 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			EditText etProject = (EditText) findViewById(R.id.etProject);
 			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
 
-			if (taskID == "") {
-				datasource.createTask(etTaskAdd.getText().toString(),
-						timestamp, "pending", etProject.getText().toString(),
-						spPriority.getSelectedItem().toString());
+			if (etTaskAdd.getText().toString().equals("")) {
+				Toast toast = Toast.makeText(
+						getApplicationContext(),
+						getApplicationContext().getString(
+								R.string.valid_description),
+						Toast.LENGTH_LONG);
+				toast.show();
 			} else {
-				datasource.editTask(UUID.fromString(taskID), etTaskAdd
-						.getText().toString(), timestamp, "pending", etProject
-						.getText().toString(), spPriority.getSelectedItem()
-						.toString());
+				if (taskID == "") {
+					datasource.createTask(etTaskAdd.getText().toString(),
+							timestamp, "pending", etProject.getText()
+									.toString(), spPriority.getSelectedItem()
+									.toString());
+				} else {
+					datasource.editTask(UUID.fromString(taskID), etTaskAdd
+							.getText().toString(), timestamp, "pending",
+							etProject.getText().toString(), spPriority
+									.getSelectedItem().toString());
+				}
+				this.finish();
+				NavUtils.navigateUpFromSameTask(this);
 			}
-
-			this.finish();
-			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case R.id.task_add_cancel:
 			this.finish();
@@ -177,7 +187,8 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			timestamp = cal.getTimeInMillis();
 
 			TextView etTaskTime = (TextView) findViewById(R.id.tvDueTime);
-			etTaskTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timestamp));
+			etTaskTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
+					.format(timestamp));
 		}
 	};
 }
