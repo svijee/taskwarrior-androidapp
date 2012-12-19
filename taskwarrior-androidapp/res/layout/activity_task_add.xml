@@ -11,7 +11,7 @@
 
         <TextView
             android:id="@+id/tvTaskDescription"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:text="@string/tvTaskDescription"
@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/tvDueDateStatic"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/etTaskAdd"
@@ -42,26 +42,25 @@
         <TextView
             android:id="@+id/tvDueDate"
             style="@style/Dropdown.TextView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvDueDateStatic"
-            android:gravity="center"
+            android:layout_toLeftOf="@+id/tvDueTime"
             android:hint="@string/setDate" />
 
         <TextView
             android:id="@+id/tvDueTime"
             style="@style/Dropdown.TextView"
-            android:layout_width="match_parent"
+            android:layout_width="96dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/tvDueDate"
-            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tvDueDateStatic"
             android:hint="@string/setTime" />
 
         <TextView
             android:id="@+id/tvProjectStatic"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvDueTime"
@@ -74,11 +73,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvProjectStatic"
-            android:hint="@string/setProject" />
+            android:hint="@string/setProject"
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/tvPriorityStatic"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/etProject"
