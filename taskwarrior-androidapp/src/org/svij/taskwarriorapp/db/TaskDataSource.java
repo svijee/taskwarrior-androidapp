@@ -174,6 +174,7 @@ public class TaskDataSource {
 			task.setEnd(cursor.getLong(5));
 			task.setProject(cursor.getString(6));
 			task.setPriority(cursor.getString(7));
+			task.urgency_c();
 		}
 
 		return task;

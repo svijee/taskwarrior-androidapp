@@ -2,6 +2,7 @@ package org.svij.taskwarriorapp.db;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+
 import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
 
@@ -30,6 +31,7 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 		public TextView taskDueDate;
 		public TextView taskPriority;
 		public TextView taskStatus;
+		public TextView taskUrgency;
 	}
 
 	@Override
@@ -41,16 +43,12 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			v = vi.inflate(R.layout.task_row, null);
 			holder = new ViewHolder();
-			holder.taskDescription = (TextView) v
-					.findViewById(R.id.tvRowTaskDescription);
-			holder.taskProject = (TextView) v
-					.findViewById(R.id.tvRowTaskProject);
-			holder.taskDueDate = (TextView) v
-					.findViewById(R.id.tvRowTaskDueDate);
-			holder.taskPriority = (TextView) v
-					.findViewById(R.id.tvRowTaskPriority);
-			holder.taskStatus = (TextView) v.findViewById(R.id.tvRowTaskStatus);
-
+			holder.taskDescription	= (TextView) v.findViewById(R.id.tvRowTaskDescription);
+			holder.taskProject		= (TextView) v.findViewById(R.id.tvRowTaskProject);
+			holder.taskDueDate		= (TextView) v.findViewById(R.id.tvRowTaskDueDate);
+			holder.taskPriority		= (TextView) v.findViewById(R.id.tvRowTaskPriority);
+			holder.taskStatus		= (TextView) v.findViewById(R.id.tvRowTaskStatus);
+			holder.taskUrgency		= (TextView) v.findViewById(R.id.tvRowTaskUrgency);
 			v.setTag(holder);
 		} else
 			holder = (ViewHolder) v.getTag();
@@ -59,10 +57,10 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 		if (task != null) {
 			holder.taskDescription.setText(task.getDescription());
 			holder.taskProject.setText(task.getProject());
+			holder.taskUrgency.setText(Float.toString(task.urgency_c()));
 
 			if (!(task.getDuedate().getTime() == 0)) {
-				if (!DateFormat.getTimeInstance().format(task.getDuedate())
-						.equals("00:00:00")) {
+				if (!DateFormat.getTimeInstance().format(task.getDuedate()).equals("00:00:00")) {
 					holder.taskDueDate.setText(DateFormat.getDateTimeInstance(
 							DateFormat.MEDIUM, DateFormat.SHORT).format(
 							task.getDuedate()));

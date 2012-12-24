@@ -37,11 +37,19 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
+        android:id="@+id/tvRowTaskUrgency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvRowTaskDueDate"
+		android:layout_alignParentLeft="true"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
         android:id="@+id/tvRowTaskStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvRowTaskDueDate"
-        android:layout_alignBottom="@+id/tvRowTaskPriority"
+        android:layout_alignBaseline="@+id/tvRowTaskUrgency"
+        android:layout_alignBottom="@+id/tvRowTaskUrgency"
         android:layout_alignParentRight="true"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 

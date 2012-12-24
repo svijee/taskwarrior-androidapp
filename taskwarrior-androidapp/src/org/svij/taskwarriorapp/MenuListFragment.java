@@ -1,6 +1,7 @@
 package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskArrayAdapter;
@@ -117,6 +118,8 @@ public class MenuListFragment extends SherlockListFragment {
 			values = datasource.getProjectsTasks(column);
 		}
 		adapter = new TaskArrayAdapter(getActivity(), R.layout.task_row, values);
+		adapter.sort(new TaskSorter());
+		adapter.notifyDataSetChanged();
 		ArrayListFragment listFragment = (ArrayListFragment) getActivity()
 				.getSupportFragmentManager().findFragmentById(
 						android.R.id.content);
@@ -138,5 +141,13 @@ public class MenuListFragment extends SherlockListFragment {
 
 	public void setMenu(SlidingMenu menu) {
 		this.menu = menu;
+	}
+}
+
+class TaskSorter implements Comparator<Task> {
+
+	@Override
+	public int compare(Task task1, Task task2) {
+		return Float.compare(task2.getUrgency(), task1.getUrgency());
 	}
 }

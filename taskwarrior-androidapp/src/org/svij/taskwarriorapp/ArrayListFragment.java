@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
@@ -41,7 +40,6 @@ public class ArrayListFragment extends SherlockListFragment {
 	 */
 
 	TaskDataSource datasource;
-	ArrayAdapter<Task> adapter = null;
 	@SuppressWarnings("unused")
 	private boolean inEditMode = false;
 	private ActionMode actionMode = null;
