@@ -47,15 +47,17 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvDueDateStatic"
             android:layout_toLeftOf="@+id/tvDueTime"
+            android:gravity="center"
             android:hint="@string/setDate" />
 
         <TextView
             android:id="@+id/tvDueTime"
             style="@style/Dropdown.TextView"
-            android:layout_width="96dp"
+            android:layout_width="128dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/tvDueDateStatic"
+            android:gravity="center"
             android:hint="@string/setTime" />
 
         <TextView
