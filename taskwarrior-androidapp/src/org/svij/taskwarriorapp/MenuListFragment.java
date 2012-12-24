@@ -163,14 +163,11 @@ class TaskSorter implements Comparator<Task> {
 		if (sortType.equals("urgency")) {
 			return Float.compare(task2.getUrgency(), task1.getUrgency());
 		} else {
-			if (task1.getDuedate().after(task2.getDuedate())) {
-				return -1;
-			} else if (task1.getDuedate().before(task2.getDuedate())) {
+			if (task1.getDuedate().getTime() == 0) {
 				return 1;
-			} else if (task1.getDuedate().equals(task2.getDuedate())) {
-				return 0;
+			} else {
+				return task1.getDuedate().compareTo(task2.getDuedate());
 			}
 		}
-		return 0;
 	}
 }
