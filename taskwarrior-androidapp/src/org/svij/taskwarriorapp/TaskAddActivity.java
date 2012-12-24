@@ -14,6 +14,7 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -39,7 +40,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 		setContentView(R.layout.activity_task_add);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		TextView tvDueDate = (TextView) findViewById(R.id.tvDueDate);
+		final TextView tvDueDate = (TextView) findViewById(R.id.tvDueDate);
 		tvDueDate.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -51,7 +52,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			}
 		});
 
-		TextView tvDueTime = (TextView) findViewById(R.id.tvDueTime);
+		final TextView tvDueTime = (TextView) findViewById(R.id.tvDueTime);
 		tvDueTime.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -60,6 +61,40 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 				date.setCallBack(onTime);
 				date.show(getSupportFragmentManager().beginTransaction(),
 						"time_dialog");
+			}
+		});
+
+		tvDueDate.setOnLongClickListener(new View.OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				if (TextUtils.isEmpty(tvDueTime.getText().toString())) {
+					timestamp = 0;
+				} else {
+					cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
+					cal.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
+					cal.set(Calendar.DAY_OF_MONTH,  Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+					timestamp = cal.getTimeInMillis();
+				}
+				tvDueDate.setText("");
+				return true;
+			}
+		});
+
+		tvDueTime.setOnLongClickListener(new View.OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				if (TextUtils.isEmpty(tvDueDate.getText().toString())) {
+					timestamp = 0;
+				} else {
+					cal.set(Calendar.HOUR_OF_DAY, 0);
+					cal.set(Calendar.MINUTE, 0);
+					cal.set(Calendar.SECOND, 0);
+					timestamp = cal.getTimeInMillis();
+				}
+				tvDueTime.setText("");
+				return true;
 			}
 		});
 
@@ -162,7 +197,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
 			TextView tvDueTime = (TextView) findViewById(R.id.tvDueTime);
-			if (tvDueTime.getText().toString().equals("")) {
+			if (TextUtils.isEmpty(tvDueTime.getText().toString())) {
 				cal = new GregorianCalendar(year, monthOfYear, dayOfMonth);
 			} else {
 				cal.set(year, monthOfYear, dayOfMonth);
@@ -188,6 +223,9 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 
 			TextView etTaskTime = (TextView) findViewById(R.id.tvDueTime);
 			etTaskTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
+					.format(timestamp));
+			TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
+			etTaskDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
 					.format(timestamp));
 		}
 	};
