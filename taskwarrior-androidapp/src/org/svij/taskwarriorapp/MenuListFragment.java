@@ -73,7 +73,9 @@ public class MenuListFragment extends SherlockListFragment {
 		column = (((TextView) view).getText().toString());
 		setTaskList();
 		menu.toggle();
-		ArrayListFragment listFragment = (ArrayListFragment) getActivity().getSupportFragmentManager().findFragmentById(android.R.id.content);
+		ArrayListFragment listFragment = (ArrayListFragment) getActivity()
+				.getSupportFragmentManager().findFragmentById(
+						android.R.id.content);
 		if (listFragment.getActionMode() != null) {
 			listFragment.getActionMode().finish();
 		}
@@ -105,11 +107,16 @@ public class MenuListFragment extends SherlockListFragment {
 
 	public void setTaskList() {
 		ArrayList<Task> values;
+		TaskSorter tasksorter = new TaskSorter("urgency");
+
 		datasource = new TaskDataSource(getActivity());
 		datasource.open();
 
-		if (column == null || column == "task next" || column == "task long") {
+		if (column == null || column == "task next") {
 			values = datasource.getPendingTasks();
+		} else if (column == "task long") {
+			values = datasource.getPendingTasks();
+			tasksorter = new TaskSorter("long");
 		} else if (column == "no project") {
 			values = datasource.getProjectsTasks("");
 		} else if (column == "task all") {
@@ -118,7 +125,7 @@ public class MenuListFragment extends SherlockListFragment {
 			values = datasource.getProjectsTasks(column);
 		}
 		adapter = new TaskArrayAdapter(getActivity(), R.layout.task_row, values);
-		adapter.sort(new TaskSorter());
+		adapter.sort(tasksorter);
 		adapter.notifyDataSetChanged();
 		ArrayListFragment listFragment = (ArrayListFragment) getActivity()
 				.getSupportFragmentManager().findFragmentById(
@@ -145,9 +152,25 @@ public class MenuListFragment extends SherlockListFragment {
 }
 
 class TaskSorter implements Comparator<Task> {
+	private String sortType;
+
+	public TaskSorter(String sortType) {
+		this.sortType = sortType;
+	}
 
 	@Override
 	public int compare(Task task1, Task task2) {
-		return Float.compare(task2.getUrgency(), task1.getUrgency());
+		if (sortType.equals("urgency")) {
+			return Float.compare(task2.getUrgency(), task1.getUrgency());
+		} else {
+			if (task1.getDuedate().after(task2.getDuedate())) {
+				return -1;
+			} else if (task1.getDuedate().before(task2.getDuedate())) {
+				return 1;
+			} else if (task1.getDuedate().equals(task2.getDuedate())) {
+				return 0;
+			}
+		}
+		return 0;
 	}
 }
