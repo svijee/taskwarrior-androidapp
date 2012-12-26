@@ -21,7 +21,8 @@ public class TaskDataSource {
 			SQLiteHelper.COLUMN_DESCRIPTION, SQLiteHelper.COLUMN_DUEDATE,
 			SQLiteHelper.COLUMN_ENTRY, SQLiteHelper.COLUMN_STATUS,
 			SQLiteHelper.COLUMN_END, SQLiteHelper.COLUMN_PROJECT,
-			SQLiteHelper.COLUMN_PRIORITY };
+			SQLiteHelper.COLUMN_PRIORITY, SQLiteHelper.COLUMN_END,
+			SQLiteHelper.COLUMN_TAGS};
 	private String[] projectColumn = { SQLiteHelper.COLUMN_PROJECT };
 
 	public TaskDataSource(Context context) {
@@ -37,7 +38,7 @@ public class TaskDataSource {
 	}
 
 	public void createTask(String task_description, long date, String status,
-			String project, String priority) {
+			String project, String priority, String tags) {
 		ContentValues values = new ContentValues();
 		values.put(SQLiteHelper.COLUMN_UUID, UUID.randomUUID().toString());
 		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
@@ -46,11 +47,12 @@ public class TaskDataSource {
 		values.put(SQLiteHelper.COLUMN_STATUS, status);
 		values.put(SQLiteHelper.COLUMN_PROJECT, project);
 		values.put(SQLiteHelper.COLUMN_PRIORITY, priority);
+		values.put(SQLiteHelper.COLUMN_TAGS, tags);
 		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
 	}
 
 	public void editTask(UUID uuid, String task_description, long date,
-			String status, String project, String priority) {
+			String status, String project, String priority, String tags) {
 		ContentValues values = new ContentValues();
 		values.put(SQLiteHelper.COLUMN_UUID, uuid.toString());
 		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
@@ -58,6 +60,7 @@ public class TaskDataSource {
 		values.put(SQLiteHelper.COLUMN_STATUS, status);
 		values.put(SQLiteHelper.COLUMN_PROJECT, project);
 		values.put(SQLiteHelper.COLUMN_PRIORITY, priority);
+		values.put(SQLiteHelper.COLUMN_TAGS, tags);
 		database.update(SQLiteHelper.TABLE_TASKS, values,
 				SQLiteHelper.COLUMN_UUID + " = '" + uuid.toString() + "'", null);
 		values = null;
@@ -174,6 +177,7 @@ public class TaskDataSource {
 			task.setEnd(cursor.getLong(5));
 			task.setProject(cursor.getString(6));
 			task.setPriority(cursor.getString(7));
+			task.setTags(cursor.getString(9));
 			task.urgency_c();
 		}
 

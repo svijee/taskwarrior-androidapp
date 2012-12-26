@@ -94,6 +94,24 @@
             android:layout_below="@+id/tvPriorityStatic"
             android:entries="@array/priority_list"
             android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tvTagsStatic"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/spPriority"
+            android:text="@string/tags"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/etTags"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tvTagsStatic"
+            android:hint="@string/setTag"
+            android:singleLine="true" />
     </RelativeLayout>
 
 </ScrollView>

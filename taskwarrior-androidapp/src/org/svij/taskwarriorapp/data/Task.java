@@ -60,6 +60,7 @@ public class Task {
 	 * End timestamp This is automatically generated when marking a task as "done"
 	 *
 	 */
+	private String tags;
 
 	private float urgency;
 
@@ -350,5 +351,13 @@ public class Task {
 		} else {
 			return 0.0f;
 		}
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 }

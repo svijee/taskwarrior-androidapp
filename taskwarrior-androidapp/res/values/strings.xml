@@ -27,6 +27,8 @@
     <string name="duedate">Due</string>
     <string name="priority">Priority</string>
     <string name="status">Status</string>
+    <string name="tags">Tags</string>
+    <string name="setTag">Set a tag</string>
     <string name="valid_description">A task must have a description.</string>
 
     <string-array name="priority_list">

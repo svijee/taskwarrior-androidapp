@@ -16,6 +16,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_PROJECT = "project";
 	public static final String COLUMN_STATUS = "status";
 	public static final String COLUMN_END = "end_timestamp";
+	public static final String COLUMN_TAGS = "tags";
 
 	private static final String DATABASE_NAME = "tasks.db";
 	private static final int DATABASE_VERSION = 1;
@@ -25,7 +26,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 			+ COLUMN_DESCRIPTION + " TEXT, " + COLUMN_DUEDATE + " LONG, "
 			+ COLUMN_ENTRY + " LONG NOT NULL," + COLUMN_END + " LONG, "
 			+ COLUMN_PRIORITY + " TEXT, " + COLUMN_PROJECT + " TEXT, "
-			+ COLUMN_STATUS + " TEXT NOT NULL);";
+			+ COLUMN_STATUS + " TEXT NOT NULL, " + COLUMN_TAGS + " TEXT);";
 
 	public SQLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

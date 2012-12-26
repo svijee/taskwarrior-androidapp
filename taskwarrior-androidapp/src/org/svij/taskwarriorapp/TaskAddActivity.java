@@ -107,18 +107,20 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			Task task = datasource.getTask(UUID.fromString(taskID));
 			datasource.close();
 
-			TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
-			EditText etProject = (EditText) findViewById(R.id.etProject);
-			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
+			TextView etTaskAdd	= (TextView) findViewById(R.id.etTaskAdd);
+			EditText etProject	= (EditText) findViewById(R.id.etProject);
+			Spinner  spPriority = (Spinner)  findViewById(R.id.spPriority);
+			TextView etTags		= (TextView) findViewById(R.id.etTags);
 
 			etTaskAdd.setText(task.getDescription());
 			if (!(task.getDuedate().getTime() == 0)) {
-				tvDueDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
-						.format(task.getDuedate()));
-				if (!DateFormat.getTimeInstance().format(task.getDuedate())
-						.equals("00:00:00")) {
+				tvDueDate.setText(
+						DateFormat.getDateInstance(DateFormat.SHORT).format(task.getDuedate())
+								);
+				if (!DateFormat.getTimeInstance().format(task.getDuedate()).equals("00:00:00")) {
 					tvDueTime.setText(DateFormat.getTimeInstance(
-							DateFormat.SHORT).format(task.getDuedate()));
+							DateFormat.SHORT).format(task.getDuedate())
+							);
 				}
 				cal.setTime(task.getDuedate());
 				timestamp = cal.getTimeInMillis();
@@ -126,6 +128,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			etProject.setText(task.getProject());
 			Log.i("PriorityID", ":" + task.getPriorityID());
 			spPriority.setSelection(task.getPriorityID());
+			etTags.setText(task.getTags());
 		}
 	}
 
@@ -145,28 +148,36 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			datasource = new TaskDataSource(this);
 			datasource.open();
 
-			EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
-			EditText etProject = (EditText) findViewById(R.id.etProject);
-			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
+			EditText etTaskAdd	= (EditText) findViewById(R.id.etTaskAdd);
+			EditText etProject	= (EditText) findViewById(R.id.etProject);
+			Spinner	 spPriority = (Spinner)	 findViewById(R.id.spPriority);
+			EditText etTags		= (EditText) findViewById(R.id.etTags);
 
 			if (etTaskAdd.getText().toString().equals("")) {
 				Toast toast = Toast.makeText(
 						getApplicationContext(),
-						getApplicationContext().getString(
-								R.string.valid_description),
+						getApplicationContext().getString(R.string.valid_description),
 						Toast.LENGTH_LONG);
 				toast.show();
 			} else {
 				if (taskID == "") {
-					datasource.createTask(etTaskAdd.getText().toString(),
-							timestamp, "pending", etProject.getText()
-									.toString(), spPriority.getSelectedItem()
-									.toString());
+					datasource.createTask(
+							etTaskAdd.getText().toString(),
+							timestamp, "pending",
+							etProject.getText().toString(),
+							spPriority.getSelectedItem().toString(),
+							etTags.getText().toString()
+							);
 				} else {
-					datasource.editTask(UUID.fromString(taskID), etTaskAdd
-							.getText().toString(), timestamp, "pending",
-							etProject.getText().toString(), spPriority
-									.getSelectedItem().toString());
+					datasource.editTask(
+							UUID.fromString(taskID),
+							etTaskAdd.getText().toString(),
+							timestamp,
+							"pending",
+							etProject.getText().toString(),
+							spPriority.getSelectedItem().toString(),
+							etTags.getText().toString()
+							);
 				}
 				this.finish();
 				NavUtils.navigateUpFromSameTask(this);
