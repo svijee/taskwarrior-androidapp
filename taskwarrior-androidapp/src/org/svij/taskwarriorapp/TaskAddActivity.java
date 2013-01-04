@@ -51,6 +51,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			public void onClick(View v) {
 				DatePickerFragment date = new DatePickerFragment();
 				date.setCallBack(onDate);
+				date.setTimestamp(timestamp);
 				date.show(getSupportFragmentManager().beginTransaction(),
 						"date_dialog");
 			}
@@ -63,6 +64,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			public void onClick(View v) {
 				TimePickerFragment date = new TimePickerFragment();
 				date.setCallBack(onTime);
+				date.setTimestamp(timestamp);
 				date.show(getSupportFragmentManager().beginTransaction(),
 						"time_dialog");
 			}
