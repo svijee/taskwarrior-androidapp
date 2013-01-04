@@ -10,9 +10,13 @@ import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.DatePickerFragment;
 import org.svij.taskwarriorapp.ui.TimePickerFragment;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Dialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.util.Log;
@@ -142,7 +146,8 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			NavUtils.navigateUpFromSameTask(this);
+			UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();
+			alertDialog.show(getSupportFragmentManager(),"dialog");
 			return true;
 		case R.id.task_add_done:
 			datasource = new TaskDataSource(this);
@@ -184,8 +189,8 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			}
 			return true;
 		case R.id.task_add_cancel:
-			this.finish();
-			NavUtils.navigateUpFromSameTask(this);
+			UnsavedDataDialogFragment alertDialog2 = new UnsavedDataDialogFragment();
+			alertDialog2.show(getSupportFragmentManager(),"dialog");
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -200,6 +205,12 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 		} finally {
 			super.onPause();
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();
+		alertDialog.show(getSupportFragmentManager(),"dialog");
 	}
 
 	OnDateSetListener onDate = new OnDateSetListener() {
@@ -240,4 +251,27 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 					.format(timestamp));
 		}
 	};
+
+	public static class UnsavedDataDialogFragment extends DialogFragment {
+	    @Override
+	    public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+	    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+	    	builder.setMessage(R.string.dialog_unsaved_data)
+	    			.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   getActivity().finish();
+	                	   NavUtils.navigateUpFromSameTask(getActivity());
+	                   }
+	               })
+	               .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   // User cancelled the dialog
+	                	   // Dialog is closing
+	                   }
+	               });
+
+	        return builder.create();
+	        }
+	}
 }

@@ -30,7 +30,9 @@
     <string name="tags">Tags</string>
     <string name="setTag">Set a tag</string>
     <string name="valid_description">A task must have a description.</string>
-
+	<string name="dialog_unsaved_data">Dismiss task?</string>
+	<string name="ok">OK</string>
+	<string name="cancel">Cancel</string>
     <string-array name="priority_list">
         <item>no priority</item>
         <item>High</item>
