@@ -32,6 +32,7 @@ import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
+import org.svij.taskwarriorapp.db.SQLiteHelper;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.DatePickerFragment;
 import org.svij.taskwarriorapp.ui.TimePickerFragment;
@@ -41,14 +42,18 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
+import android.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -130,17 +135,38 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			}
 		});
 
+		// set AutoCompleteTextView
+		AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
+		datasource = new TaskDataSource(this);
+		datasource.open();
+
+		// add CursorAdapter to AutoCompleteTextView
+		Cursor c = datasource.getProjectCursor();
+		SimpleCursorAdapter sca = new SimpleCursorAdapter(getApplicationContext(),
+				android.R.layout.simple_dropdown_item_1line,
+				c,
+				new String[] {SQLiteHelper.COLUMN_PROJECT},
+				new int[] {R.id.actvProject},
+				0);
+
+		sca.setCursorToStringConverter(new CursorToStringConverter() {
+
+			@Override
+			public CharSequence convertToString(Cursor cursor) {
+				final int colIndex = cursor.getColumnIndex(SQLiteHelper.COLUMN_PROJECT);
+				return cursor.getString(colIndex);
+			}
+		});
+
+		actvProject.setAdapter(sca);
+
 		Bundle extras = getIntent().getExtras();
 
 		if (extras != null) {
 			taskID = extras.getString("taskID");
-			datasource = new TaskDataSource(this);
-			datasource.open();
 			Task task = datasource.getTask(UUID.fromString(taskID));
-			datasource.close();
 
 			TextView etTaskAdd	= (TextView) findViewById(R.id.etTaskAdd);
-			EditText etProject	= (EditText) findViewById(R.id.etProject);
 			Spinner  spPriority = (Spinner)  findViewById(R.id.spPriority);
 			TextView etTags		= (TextView) findViewById(R.id.etTags);
 
@@ -157,11 +183,13 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 				cal.setTime(task.getDuedate());
 				timestamp = cal.getTimeInMillis();
 			}
-			etProject.setText(task.getProject());
+			actvProject.setText(task.getProject());
 			Log.i("PriorityID", ":" + task.getPriorityID());
 			spPriority.setSelection(task.getPriorityID());
 			etTags.setText(task.getTags());
 		}
+
+		datasource.close();
 	}
 
 	@Override
@@ -182,7 +210,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			datasource.open();
 
 			EditText etTaskAdd	= (EditText) findViewById(R.id.etTaskAdd);
-			EditText etProject	= (EditText) findViewById(R.id.etProject);
+			AutoCompleteTextView actvProject	= (AutoCompleteTextView) findViewById(R.id.actvProject);
 			Spinner	 spPriority = (Spinner)	 findViewById(R.id.spPriority);
 			EditText etTags		= (EditText) findViewById(R.id.etTags);
 
@@ -197,7 +225,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 					datasource.createTask(
 							etTaskAdd.getText().toString(),
 							timestamp, "pending",
-							etProject.getText().toString(),
+							actvProject.getText().toString(),
 							spPriority.getSelectedItem().toString(),
 							etTags.getText().toString()
 							);
@@ -207,7 +235,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 							etTaskAdd.getText().toString(),
 							timestamp,
 							"pending",
-							etProject.getText().toString(),
+							actvProject.getText().toString(),
 							spPriority.getSelectedItem().toString(),
 							etTags.getText().toString()
 							);
@@ -234,7 +262,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			super.onPause();
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();

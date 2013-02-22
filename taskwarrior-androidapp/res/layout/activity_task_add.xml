@@ -69,21 +69,22 @@
             android:text="@string/project"
             android:textSize="20sp" />
 
-        <EditText
-            android:id="@+id/etProject"
+        <AutoCompleteTextView
+            android:id="@+id/actvProject"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvProjectStatic"
             android:hint="@string/setProject"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:completionThreshold="1" />
 
         <TextView
             android:id="@+id/tvPriorityStatic"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/etProject"
+            android:layout_below="@+id/actvProject"
             android:text="@string/priority"
             android:textSize="20sp" />
 
