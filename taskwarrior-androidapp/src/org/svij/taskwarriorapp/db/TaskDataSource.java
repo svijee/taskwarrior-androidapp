@@ -147,7 +147,7 @@ public class TaskDataSource {
 	public ArrayList<Task> getProjects() {
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		Cursor cursor = database.query(true, SQLiteHelper.TABLE_TASKS,
-				allColumns, SQLiteHelper.COLUMN_STATUS + " = 'pending'",
+				projectColumn, SQLiteHelper.COLUMN_STATUS + " = 'pending'",
 				null, null, null, null, null);
 
 		cursor.moveToFirst();
