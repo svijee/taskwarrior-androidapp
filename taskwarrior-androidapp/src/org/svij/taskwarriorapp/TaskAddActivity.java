@@ -331,4 +331,22 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	        return builder.create();
 	        }
 	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+
+		savedInstanceState.putCharSequence("dueDate", ((TextView)findViewById(R.id.tvDueDate)).getText());
+		savedInstanceState.putCharSequence("dueTime", ((TextView)findViewById(R.id.tvDueTime)).getText());
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+
+		((TextView)findViewById(R.id.tvDueDate)).setText(savedInstanceState.getCharSequence("dueDate"));
+		((TextView)findViewById(R.id.tvDueTime)).setText(savedInstanceState.getCharSequence("dueTime"));
+	}
+
+
 }
