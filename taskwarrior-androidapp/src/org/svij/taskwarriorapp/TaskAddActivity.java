@@ -336,16 +336,23 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	protected void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
 
-		savedInstanceState.putCharSequence("dueDate", ((TextView)findViewById(R.id.tvDueDate)).getText());
-		savedInstanceState.putCharSequence("dueTime", ((TextView)findViewById(R.id.tvDueTime)).getText());
+		savedInstanceState.putLong("timestamp",timestamp);
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 
-		((TextView)findViewById(R.id.tvDueDate)).setText(savedInstanceState.getCharSequence("dueDate"));
-		((TextView)findViewById(R.id.tvDueTime)).setText(savedInstanceState.getCharSequence("dueTime"));
+		if(savedInstanceState != null) {
+			timestamp = savedInstanceState.getLong("timestamp");
+
+			cal.setTimeInMillis(timestamp);
+
+			TextView tvDueTime = (TextView) findViewById(R.id.tvDueTime);
+			tvDueTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timestamp));
+			TextView tvDueDate = (TextView) findViewById(R.id.tvDueDate);
+			tvDueDate.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(timestamp));
+		}
 	}
 
 
