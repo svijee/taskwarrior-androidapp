@@ -139,14 +139,14 @@ public class MenuListFragment extends SherlockListFragment {
 		datasource = new TaskDataSource(getActivity());
 		datasource.open();
 
-		if (column == null || column == getString(R.string.task_next)) {
+		if (column == null || column.equals(getString(R.string.task_next))) {
 			values = datasource.getPendingTasks();
-		} else if (column == getString(R.string.task_long)) {
+		} else if (column.equals(getString(R.string.task_long))) {
 			values = datasource.getPendingTasks();
 			tasksorter = new TaskSorter("long");
-		} else if (column == getString(R.string.no_project)) {
+		} else if (column.equals(getString(R.string.no_project))) {
 			values = datasource.getProjectsTasks("");
-		} else if (column == getString(R.string.task_all)) {
+		} else if (column.equals(getString(R.string.task_all))) {
 			values = datasource.getAllTasks();
 		} else {
 			values = datasource.getProjectsTasks(column);
