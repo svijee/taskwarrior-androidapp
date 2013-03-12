@@ -34,6 +34,7 @@ import org.svij.taskwarriorapp.db.TaskArrayAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,9 +111,9 @@ public class MenuListFragment extends SherlockListFragment {
 	public void setMenuList() {
 		MenuListAdapter adapter = new MenuListAdapter(getActivity());
 
-		adapter.add(new MenuItem("task next"));
-		adapter.add(new MenuItem("task long"));
-		adapter.add(new MenuItem("task all"));
+		adapter.add(new MenuItem(getString(R.string.task_next)));
+		adapter.add(new MenuItem(getString(R.string.task_long)));
+		adapter.add(new MenuItem(getString(R.string.task_all)));
 
 		TaskDataSource datasource = new TaskDataSource(getActivity());
 
@@ -122,7 +123,7 @@ public class MenuListFragment extends SherlockListFragment {
 
 		for (Task task : values) {
 			if (task.getProject().trim().length() == 0) {
-				adapter.add(new MenuItem("no project"));
+				adapter.add(new MenuItem(getString(R.string.no_project)));
 			} else {
 				adapter.add(new MenuItem(task.getProject()));
 			}
@@ -138,14 +139,14 @@ public class MenuListFragment extends SherlockListFragment {
 		datasource = new TaskDataSource(getActivity());
 		datasource.open();
 
-		if (column == null || column == "task next") {
+		if (column == null || column.equals(getString(R.string.task_next))) {
 			values = datasource.getPendingTasks();
-		} else if (column == "task long") {
+		} else if (column.equals(getString(R.string.task_long))) {
 			values = datasource.getPendingTasks();
 			tasksorter = new TaskSorter("long");
-		} else if (column == "no project") {
+		} else if (column.equals(getString(R.string.no_project))) {
 			values = datasource.getProjectsTasks("");
-		} else if (column == "task all") {
+		} else if (column.equals(getString(R.string.task_all))) {
 			values = datasource.getAllTasks();
 		} else {
 			values = datasource.getProjectsTasks(column);
