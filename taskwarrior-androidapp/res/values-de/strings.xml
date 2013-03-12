@@ -1,0 +1,45 @@
+<resources>
+
+    <string name="ab_cancel">Task abbrechen</string>
+    <string name="ab_createTask">Task erstellen</string>
+    <string name="ab_submit">Task erstellen</string>
+    <string name="app_name">Taskwarrior-App</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="dialog_unsaved_data">Task verwerfen?</string>
+    <string name="done">Fertig</string>
+    <string name="dueDate">Fälligkeitsdatum</string>
+    <string name="duedate">Fällig</string>
+    <string name="dueTime">Fälligkeitsuhrzeit</string>
+    <string name="lb_date">Datum</string>
+    <string name="menu_delete">Löschen</string>
+    <string name="menu_done">Fertig</string>
+    <string name="menu_edit">Bearbeiten</string>
+    <string name="menu_settings">Einstellungen</string>
+    <string name="no_project">Kein Projekt</string>
+    <string name="ok">OK</string>
+    <string name="priority">Priorität</string>
+    <string name="project">Projekt</string>
+    <string name="setDate">Wähle Datum</string>
+    <string name="setPriority">Wähle Priorität</string>
+    <string name="setProject">Wähle Projekt</string>
+    <string name="setTag">Füge Tag hinzu</string>
+    <string name="setTime">Wähle Uhrzeit</string>
+    <string name="status">Status</string>
+    <string name="tags">Tags</string>
+    <string name="task_all">task all</string>
+    <string name="task_long">task long</string>
+    <string name="task_next">task next</string>
+    <string name="task_selected">Task ausgewählt</string>
+    <string name="title_activity_main">Taskwarrior</string>
+    <string name="title_activity_task_add">Task hinzufügen</string>
+    <string name="tvTaskDescription">Beschreibung</string>
+    <string name="typeTask">Task hinzufügen …</string>
+    <string name="valid_description">Ein Task muss eine Beschreibung besitzen.</string>
+    <string-array name="priority_list">
+        <item>Keine Priorität</item>
+        <item>Hoch</item>
+        <item>Mittel</item>
+        <item>Niedrig</item>
+    </string-array>
+
+</resources>
