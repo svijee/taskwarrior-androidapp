@@ -26,9 +26,11 @@
 
 package org.svij.taskwarriorapp;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
+import org.svij.taskwarriorapp.db.TaskArrayAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
 import android.content.Intent;
@@ -36,6 +38,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
@@ -71,7 +74,8 @@ public class ArrayListFragment extends SherlockListFragment {
 	private ActionMode actionMode = null;
 	private int selectedViewPosition = -1;
 	private long selectedItemId = -1;
-	private MenuListFragment menuFragment;
+	private String column;
+	ArrayAdapter<Task> adapter = null;
 
 	private ActionMode.Callback actionModeCallbacks = new Callback() {
 
@@ -124,12 +128,12 @@ public class ArrayListFragment extends SherlockListFragment {
 
 		private void deleteTask(UUID uuid) {
 			datasource.deleteTask(uuid);
-			updateMenuAndTaskList();
+			setListView();
 		}
 
 		private void doneTask(UUID uuid) {
 			datasource.doneTask(uuid);
-			updateMenuAndTaskList();
+			setListView();
 		}
 
 		private UUID getTaskWithId(long selectedItemId) {
@@ -137,11 +141,6 @@ public class ArrayListFragment extends SherlockListFragment {
 					.getUuid();
 		}
 
-		private void updateMenuAndTaskList() {
-			menuFragment = (MenuListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.menu_frame);
-			menuFragment.setMenuList();
-			menuFragment.setTaskList();
-		}
 	};
 
 	@Override
@@ -165,8 +164,21 @@ public class ArrayListFragment extends SherlockListFragment {
 			}
 		});
 
-		menuFragment = (MenuListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.menu_frame);
-		menuFragment.setTaskList();
+		setListView();
+	}
+
+	public void setListView() {
+		ArrayList<Task> values;
+
+		if (column == null || column.equals(getString(R.string.task_next)) || column.equals(getString(R.string.task_long))) {
+			values = datasource.getPendingTasks();
+		} else if (column == "no project") {
+			values = datasource.getProjectsTasks("");
+		} else {
+			values = datasource.getProjectsTasks(column);
+		}
+		adapter = new TaskArrayAdapter(getActivity(), R.layout.task_row, values);
+		setListAdapter(adapter);
 	}
 
 	@Override
@@ -243,5 +255,13 @@ public class ArrayListFragment extends SherlockListFragment {
 
 	public void setActionMode(ActionMode actionMode) {
 		this.actionMode = actionMode;
+	}
+	
+	public String getColumn() {
+		return column;
+	}
+
+	public void setColumn(String column) {
+		this.column = column;
 	}
 }

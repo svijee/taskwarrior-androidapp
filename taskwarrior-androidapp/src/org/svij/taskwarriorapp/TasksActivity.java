@@ -26,68 +26,105 @@
 
 package org.svij.taskwarriorapp;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.svij.taskwarriorapp.data.Task;
+import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.ui.MenuListView;
+
+import net.simonvt.menudrawer.MenuDrawer;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Display;
-import android.view.WindowManager;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.slidingmenu.lib.SlidingMenu;
 
 public class TasksActivity extends SherlockFragmentActivity {
 	private static final String PROJECT = "project";
 	private ArrayListFragment listFragment;
-	private MenuListFragment menuFragment;
-	private SlidingMenu menu;
+	private MenuDrawer menu;
+	private MenuAdapter mAdapter;
+	private MenuListView mList;
+	private int mActivePosition = -1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
 
-		// Setup the Menu
-		menu = new SlidingMenu(this);
-		menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		menu.setShadowWidthRes(R.dimen.shadow_width);
-		menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-		menu.setFadeDegree(0.35f);
-		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-		menu.setMenu(R.layout.menu_frame);
-		changeMenuOffset();
-
 		if (savedInstanceState != null) {
-			menuFragment = (MenuListFragment) getSupportFragmentManager()
-					.getFragment(savedInstanceState,
-							MenuListFragment.class.getName());
-			menuFragment.setMenu(menu);
-			listFragment = (ArrayListFragment) getSupportFragmentManager()
-					.getFragment(savedInstanceState,
-							ArrayListFragment.class.getName());
-			menuFragment.setColumn((savedInstanceState.getString(PROJECT)));
+			listFragment = (ArrayListFragment) getSupportFragmentManager().getFragment(savedInstanceState, ArrayListFragment.class.getName());
 		} else {
-			menuFragment = new MenuListFragment();
-			menuFragment.setMenu(menu);
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.menu_frame, menuFragment).commit();
 			listFragment = new ArrayListFragment();
-			getSupportFragmentManager().beginTransaction()
-					.add(android.R.id.content, listFragment).commit();
-
+			getSupportFragmentManager().beginTransaction().replace(android.R.id.content, listFragment).commit();
 		}
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		setMenu();
 
 	}
 
-	private void changeMenuOffset() {
-		WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-		Display display = wm.getDefaultDisplay();
-		@SuppressWarnings("deprecation")
-		int behindOffset_dp = display.getWidth() - 350;
-		menu.setBehindOffset(behindOffset_dp);
+	private void setMenu() {
+
+		menu = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW);
+		menu.setContentView(R.layout.activity_main);
+
+		List<Object> items = new ArrayList<Object>();
+		items.add(new Category("task commands"));
+		items.add(new Item(getString(R.string.task_next)));
+		items.add(new Item(getString(R.string.task_long)));
+		items.add(new Item(getString(R.string.task_all)));
+		items.add(new Category("Projects"));
+
+		TaskDataSource datasource = new TaskDataSource(this);
+
+		datasource.open();
+		ArrayList<Task> values = datasource.getProjects();
+		datasource.close();
+
+		for (Task task : values) {
+			if (task.getProject().trim().length() == 0) {
+				items.add(new Item(getString(R.string.no_project)));
+			} else {
+				items.add(new Item(task.getProject()));
+			}
+		}
+
+		// A custom ListView is needed so the drawer can be notified when it's
+		// scrolled. This is to update the position
+		// of the arrow indicator.
+		mList = new MenuListView(this);
+		mAdapter = new MenuAdapter(items);
+		mList.setAdapter(mAdapter);
+		mList.setOnItemClickListener(mItemClickListener);
+		mList.setOnScrollChangedListener(new MenuListView.OnScrollChangedListener() {
+			@Override
+			public void onScrollChanged() {
+				menu.getMenuView().invalidate();
+			}
+		});
+
+		menu.setMenuView(mList);
 	}
+
+	private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			mActivePosition = position;
+			menu.setActiveView(view, position);
+			listFragment.setColumn(((TextView) view).getText().toString());
+			listFragment.setListView();
+			menu.closeMenu();
+		}
+	};
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
@@ -102,7 +139,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 			startActivity(intent);
 			return true;
 		case android.R.id.home:
-			menu.toggle();
+			menu.toggleMenu();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -122,24 +159,126 @@ public class TasksActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
+		super.onSaveInstanceState(outState);
 		getSupportFragmentManager().putFragment(outState,
 				ArrayListFragment.class.getName(), listFragment);
-		getSupportFragmentManager().putFragment(outState,
-				MenuListFragment.class.getName(), menuFragment);
-		outState.putString(PROJECT, menuFragment.getColumn());
+		outState.putString(PROJECT, listFragment.getColumn());
 	}
 
 	@Override
 	public void onBackPressed() {
-		if (menu.isMenuShowing()) {
-			menu.showContent();
-		} else {
-			super.onBackPressed();
+		final int drawerState = menu.getDrawerState();
+		if (drawerState == MenuDrawer.STATE_OPEN
+				|| drawerState == MenuDrawer.STATE_OPENING) {
+			menu.closeMenu();
+			return;
+		}
+
+		super.onBackPressed();
+	}
+
+	/*
+	 * Item, which represents an item in the MenuList
+	 */
+
+	private static class Item {
+
+		String mTitle;
+
+		Item(String title) {
+			mTitle = title;
 		}
 	}
 
-	public SlidingMenu getMenu() {
-		return menu;
+	/*
+	 * Category, which represents a category in the MenuList
+	 */
+
+	private static class Category {
+
+		String mTitle;
+
+		Category(String title) {
+			mTitle = title;
+		}
 	}
 
+	/*
+	 * The MenuAdapter
+	 */
+	public class MenuAdapter extends BaseAdapter {
+
+		private List<Object> mItems;
+
+		MenuAdapter(List<Object> items) {
+			mItems = items;
+		}
+
+		@Override
+		public int getCount() {
+			return mItems.size();
+		}
+
+		@Override
+		public Object getItem(int position) {
+			return mItems.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public int getItemViewType(int position) {
+			return getItem(position) instanceof Item ? 0 : 1;
+		}
+
+		@Override
+		public int getViewTypeCount() {
+			return 2;
+		}
+
+		@Override
+		public boolean isEnabled(int position) {
+			return getItem(position) instanceof Item;
+		}
+
+		@Override
+		public boolean areAllItemsEnabled() {
+			return false;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View v = convertView;
+			Object item = getItem(position);
+
+			if (item instanceof Category) {
+				if (v == null) {
+					v = getLayoutInflater().inflate(R.layout.menu_row_category,
+							parent, false);
+				}
+
+				((TextView) v).setText(((Category) item).mTitle);
+
+			} else {
+				if (v == null) {
+					v = getLayoutInflater().inflate(R.layout.menu_row_item,
+							parent, false);
+				}
+
+				TextView tv = (TextView) v;
+				tv.setText(((Item) item).mTitle);
+			}
+
+			v.setTag(R.id.mdActiveViewPosition, position);
+
+			if (position == mActivePosition) {
+				menu.setActiveView(v, position);
+			}
+
+			return v;
+		}
+	}
 }
