@@ -17,8 +17,7 @@
         android:id="@+id/tvRowTaskProject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/tvRowTaskDescription"
-        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tvRowTaskDescription"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textIsSelectable="false" />
 
@@ -27,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/tvRowTaskDescription"
+        android:layout_below="@+id/tvRowTaskProject"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textIsSelectable="false" />
 
@@ -35,9 +34,7 @@
         android:id="@+id/tvRowTaskPriority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvRowTaskDueDate"
-        android:layout_alignBottom="@+id/tvRowTaskDueDate"
-        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tvRowTaskDueDate"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textIsSelectable="false" />
 
@@ -45,7 +42,7 @@
         android:id="@+id/tvRowTaskUrgency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvRowTaskDueDate"
+        android:layout_below="@+id/tvRowTaskPriority"
 		android:layout_alignParentLeft="true"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textIsSelectable="false" />
@@ -54,8 +51,7 @@
         android:id="@+id/tvRowTaskStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvRowTaskUrgency"
-        android:layout_alignBottom="@+id/tvRowTaskUrgency"
+        android:layout_below="@+id/tvRowTaskUrgency"
         android:layout_alignParentRight="true"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textIsSelectable="false" />

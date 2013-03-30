@@ -37,16 +37,20 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-public class TaskArrayAdapter extends ArrayAdapter<Task> {
+public class TaskBaseAdapter extends BaseAdapter {
 	private ArrayList<Task> entries;
 	private Activity activity;
+	private static final int TYPE_ROW = 0;
+	private static final int TYPE_ROW_CLICKED = 1;
+	private static final int TYPE_MAX_COUNT = TYPE_ROW_CLICKED + 1;
+	private ArrayList<Integer> RowClickedList = new ArrayList<Integer>();
 
-	public TaskArrayAdapter(Activity a, int textViewResourceId,
+	public TaskBaseAdapter(Activity a, int layoutID,
 			ArrayList<Task> entries) {
-		super(a, textViewResourceId, entries);
+		super();
 		this.entries = entries;
 		this.activity = a;
 	}
@@ -60,6 +64,15 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 		public TextView taskUrgency;
 	}
 
+	public void changeTaskRow(final int position) {
+		if (RowClickedList.contains(position)) {
+			RowClickedList.remove(Integer.valueOf(position));
+		} else {
+			RowClickedList.add(position);
+		}
+		notifyDataSetChanged();
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
@@ -67,7 +80,16 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 		if (v == null) {
 			LayoutInflater vi = (LayoutInflater) activity
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			v = vi.inflate(R.layout.task_row, null);
+			
+			int type = getItemViewType(position);
+			
+			switch (type) {
+			case TYPE_ROW:
+				v = vi.inflate(R.layout.task_row, null);
+				break;
+			case TYPE_ROW_CLICKED:
+				v = vi.inflate(R.layout.task_row_clicked, null);
+			}
 			holder = new ViewHolder();
 			holder.taskDescription	= (TextView) v.findViewById(R.id.tvRowTaskDescription);
 			holder.taskProject		= (TextView) v.findViewById(R.id.tvRowTaskProject);
@@ -97,18 +119,43 @@ public class TaskArrayAdapter extends ArrayAdapter<Task> {
 			}
 
 			if (!task.getPriority().equals("no priority")) {
-				holder.taskPriority.setText(getContext().getString(
+				holder.taskPriority.setText(activity.getString(
 						R.string.priority)
 						+ ": " + task.getPriority());
 			}
 			if (task.getStatus().equals("done")) {
-				holder.taskStatus.setText(getContext().getString(
+				holder.taskStatus.setText(activity.getString(
 						R.string.status)
 						+ ": " + task.getStatus());
 			}
 		}
 
 		return v;
+	}
+	
+    @Override
+    public int getItemViewType(int position) {
+    	return RowClickedList.contains(position) ? TYPE_ROW_CLICKED : TYPE_ROW;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return TYPE_MAX_COUNT;
+    }
+
+	@Override
+	public int getCount() {
+		return entries.size();
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return entries.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return position;
 	}
 
 }
