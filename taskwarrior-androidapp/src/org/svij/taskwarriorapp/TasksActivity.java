@@ -146,6 +146,10 @@ public class TasksActivity extends SherlockFragmentActivity {
 		}
 	}
 
+	public void onTaskButtonClick(View view) {
+		listFragment.onTaskButtonClick(view);
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();

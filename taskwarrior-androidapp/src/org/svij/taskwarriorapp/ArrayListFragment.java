@@ -27,26 +27,28 @@
 package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskBaseAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListFragment;
-
 
 public class ArrayListFragment extends SherlockListFragment {
 
 	TaskDataSource datasource;
-	@SuppressWarnings("unused")
-	private boolean inEditMode = false;
-	private int selectedViewPosition = -1;
+	private long selectedItemId = -1;
 	private String column;
 	TaskBaseAdapter adapter = null;
 
@@ -63,8 +65,7 @@ public class ArrayListFragment extends SherlockListFragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
-				selectItem(position);
-
+				selectedItemId = id + 1;
 				adapter.changeTaskRow(position);
 			}
 		});
@@ -72,16 +73,70 @@ public class ArrayListFragment extends SherlockListFragment {
 
 	public void setListView() {
 		ArrayList<Task> values;
+		TaskSorter tasksorter = new TaskSorter("urgency");
 
-		if (column == null || column.equals(getString(R.string.task_next)) || column.equals(getString(R.string.task_long))) {
+		if (column == null || column.equals(getString(R.string.task_next))) {
 			values = datasource.getPendingTasks();
-		} else if (column == "no project") {
+		} else if (column.equals(getString(R.string.task_long))) {
+			values = datasource.getPendingTasks();
+			tasksorter = new TaskSorter("long");
+		} else if (column.equals(getString(R.string.no_project))) {
 			values = datasource.getProjectsTasks("");
+		} else if (column.equals(getString(R.string.task_all))) {
+			values = datasource.getAllTasks();
 		} else {
 			values = datasource.getProjectsTasks(column);
 		}
+		Collections.sort(values, tasksorter);
 		adapter = new TaskBaseAdapter(getActivity(), R.layout.task_row, values);
 		setListAdapter(adapter);
+	}
+
+	public void onTaskButtonClick(View view) {
+		switch (view.getId()) {
+		case R.id.btnTaskDelete:
+			deleteTask(getTaskWithId(selectedItemId));
+			break;
+		case R.id.btnTaskModify:
+			showAddTaskActivity(getTaskWithId(selectedItemId));
+			break;
+		case R.id.btnTaskDone:
+			doneTask(getTaskWithId(selectedItemId));
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void showAddTaskActivity(UUID uuid) {
+		Intent intent = new Intent(getActivity(), TaskAddActivity.class);
+		intent.putExtra("taskID", uuid.toString());
+		startActivity(intent);
+	}
+
+	private void deleteTask(UUID uuid) {
+		datasource.deleteTask(uuid);
+		setListView();
+		Toast.makeText(
+				getActivity(),
+				getString(R.string.task_action_delete) + " '"
+						+ datasource.getTask(uuid).getDescription() + "'",
+				Toast.LENGTH_SHORT).show();
+	}
+
+	private void doneTask(UUID uuid) {
+		datasource.doneTask(uuid);
+		setListView();
+		Toast.makeText(
+				getActivity(),
+				getString(R.string.task_action_done) + "'"
+						+ datasource.getTask(uuid).getDescription() + "'",
+				Toast.LENGTH_SHORT).show();
+	}
+
+	private UUID getTaskWithId(long selectedItemId) {
+		return ((Task) getListAdapter().getItem((int) selectedItemId - 1))
+				.getUuid();
 	}
 
 	@Override
@@ -118,44 +173,32 @@ public class ArrayListFragment extends SherlockListFragment {
 		}
 	}
 
-	public void finishEditMode() {
-		inEditMode = false;
-		deselectPreviousSelectedItem();
-	}
-
-	private void selectItem(int position) {
-		deselectPreviousSelectedItem();
-		ListView lv = getListView();
-		lv.setItemChecked(position, true);
-		View v = lv.getChildAt(position - lv.getFirstVisiblePosition());
-		v.setSelected(true);
-		v.setBackgroundColor(getResources().getColor(
-				R.color.abs__holo_blue_light));
-		selectedViewPosition = position;
-	}
-
-	private void deselectPreviousSelectedItem() {
-		if (selectedViewPosition >= 0) {
-			ListView lv = getListView();
-			lv.setItemChecked(selectedViewPosition, false);
-			View v = getListView().getChildAt(
-					selectedViewPosition - lv.getFirstVisiblePosition());
-			if (v == null) {
-				// if we just deleted a row, then the previous position is
-				// invalid
-				return;
-			}
-			v.setBackgroundColor(getResources().getColor(
-					android.R.color.transparent));
-			v.setSelected(false);
-		}
-	}
-
 	public String getColumn() {
 		return column;
 	}
 
 	public void setColumn(String column) {
 		this.column = column;
+	}
+
+	class TaskSorter implements Comparator<Task> {
+		private String sortType;
+
+		public TaskSorter(String sortType) {
+			this.sortType = sortType;
+		}
+
+		@Override
+		public int compare(Task task1, Task task2) {
+			if (sortType.equals("urgency")) {
+				return Float.compare(task2.getUrgency(), task1.getUrgency());
+			} else {
+				if (task1.getDuedate().getTime() == 0) {
+					return 1;
+				} else {
+					return task1.getDuedate().compareTo(task2.getDuedate());
+				}
+			}
+		}
 	}
 }
