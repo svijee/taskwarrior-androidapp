@@ -367,8 +367,12 @@ public class Task {
 	private float urgency_age() {
 		long now = System.currentTimeMillis() / 1000;
 		int  age = (int) ((now - entry) / 86400);
+		float max = 365f;
 
-		return (1.0f * age);
+		if (max == 0 || age > max) {
+			return 1.0f;
+		}
+		return (1.0f * age/max);
 	}
 
 	private float urgency_blocking() {

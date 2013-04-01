@@ -105,7 +105,8 @@ public class TaskBaseAdapter extends BaseAdapter {
 		if (task != null) {
 			holder.taskDescription.setText(task.getDescription());
 			holder.taskProject.setText(task.getProject());
-			holder.taskUrgency.setText(Float.toString(task.urgency_c()));
+			float urgency = Math.round(task.urgency_c() * 100) / 100.0f;
+			holder.taskUrgency.setText(Float.toString(urgency));
 
 			if (!(task.getDuedate().getTime() == 0)) {
 				if (!DateFormat.getTimeInstance().format(task.getDuedate()).equals("00:00:00")) {
