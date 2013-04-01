@@ -143,9 +143,8 @@ public class Task {
 
 	@Override
 	public String toString() {
-		return uuid + ".) " + description + " – Entry: " + entry
-				+ " – Status: " + status + " – Due: " + duedate + " – Project:"
-				+ project + "– Priority: " + priority + "– End:" + end;
+		return "[ description:\"" + description + "\" entry:\"" + entry
+				+ "\" status:\"" + status + "\" uuid:\"" + uuid.toString() + "\" ";
 	}
 
 	public Date getDuedate() {
@@ -245,11 +244,11 @@ public class Task {
 	private float urgency_priority() {
 		String value = getPriority();
 
-		if (value.equals("High"))
+		if (value.equals("H"))
 			return 1.0f;
-		else if (value.equals("Middle"))
+		else if (value.equals("M"))
 			return 0.65f;
-		else if (value.equals("Low"))
+		else if (value.equals("L"))
 			return 0.3f;
 		else
 			return 0.0f;
@@ -367,8 +366,13 @@ public class Task {
 	private float urgency_age() {
 		long now = System.currentTimeMillis() / 1000;
 		int  age = (int) ((now - entry) / 86400);
-
-		return (1.0f * age);
+		float max = 365f;
+		
+		if (max == 0 || age > max) {
+			return 1.0f;
+		}
+		
+		return (1.0f * age / max);
 	}
 
 	private float urgency_blocking() {

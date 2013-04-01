@@ -47,7 +47,7 @@
             android:layout_toLeftOf="@+id/tvDueTime"
             android:gravity="center"
             android:hint="@string/setDate"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="false" />
 
         <TextView
             android:id="@+id/tvDueTime"
@@ -58,7 +58,7 @@
             android:layout_below="@+id/tvDueDateStatic"
             android:gravity="center"
             android:hint="@string/setTime"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="false" />
 
         <TextView
             android:id="@+id/tvProjectStatic"

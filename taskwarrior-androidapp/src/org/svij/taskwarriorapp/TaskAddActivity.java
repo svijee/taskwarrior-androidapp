@@ -32,8 +32,7 @@ import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
-import org.svij.taskwarriorapp.db.SQLiteHelper;
-import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.db.TaskDataSource2;
 import org.svij.taskwarriorapp.ui.DatePickerFragment;
 import org.svij.taskwarriorapp.ui.TimePickerFragment;
 
@@ -42,12 +41,10 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
-import android.database.Cursor;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter.CursorToStringConverter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -65,7 +62,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 public class TaskAddActivity extends SherlockFragmentActivity {
-	private TaskDataSource datasource;
+	private TaskDataSource2 datasource;
 	private String taskID = "";
 	private long timestamp;
 	private GregorianCalendar cal = new GregorianCalendar();
@@ -138,28 +135,28 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 
 		// set AutoCompleteTextView
 		AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
-		datasource = new TaskDataSource(this);
-		datasource.open();
-
-		// add CursorAdapter to AutoCompleteTextView
-		Cursor c = datasource.getProjectCursor();
-		SimpleCursorAdapter sca = new SimpleCursorAdapter(getApplicationContext(),
-				android.R.layout.simple_dropdown_item_1line,
-				c,
-				new String[] {SQLiteHelper.COLUMN_PROJECT},
-				new int[] {R.id.actvProject},
-				0);
-
-		sca.setCursorToStringConverter(new CursorToStringConverter() {
-
-			@Override
-			public CharSequence convertToString(Cursor cursor) {
-				final int colIndex = cursor.getColumnIndex(SQLiteHelper.COLUMN_PROJECT);
-				return cursor.getString(colIndex);
-			}
-		});
-
-		actvProject.setAdapter(sca);
+//		datasource = new TaskDataSource2(this);
+//		datasource.open();
+//
+//		// add CursorAdapter to AutoCompleteTextView
+//		Cursor c = datasource.getProjectCursor();
+//		SimpleCursorAdapter sca = new SimpleCursorAdapter(getApplicationContext(),
+//				android.R.layout.simple_dropdown_item_1line,
+//				c,
+//				new String[] {SQLiteHelper.COLUMN_PROJECT},
+//				new int[] {R.id.actvProject},
+//				0);
+//
+//		sca.setCursorToStringConverter(new CursorToStringConverter() {
+//
+//			@Override
+//			public CharSequence convertToString(Cursor cursor) {
+//				final int colIndex = cursor.getColumnIndex(SQLiteHelper.COLUMN_PROJECT);
+//				return cursor.getString(colIndex);
+//			}
+//		});
+//
+//		actvProject.setAdapter(sca);
 
 		Bundle extras = getIntent().getExtras();
 
@@ -189,8 +186,6 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			spPriority.setSelection(task.getPriorityID());
 			etTags.setText(task.getTags());
 		}
-
-		datasource.close();
 	}
 
 	@Override
@@ -207,8 +202,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			alertDialog.show(getSupportFragmentManager(),"dialog");
 			return true;
 		case R.id.task_add_done:
-			datasource = new TaskDataSource(this);
-			datasource.open();
+			datasource = new TaskDataSource2(this);
 
 			EditText etTaskAdd	= (EditText) findViewById(R.id.etTaskAdd);
 			AutoCompleteTextView actvProject	= (AutoCompleteTextView) findViewById(R.id.actvProject);
@@ -227,7 +221,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 							etTaskAdd.getText().toString(),
 							timestamp, "pending",
 							actvProject.getText().toString(),
-							spPriority.getSelectedItem().toString(),
+							getPriority(spPriority.getSelectedItem().toString()),
 							etTags.getText().toString()
 							);
 				} else {
@@ -237,7 +231,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 							timestamp,
 							"pending",
 							actvProject.getText().toString(),
-							spPriority.getSelectedItem().toString(),
+							getPriority(spPriority.getSelectedItem().toString()),
 							etTags.getText().toString()
 							);
 				}
@@ -254,14 +248,24 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 		}
 	}
 
+	public String getPriority(String priority) {
+		Resources res = getResources();
+		String[] priorities = res.getStringArray(R.array.priority_list);
+		if (priority.equals(priorities[0])) {
+			return "";
+		} else if (priority.equals(priorities[1])) {
+			return "H";
+		} else if (priority.equals(priorities[2])) {
+			return "M";
+		} else if (priority.equals(priorities[3])) {
+			return "L";
+		} else {
+			return "";
+		}
+	}
 	@Override
 	protected void onPause() {
-		try {
-			datasource.close();
-		} catch (Exception e) {
-		} finally {
-			super.onPause();
-		}
+		super.onPause();
 	}
 
 	@Override

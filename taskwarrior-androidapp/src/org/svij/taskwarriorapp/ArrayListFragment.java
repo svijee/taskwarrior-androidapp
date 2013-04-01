@@ -33,7 +33,7 @@ import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskBaseAdapter;
-import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.db.TaskDataSource2;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,7 +47,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 
 public class ArrayListFragment extends SherlockListFragment {
 
-	TaskDataSource datasource;
+	TaskDataSource2 datasource;
 	private long selectedItemId = -1;
 	private String column;
 	TaskBaseAdapter adapter = null;
@@ -74,6 +74,8 @@ public class ArrayListFragment extends SherlockListFragment {
 	public void setListView() {
 		ArrayList<Task> values;
 		TaskSorter tasksorter = new TaskSorter("urgency");
+
+		datasource = new TaskDataSource2(getActivity());
 
 		if (column == null || column.equals(getString(R.string.task_next))) {
 			values = datasource.getPendingTasks();
@@ -129,7 +131,7 @@ public class ArrayListFragment extends SherlockListFragment {
 		setListView();
 		Toast.makeText(
 				getActivity(),
-				getString(R.string.task_action_done) + "'"
+				getString(R.string.task_action_done) + " '"
 						+ datasource.getTask(uuid).getDescription() + "'",
 				Toast.LENGTH_SHORT).show();
 	}
@@ -142,35 +144,21 @@ public class ArrayListFragment extends SherlockListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (datasource != null) {
-			datasource.open();
-		}
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		if (datasource != null) {
-			datasource.close();
-		}
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (datasource == null) {
-			datasource = new TaskDataSource(getActivity());
-			datasource.open();
-		}
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if (datasource != null) {
-			datasource.close();
-			datasource = null;
-		}
 	}
 
 	public String getColumn() {

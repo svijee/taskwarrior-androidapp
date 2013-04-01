@@ -34,6 +34,7 @@ import org.svij.taskwarriorapp.data.Task;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,7 +106,7 @@ public class TaskBaseAdapter extends BaseAdapter {
 		if (task != null) {
 			holder.taskDescription.setText(task.getDescription());
 			holder.taskProject.setText(task.getProject());
-			holder.taskUrgency.setText(Float.toString(task.urgency_c()));
+			holder.taskUrgency.setText(Float.toString(task.getUrgency()));
 
 			if (!(task.getDuedate().getTime() == 0)) {
 				if (!DateFormat.getTimeInstance().format(task.getDuedate()).equals("00:00:00")) {
@@ -118,7 +119,7 @@ public class TaskBaseAdapter extends BaseAdapter {
 				}
 			}
 
-			if (!task.getPriority().equals("no priority")) {
+			if (!TextUtils.isEmpty(task.getPriority())) {
 				holder.taskPriority.setText(activity.getString(
 						R.string.priority)
 						+ ": " + task.getPriority());
