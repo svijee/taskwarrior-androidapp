@@ -204,10 +204,10 @@ public class TaskDataSource {
 		if (columns.equals(projectColumn)) {
 			task.setProject(cursor.getString(0));
 		} else {
-			task.setId(UUID.fromString(cursor.getString(0)));
+			task.setUUID(UUID.fromString(cursor.getString(0)));
 			task.setDescription(cursor.getString(1));
 			Date date = new Date(cursor.getLong(2));
-			task.setDuedate(date);
+			task.setDue(date);
 			task.setEntry(cursor.getLong(3));
 			task.setStatus(cursor.getString(4));
 			task.setEnd(cursor.getLong(5));

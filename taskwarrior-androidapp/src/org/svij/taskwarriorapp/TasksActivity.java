@@ -88,10 +88,12 @@ public class TasksActivity extends SherlockFragmentActivity {
 		TaskDataSource2 datasource = new TaskDataSource2(this);
 
 		ArrayList<String> values = datasource.getProjects();
-		
+//		boolean noProject = false;
+
 		for (String project : values) {
 			if (TextUtils.isEmpty(project)) {
 				items.add(new Item(getString(R.string.no_project)));
+//				noProject = true;
 			} else {
 				items.add(new Item(project));
 			}

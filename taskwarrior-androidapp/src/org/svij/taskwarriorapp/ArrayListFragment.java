@@ -181,11 +181,14 @@ public class ArrayListFragment extends SherlockListFragment {
 			if (sortType.equals("urgency")) {
 				return Float.compare(task2.getUrgency(), task1.getUrgency());
 			} else {
-				if (task1.getDuedate().getTime() == 0) {
+				if (task1.getDue() == null && task2.getDue() == null) {
+					return 0;
+				} else if (task1.getDue() == null) {
 					return 1;
-				} else {
-					return task1.getDuedate().compareTo(task2.getDuedate());
+				} else if (task2.getDue() == null) {
+					return -1;
 				}
+				return task1.getDue().compareTo(task2.getDue());
 			}
 		}
 	}

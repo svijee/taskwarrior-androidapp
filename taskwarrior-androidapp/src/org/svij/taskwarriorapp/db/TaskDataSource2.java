@@ -26,6 +26,7 @@
 
 package org.svij.taskwarriorapp.db;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
@@ -33,10 +34,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,39 +66,39 @@ public class TaskDataSource2 {
 	private static String COMPLETED_DATA = "completed.data";
 	private static String PENDING_DATA = "pending.data";
 	private static String UNDO_DATA = "undo.data";
-	
+
 	public TaskDataSource2(Context context) {
 		this.context = context;
 	}
 
 	public void createTask(String task_description, long date, String status,
 			String project, String priority, String tags) {
-		String output = "[";
+		StringBuilder output = new StringBuilder("[");
 
-		output += "description:" + "\"" + task_description + "\" ";
-		output += "status:" + "\"" + status + "\" ";
-		output += "uuid:" + "\"" + UUID.randomUUID().toString() + "\" ";
-		output += "entry:" + "\"" + System.currentTimeMillis() / 1000 + "\" ";
+		output.append("description:" + "\"" + task_description + "\" ");
+		output.append("status:" + "\"" + status + "\" ");
+		output.append("uuid:" + "\"" + UUID.randomUUID().toString() + "\" ");
+		output.append("entry:" + "\"" + System.currentTimeMillis() / 1000 + "\" ");
 
 		if (!TextUtils.isEmpty(project)) {
-			output += "project:" + "\"" + project + "\" ";
+			output.append("project:" + "\"" + project + "\" ");
 		}
 		if (!TextUtils.isEmpty(priority)) {
-			output += "priority:" + "\"" + priority + "\" ";
+			output.append("priority:" + "\"" + priority + "\" ");
 		}
 		if (date != 0) {
-			output += "due:" + "\"" + date + "\" ";
+			output.append("due:" + "\"" + date + "\" ");
 		}
 
-		output += "]";
+		output.append("]");
 
 		
 		taskDir.mkdirs();
 		File pending 	= new File(taskDir, PENDING_DATA);
 
 		try {
-			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(pending, true)));
-			writer.println(output);
+			BufferedWriter writer = new BufferedWriter(new FileWriter(pending, true));
+			writer.append(output.toString() + "\n");
 			writer.close();
 		} catch (Exception e) {
 			Toast.makeText(context,
@@ -106,16 +115,15 @@ public class TaskDataSource2 {
 		File pending = new File(taskDir, PENDING_DATA);
 		
 		try {
-			FileInputStream fstream = new FileInputStream(pending);
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			
+			FileReader fr = new FileReader(pending);
+			BufferedReader br = new BufferedReader(fr);
+
 			String strLine;
 			
 			while ((strLine = br.readLine()) != null) {
 				taskPending.add(strLine);
 			}
-			in.close();
+			br.close();
 		} catch (Exception e) {
 			Toast.makeText(context,
 					e.getMessage() + " Unable to read to external storage.",
@@ -126,26 +134,27 @@ public class TaskDataSource2 {
 	}
 
 	public ArrayList<String> getCompletedLines() {
+		
 		ArrayList<String> taskCompleted = new ArrayList<String>();
 		
-		File pending = new File(taskDir, COMPLETED_DATA);
+		File completed = new File(taskDir, COMPLETED_DATA);
 		
 		try {
-			FileInputStream fstream = new FileInputStream(pending);
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			FileReader fr = new FileReader(completed);
+			BufferedReader br = new BufferedReader(fr);
 			
 			String strLine;
 			
 			while ((strLine = br.readLine()) != null) {
 				taskCompleted.add(strLine);
 			}
-			in.close();
+			br.close();
 		} catch (Exception e) {
 			Toast.makeText(context,
 					e.getMessage() + " Unable to read to external storage.",
 					Toast.LENGTH_LONG).show();
 		}
+		
 		
 		return taskCompleted;
 	}
@@ -191,16 +200,15 @@ public class TaskDataSource2 {
 
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(pendingFile));
-			PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(tempFile, true)));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile, true));
 			
 			String currentLine;
 			
 			while ((currentLine = reader.readLine()) != null) {
 				if (currentLine.trim().contains(uuid.toString())) {
-					Log.i("bla", "bla");
 					continue;
 				}
-				writer.println(currentLine);
+				writer.append(currentLine + "\n");
 			}
 			
 			tempFile.renameTo(pendingFile);
@@ -223,24 +231,63 @@ public class TaskDataSource2 {
 		}
 
 		File completedFile = new File(taskDir, COMPLETED_DATA);
+		StringBuilder outputString = new StringBuilder();
+		
+		completedTask.setStatus("completed");
+
+		outputString.append(completedTask.toString() + " end:\"" + System.currentTimeMillis() / 1000 + "\" ");
+
+		if (completedTask.getStart() != null && completedTask.getStart() != 0) {
+			outputString.append("start:\"" + completedTask.getStart() + "\" "); 
+		}
+		if (completedTask.getDue() != null && completedTask.getDue().getTime() != 0) {
+			outputString.append("due:\"" + completedTask.getDue().getTime() + "\" ");
+		}
+		if (completedTask.getUntil() != null && completedTask.getUntil().getTime() != 0) {
+			outputString.append("until:\"" + completedTask.getUntil().getTime() + "\" ");
+		}
+		if (completedTask.getWait() != null && completedTask.getWait().getTime() != 0) {
+			outputString.append("wait:\"" + completedTask.getWait().getTime() + "\" ");
+		}
+		if (completedTask.getRecur() != null && TextUtils.isEmpty(completedTask.getRecur())) {
+			outputString.append("recur:\"" + completedTask.getRecur() + "\" ");
+		}
+		if (completedTask.getMask() != null && TextUtils.isEmpty(completedTask.getMask())) {
+			outputString.append("mask:\"" + completedTask.getMask() + "\" ");
+		}
+		if (completedTask.getImask() != null && TextUtils.isEmpty(completedTask.getImask())) {
+			outputString.append("imask:\"" + completedTask.getImask() + "\" ");
+		}
+		if (completedTask.getParent() != null && TextUtils.isEmpty(completedTask.getParent().toString())) {
+			outputString.append("parent:\"" + completedTask.getParent().toString() + "\" ");
+		}
+//		if (completedTask.getAnnotation() != null) {
+//			
+//		}
+		if (completedTask.getProject() != null && !TextUtils.isEmpty(completedTask.getProject())) {
+			outputString.append("project:\"" + completedTask.getProject() + "\" ");
+		}
+		if (completedTask.getPriority() != null && !TextUtils.isEmpty(completedTask.getPriority())) {
+			outputString.append("priority:\"" + completedTask.getPriority() + "\" ");
+		}
+//		if (completedTask.getTags() != null) {
+//			
+//		}
+
+		outputString.append("]");
+
 		try {
-			completedTask.setStatus("completed");
-			PrintWriter completedWriter = new PrintWriter(new BufferedWriter(new FileWriter(completedFile, true)));
-			String outputString = completedTask.toString() + " end:\"" + System.currentTimeMillis() / 1000 + "\" ";
 			
-			if (completedTask.getDuedate().getTime() != 0) {
-				outputString += "due:\"" + completedTask.getDuedate() + "\" ";
-			}
-			if (TextUtils.isEmpty(completedTask.getPriority())) {
-				outputString += "priority:\"" + completedTask.getPriority() + "\" ";
-			}
-			if (TextUtils.isEmpty(completedTask.getProject())) {
-				outputString += "project:\"" + completedTask.getProject() + "\" ";
-			}
-//			if (completedTask.getTags() != null) {
-//				
-//			}
-			outputString += "]";
+			PrintWriter completedWriter = new PrintWriter(new BufferedWriter(new FileWriter(completedFile, true)));
+			
+			String output = outputString.toString();
+			output = output.replace("/", "\\\\/");
+			output = output.replace("\"", "\\\\\"");
+			output = output.replace("\b", "\\b");
+			output = output.replace("\f", "\\f");
+			output = output.replace("\n", "\\n");
+			output = output.replace("\r", "\\r");
+			output = output.replace("\t", "\\t");
 			completedWriter.println(outputString);
 			completedWriter.close();
 		} catch (Exception e) {
@@ -248,87 +295,114 @@ public class TaskDataSource2 {
 					e.getMessage() + " Unable to write to external storage.",
 					Toast.LENGTH_LONG).show();
 		}
-		
-		
-		
+
 		Log.i("Done:", "Task with id: " + uuid.toString());
 		Log.i("DoneTime:", ":" + System.currentTimeMillis() / 1000);
 	}
 
 	public ArrayList<Task> getAllTasks() {
+		
 		ArrayList<Task> tasks = new ArrayList<Task>();
 		ArrayList<String> allTasks = getPendingLines();
 		allTasks.addAll(getCompletedLines());
 
+
 		for (String data: allTasks) {
-			Task task = parseTask(data);
-			tasks.add(task);
+			long t0 = System.currentTimeMillis();
+			tasks.add(parseTask(data));
+			long t1 = System.currentTimeMillis();
+			
+			double elapsedTimeSeconds = (t1 - t0);
+			Log.e("task.add(parseTask(data)) ", elapsedTimeSeconds + " ms");
 		}
 
 		return tasks;
 	}
-	
+
 	public Task parseTask(String data) {
 		Task task = new Task();
-		
-		Pattern pattern;
-		Matcher matcher;
 
-		try {
-			pattern = Pattern.compile("description:\"(.+?)\"");
-			matcher = pattern.matcher(data);
-			matcher.find();
-			task.setDescription(matcher.group(1));
-			
-			pattern = Pattern.compile("status:\"(.+?)\"");
-			matcher = pattern.matcher(data);
-			matcher.find();
-			task.setStatus(matcher.group(1));
-			
-			pattern = Pattern.compile("entry:\"(.+?)\"");
-			matcher = pattern.matcher(data);
-			matcher.find();
-			task.setEntry(Long.valueOf(matcher.group(1)));
-			
-			pattern = Pattern.compile("uuid:\"(.+?)\"");
-			matcher = pattern.matcher(data);
-			matcher.find();
-			task.setId(UUID.fromString(matcher.group(1)));			
-		} catch (Exception e) {
-			Toast.makeText(context,
-					e.getMessage() + " Error while parsing pending.data.",
-					Toast.LENGTH_LONG).show();
-		}
+		//ArrayList<String[]> helperList = new ArrayList<String[]>();
+		HashMap<String, String> helperMap = new HashMap<String, String>();
+
+		long t0 = System.currentTimeMillis();
+		Pattern pattern = Pattern.compile("[\\[ ](.+?):\"(.+?)\"");
+		Matcher matcher = pattern.matcher(data);
+
 		
-		try {
-			pattern = Pattern.compile("due:\"(.+?)\"");
-			matcher = pattern.matcher(data);
-			matcher.find();
-			task.setDuedate(new Date(Long.valueOf(matcher.group(1))));
-		} catch (Exception e) {
-			task.setDuedate(new Date(0));
+		while(matcher.find() == true) {			
+			//String[] keyvalue = {matcher.group(1).trim(), matcher.group(2).trim()};
+			helperMap.put(matcher.group(1).trim(), matcher.group(2).trim());
 		}
+		long t1 = System.currentTimeMillis();
+		double elapsedTimeSeconds = (t1 - t0);
+		Log.e("Adding to helperList ", elapsedTimeSeconds + " ms");
 		
-		try {
-			pattern = Pattern.compile("project:\"(.+?)\"");
-			matcher = pattern.matcher(data);
-			matcher.find();
-			task.setProject(matcher.group(1));
-		} catch (Exception e) {
-			task.setProject("");
+		Iterator it = helperMap.keySet().iterator();
+		
+		while (it.hasNext()) {
+			String key = it.next().toString();
+			String value = helperMap.get(key).toString();
+		
+			if (key.equals("description")) {
+				value = value.replace("\\/", "/");
+				value = value.replace("\\\"", "\"");
+				value = value.replace("\\b", "\b");
+				value = value.replace("\\f", "\f");
+				value = value.replace("\\n", "\n");
+				value = value.replace("\\r", "\r");
+				value = value.replace("\\t", "\t");
+				
+				Pattern unicode = Pattern.compile("\\\\u(.{4})");
+				Matcher m = unicode.matcher(value);
+				StringBuffer sb = new StringBuffer();
+				while (m.find()) {
+				    int code = Integer.parseInt(m.group(1), 16);
+				    m.appendReplacement(sb, new String(Character.toChars(code)));
+				}
+				m.appendTail(sb);
+				task.setDescription(sb.toString());
+			} else if  (key.equals("status")) {
+				task.setStatus(value);
+			} else if (key.equals("entry")) {
+				task.setEntry(Long.parseLong(value));
+			} else if (key.equals("uuid")) {
+				task.setUUID(UUID.fromString(value));
+			} else if (key.equals("start")) {
+				task.setStart(Long.parseLong(value));
+			} else if (key.equals("end")) {
+				task.setEnd(Long.parseLong(value));
+			} else if (key.equals("due")) {
+				task.setDue(new Date(Long.valueOf(value) * 1000));
+			} else if (key.equals("until")) {
+				task.setUntil(new Date(Long.valueOf(value) * 1000));
+			} else if (key.equals("wait")) {
+				task.setWait(new Date(Long.valueOf(value) * 1000));
+			} else if (key.equals("recur")) {
+				task.setRecur(value);
+			} else if (key.equals("mask")) {
+				task.setMask(value);
+			} else if (key.equals("imask")) {
+				task.setImask(value);
+			} else if (key.equals("parent")) {
+				task.setParent(UUID.fromString(value));
+//			} else if (key.equals("annotation")) {
+//				
+//			}
+			} else if (key.equals("project")) {
+				task.setProject(value);
+			} else if (key.equals("tags")) {
+				task.setTags(value);
+			} else if (key.equals("priority")) {
+				task.setPriority(value);
+			} else if (key.equals("depends")) {
+				task.setDepends(value);
+			}			
 		}
-		
-		try {
-			pattern = Pattern.compile("priority:\"(.+?)\"");
-			matcher = pattern.matcher(data);
-			matcher.find();
-			task.setPriority(matcher.group(1));
-		} catch (Exception e) {
-			task.setPriority("");
-		}
-		
+
 		task.urgency_c();
-
+		
+		
 		return task;
 	}
 	
@@ -350,19 +424,42 @@ public class TaskDataSource2 {
 		ArrayList<String> projects = new ArrayList<String>();
 		
 		for(Task task: tasks) {
-			projects.add(task.getProject());
+			if (!projects.contains(task.getProject())) {
+				projects.add(task.getProject());				
+			}
 		}
 		
+		Collections.sort(projects, new Comparator<String>() {
+	        @Override
+			public int compare(String lhs, String rhs) {
+		        if (lhs == null && rhs == null) {
+					return 0;
+				} else if (lhs == null) {
+					return 1;
+				} else if (rhs == null) {
+					return -1;
+				}
+		        return lhs.compareToIgnoreCase(rhs);
+			}
+			
+	    });
+
 		return projects;
 	}
 
 	public ArrayList<Task> getProjectsTasks(String project) {
 		ArrayList<Task> tasks = getPendingTasks();
 		ArrayList<Task> projectsTasks = new ArrayList<Task>();
-		
+		boolean hasProject = false;
+
 		for(Task task: tasks) {
-			if (task.getProject().equals(project)) {
-				projectsTasks.add(task);				
+			if (task.getProject() != null) {
+				if (task.getProject().equals(project)) {
+					hasProject = true;
+					projectsTasks.add(task);
+				}
+			} else if (task.getProject() == null && hasProject == false) {
+				projectsTasks.add(task);
 			}
 		}
 		

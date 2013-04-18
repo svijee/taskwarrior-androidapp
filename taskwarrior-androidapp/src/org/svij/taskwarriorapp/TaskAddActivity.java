@@ -169,16 +169,16 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			TextView etTags		= (TextView) findViewById(R.id.etTags);
 
 			etTaskAdd.setText(task.getDescription());
-			if (!(task.getDuedate().getTime() == 0)) {
+			if (!(task.getDue().getTime() == 0)) {
 				tvDueDate.setText(
-						DateFormat.getDateInstance(DateFormat.SHORT).format(task.getDuedate())
+						DateFormat.getDateInstance(DateFormat.SHORT).format(task.getDue())
 								);
-				if (!DateFormat.getTimeInstance().format(task.getDuedate()).equals("00:00:00")) {
+				if (!DateFormat.getTimeInstance().format(task.getDue()).equals("00:00:00")) {
 					tvDueTime.setText(DateFormat.getTimeInstance(
-							DateFormat.SHORT).format(task.getDuedate())
+							DateFormat.SHORT).format(task.getDue())
 							);
 				}
-				cal.setTime(task.getDuedate());
+				cal.setTime(task.getDue());
 				timestamp = cal.getTimeInMillis();
 			}
 			actvProject.setText(task.getProject());

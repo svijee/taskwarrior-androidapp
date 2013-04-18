@@ -26,6 +26,7 @@
 
 package org.svij.taskwarriorapp.data;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -43,19 +44,14 @@ public class Task {
 	}
 
 	/*
+	 * Status of a task It can be "pending", "completed" or "deleted"
+	 */
+	private String status;
+
+	/*
 	 * Unique identifier for a task. Will be replaced by a uuid in the future.
 	 */
 	private UUID uuid;
-
-	/*
-	 * Description of a task
-	 */
-	private String description;
-
-	/*
-	 * A tasks due date
-	 */
-	private Date duedate;
 
 	/*
 	 * Entry timestamp – This is automatically generated when creating a task
@@ -63,31 +59,68 @@ public class Task {
 	private long entry;
 
 	/*
-	 * Priority of a task
+	 * Description of a task
 	 */
-	private String priority;
+	private String description;
 
 	/*
-	 * Priority ID – needed for the spinner in Edit-Mode
+	 * Start timestamp
 	 */
-	private int priorityID;
+	private Long start;
+	
+	/*
+	 * End timestamp This is automatically generated when marking a task as "done"
+	 *
+	 */
+	private long end;
 
+	/*
+	 * A tasks due date
+	 */
+	private Date due;
+
+	/*
+	 * Date until
+	 */
+	private Date until;
+	
+	/*
+	 * Date wait
+	 */
+	private Date wait;
+	
+	/*
+	 * Type of recurring
+	 */
+	private String recur;
+	
+	private String mask;
+	private String imask;
+	private UUID parent;
+	private ArrayList<String[]> annotation;
+	
 	/*
 	 * Project of a task
 	 */
 	private String project;
 
 	/*
-	 * Status of a task It can be "pending", "completed" or "deleted"
-	 */
-	private String status;
-
-	/*
-	 * End timestamp This is automatically generated when marking a task as "done"
-	 *
+	 * Tag(s) of a task
 	 */
 	private String tags;
 
+	/*
+	 * Priority of a task
+	 */
+	private String priority;
+	
+	/*
+	 * Priority ID – needed for the spinner in Edit-Mode
+	 */
+	private int priorityID;
+
+	private String depends;
+	
 	private float urgency;
 
 	private boolean active;
@@ -107,13 +140,11 @@ public class Task {
 	private float urgencyBlockingCoefficient = 8.0f;
 	private float urgencyAgeCoefficient = 2.0f;
 
-	private long end;
-
 	public UUID getUuid() {
 		return uuid;
 	}
 
-	public void setId(UUID uuid) {
+	public void setUUID(UUID uuid) {
 		this.uuid = uuid;
 	}
 
@@ -143,16 +174,16 @@ public class Task {
 
 	@Override
 	public String toString() {
-		return "[ description:\"" + description + "\" entry:\"" + entry
+		return "[description:\"" + description + "\" entry:\"" + entry
 				+ "\" status:\"" + status + "\" uuid:\"" + uuid.toString() + "\" ";
 	}
 
-	public Date getDuedate() {
-		return duedate;
+	public Date getDue() {
+		return due;
 	}
 
-	public void setDuedate(Date duedate) {
-		this.duedate = duedate;
+	public void setDue(Date due) {
+		this.due= due;
 	}
 
 	public long getEntry() {
@@ -244,14 +275,15 @@ public class Task {
 	private float urgency_priority() {
 		String value = getPriority();
 
-		if (value.equals("H"))
-			return 1.0f;
-		else if (value.equals("M"))
-			return 0.65f;
-		else if (value.equals("L"))
-			return 0.3f;
-		else
-			return 0.0f;
+		if (value != null) {
+			if (value.equals("H"))
+				return 1.0f;
+			else if (value.equals("M"))
+				return 0.65f;
+			else if (value.equals("L"))
+				return 0.3f;		
+		}
+		return 0.0f;
 	}
 
 	private float urgency_project() {
@@ -309,10 +341,10 @@ public class Task {
 	}
 
 	private float urgency_due() {
-		if (duedate.getTime() != 0) {
+		if (due != null && due.getTime() != 0) {
 			long now = System.currentTimeMillis() / 1000;
-			long due = duedate.getTime() / 1000;
-			long days_overdue = (now - due) / 86400;
+			long duedate = due.getTime() / 1000;
+			long days_overdue = (now - duedate) / 86400;
 
 			if (days_overdue >= 7) {
 				return 1.0f; // 7 days ago
@@ -389,5 +421,77 @@ public class Task {
 
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+
+	public Long getStart() {
+		return start;
+	}
+
+	public void setStart(Long start) {
+		this.start = start;
+	}
+
+	public Date getUntil() {
+		return until;
+	}
+
+	public void setUntil(Date until) {
+		this.until = until;
+	}
+
+	public Date getWait() {
+		return wait;
+	}
+
+	public void setWait(Date wait) {
+		this.wait = wait;
+	}
+
+	public String getRecur() {
+		return recur;
+	}
+
+	public void setRecur(String recur) {
+		this.recur = recur;
+	}
+
+	public String getMask() {
+		return mask;
+	}
+
+	public void setMask(String mask) {
+		this.mask = mask;
+	}
+
+	public String getImask() {
+		return imask;
+	}
+
+	public void setImask(String imask) {
+		this.imask = imask;
+	}
+
+	public UUID getParent() {
+		return parent;
+	}
+
+	public void setParent(UUID parent) {
+		this.parent = parent;
+	}
+
+	public ArrayList<String[]> getAnnotation() {
+		return annotation;
+	}
+
+	public void setAnnotation(ArrayList<String[]> annotation) {
+		this.annotation = annotation;
+	}
+
+	public String getDepends() {
+		return depends;
+	}
+
+	public void setDepends(String depends) {
+		this.depends = depends;
 	}
 }

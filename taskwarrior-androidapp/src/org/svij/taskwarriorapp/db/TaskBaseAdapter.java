@@ -108,23 +108,23 @@ public class TaskBaseAdapter extends BaseAdapter {
 			holder.taskProject.setText(task.getProject());
 			holder.taskUrgency.setText(Float.toString(task.getUrgency()));
 
-			if (!(task.getDuedate().getTime() == 0)) {
-				if (!DateFormat.getTimeInstance().format(task.getDuedate()).equals("00:00:00")) {
+			if (task.getDue() != null && !(task.getDue().getTime() == 0)) {
+				if (!DateFormat.getTimeInstance().format(task.getDue()).equals("00:00:00")) {
 					holder.taskDueDate.setText(DateFormat.getDateTimeInstance(
 							DateFormat.MEDIUM, DateFormat.SHORT).format(
-							task.getDuedate()));
+							task.getDue()));
 				} else {
 					holder.taskDueDate.setText(DateFormat.getDateInstance()
-							.format(task.getDuedate()));
+							.format(task.getDue()));
 				}
 			}
 
 			if (!TextUtils.isEmpty(task.getPriority())) {
-				holder.taskPriority.setText(activity.getString(
-						R.string.priority)
+				holder.taskPriority.setText(
+						activity.getString(R.string.priority)
 						+ ": " + task.getPriority());
 			}
-			if (task.getStatus().equals("done")) {
+			if (task.getStatus().equals("completed") || task.getStatus().equals("deleted")) {
 				holder.taskStatus.setText(activity.getString(
 						R.string.status)
 						+ ": " + task.getStatus());
