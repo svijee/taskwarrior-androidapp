@@ -38,6 +38,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class TaskBaseAdapter extends BaseAdapter {
@@ -130,6 +131,16 @@ public class TaskBaseAdapter extends BaseAdapter {
 				holder.taskStatus.setText(activity.getString(
 						R.string.status)
 						+ ": " + task.getStatus());
+			}
+
+			if (task.getStatus().equals("done") || task.getStatus().equals("deleted")) {
+				if (getItemViewType(position) == TYPE_ROW_CLICKED) {
+					LinearLayout llButtonLayout = (LinearLayout) v.findViewById(R.id.taskLinLayout);
+					llButtonLayout.setVisibility(View.GONE);
+
+					View horizBar = v.findViewById(R.id.horizontal_line);
+					horizBar.setVisibility(View.GONE);
+				}
 			}
 		}
 

@@ -66,6 +66,7 @@
         android:background="@android:color/darker_gray" />
 
     <LinearLayout
+	android:id="@+id/taskLinLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
