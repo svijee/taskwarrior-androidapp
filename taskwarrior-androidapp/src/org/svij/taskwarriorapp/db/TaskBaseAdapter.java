@@ -118,6 +118,8 @@ public class TaskBaseAdapter extends BaseAdapter {
 							.format(task.getDuedate()));
 				}
 			}
+			else
+				holder.taskDueDate.setText(null);
 
 			if (!task.getPriority().equals("no priority")) {
 				holder.taskPriority.setText(activity.getString(
