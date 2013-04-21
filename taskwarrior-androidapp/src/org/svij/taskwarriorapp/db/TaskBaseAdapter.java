@@ -118,19 +118,23 @@ public class TaskBaseAdapter extends BaseAdapter {
 					holder.taskDueDate.setText(DateFormat.getDateInstance()
 							.format(task.getDuedate()));
 				}
-			}
-			else
+			} else {
 				holder.taskDueDate.setText(null);
+			}
 
 			if (!task.getPriority().equals("no priority")) {
-				holder.taskPriority.setText(activity.getString(
-						R.string.priority)
-						+ ": " + task.getPriority());
+				holder.taskPriority.setText(
+						activity.getString(R.string.priority)+
+						": "+
+						task.getPriority()
+						);
 			}
 			if (task.getStatus().equals("done")) {
-				holder.taskStatus.setText(activity.getString(
-						R.string.status)
-						+ ": " + task.getStatus());
+				holder.taskStatus.setText(
+						activity.getString(R.string.status)+
+						": "+
+						task.getStatus()
+						);
 			}
 
 			if (task.getStatus().equals("done") || task.getStatus().equals("deleted")) {
