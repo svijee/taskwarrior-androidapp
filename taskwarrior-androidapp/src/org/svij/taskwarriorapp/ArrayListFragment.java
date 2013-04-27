@@ -75,6 +75,8 @@ public class ArrayListFragment extends SherlockListFragment {
 		ArrayList<Task> values;
 		TaskSorter tasksorter = new TaskSorter("urgency");
 
+		datasource = new TaskDataSource(getActivity());
+
 		if (column == null || column.equals(getString(R.string.task_next))) {
 			values = datasource.getPendingTasks();
 		} else if (column.equals(getString(R.string.task_long))) {
@@ -129,7 +131,7 @@ public class ArrayListFragment extends SherlockListFragment {
 		setListView();
 		Toast.makeText(
 				getActivity(),
-				getString(R.string.task_action_done) + "'"
+				getString(R.string.task_action_done) + " '"
 						+ datasource.getTask(uuid).getDescription() + "'",
 				Toast.LENGTH_SHORT).show();
 	}
@@ -142,35 +144,21 @@ public class ArrayListFragment extends SherlockListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (datasource != null) {
-			datasource.open();
-		}
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		if (datasource != null) {
-			datasource.close();
-		}
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (datasource == null) {
-			datasource = new TaskDataSource(getActivity());
-			datasource.open();
-		}
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if (datasource != null) {
-			datasource.close();
-			datasource = null;
-		}
 	}
 
 	public String getColumn() {
@@ -193,11 +181,14 @@ public class ArrayListFragment extends SherlockListFragment {
 			if (sortType.equals("urgency")) {
 				return Float.compare(task2.getUrgency(), task1.getUrgency());
 			} else {
-				if (task1.getDuedate().getTime() == 0) {
+				if (task1.getDue() == null && task2.getDue() == null) {
+					return 0;
+				} else if (task1.getDue() == null) {
 					return 1;
-				} else {
-					return task1.getDuedate().compareTo(task2.getDuedate());
+				} else if (task2.getDue() == null) {
+					return -1;
 				}
+				return task1.getDue().compareTo(task2.getDue());
 			}
 		}
 	}

@@ -26,197 +26,392 @@
 
 package org.svij.taskwarriorapp.db;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.svij.taskwarriorapp.data.Task;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import android.os.Environment;
+import android.text.TextUtils;
+import android.widget.Toast;
 
 public class TaskDataSource {
 
-	private SQLiteDatabase database;
-	private SQLiteHelper dbHelper;
-	private String[] allColumns = { SQLiteHelper.COLUMN_UUID,
-			SQLiteHelper.COLUMN_DESCRIPTION, SQLiteHelper.COLUMN_DUEDATE,
-			SQLiteHelper.COLUMN_ENTRY, SQLiteHelper.COLUMN_STATUS,
-			SQLiteHelper.COLUMN_END, SQLiteHelper.COLUMN_PROJECT,
-			SQLiteHelper.COLUMN_PRIORITY, SQLiteHelper.COLUMN_END,
-			SQLiteHelper.COLUMN_TAGS};
-	private String[] projectColumn = { SQLiteHelper.COLUMN_PROJECT };
+	private Context context;
+	private File taskDir = new File(Environment.getExternalStorageDirectory()
+			.toString() + "/taskwarrior");
+	private static String COMPLETED_DATA = "completed.data";
+	private static String PENDING_DATA = "pending.data";
+	private static String UNDO_DATA = "undo.data";
+	private static String TEMP_DATA = "temp.data";
 
 	public TaskDataSource(Context context) {
-		dbHelper = new SQLiteHelper(context);
+		this.context = context;
 	}
 
-	public void open() throws SQLException {
-		database = dbHelper.getWritableDatabase();
-	}
-
-	public void close() {
-		dbHelper.close();
-	}
-
-	public void createTask(String task_description, long date, String status,
+	public void createTask(String description, long due, String status,
 			String project, String priority, String tags) {
-		ContentValues values = new ContentValues();
-		values.put(SQLiteHelper.COLUMN_UUID, UUID.randomUUID().toString());
-		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
-		values.put(SQLiteHelper.COLUMN_DUEDATE, date);
-		values.put(SQLiteHelper.COLUMN_ENTRY, System.currentTimeMillis() / 1000);
-		values.put(SQLiteHelper.COLUMN_STATUS, status);
-		values.put(SQLiteHelper.COLUMN_PROJECT, project);
-		values.put(SQLiteHelper.COLUMN_PRIORITY, priority);
-		values.put(SQLiteHelper.COLUMN_TAGS, tags);
-		database.insert(SQLiteHelper.TABLE_TASKS, null, values);
+
+		Task task = new Task();
+		task.setDescription(description);
+		task.setStatus(status);
+		task.setUUID(UUID.randomUUID());
+		task.setEntry(System.currentTimeMillis() / 1000);
+
+		if (!TextUtils.isEmpty(project)) {
+			task.setProject(project);
+		}
+		if (!TextUtils.isEmpty(priority)) {
+			task.setPriority(priority);
+		}
+		if (due != 0) {
+			task.setDue(new Date(due));
+		}
+
+		taskDir.mkdirs();
+		writeTaskToData(task, PENDING_DATA);
 	}
 
-	public void editTask(UUID uuid, String task_description, long date,
+	private ArrayList<String> getPendingLines() {
+		ArrayList<String> taskPending = new ArrayList<String>();
+
+		File pending = new File(taskDir, PENDING_DATA);
+
+		try {
+			FileReader fr = new FileReader(pending);
+			BufferedReader br = new BufferedReader(fr);
+
+			String strLine;
+
+			while ((strLine = br.readLine()) != null) {
+				taskPending.add(strLine);
+			}
+			br.close();
+		} catch (Exception e) {
+			Toast.makeText(context,
+					e.getMessage() + " Unable to read to external storage.",
+					Toast.LENGTH_LONG).show();
+		}
+
+		return taskPending;
+	}
+
+	private ArrayList<String> getCompletedLines() {
+
+		ArrayList<String> taskCompleted = new ArrayList<String>();
+
+		File completed = new File(taskDir, COMPLETED_DATA);
+
+		try {
+			FileReader fr = new FileReader(completed);
+			BufferedReader br = new BufferedReader(fr);
+
+			String strLine;
+
+			while ((strLine = br.readLine()) != null) {
+				taskCompleted.add(strLine);
+			}
+			br.close();
+		} catch (Exception e) {
+			Toast.makeText(context,
+					e.getMessage() + " Unable to read to external storage.",
+					Toast.LENGTH_LONG).show();
+		}
+
+		return taskCompleted;
+	}
+
+	public void editTask(UUID uuid, String task_description, long due,
 			String status, String project, String priority, String tags) {
-		ContentValues values = new ContentValues();
-		values.put(SQLiteHelper.COLUMN_UUID, uuid.toString());
-		values.put(SQLiteHelper.COLUMN_DESCRIPTION, task_description);
-		values.put(SQLiteHelper.COLUMN_DUEDATE, date);
-		values.put(SQLiteHelper.COLUMN_STATUS, status);
-		values.put(SQLiteHelper.COLUMN_PROJECT, project);
-		values.put(SQLiteHelper.COLUMN_PRIORITY, priority);
-		values.put(SQLiteHelper.COLUMN_TAGS, tags);
-		database.update(SQLiteHelper.TABLE_TASKS, values,
-				SQLiteHelper.COLUMN_UUID + " = '" + uuid.toString() + "'", null);
-		values = null;
+		Task task = getTask(uuid);
+
+		task.setDescription(task_description);
+		task.setDue(new Date(due));
+		task.setStatus(status);
+		task.setProject(project);
+		task.setPriority(priority);
+		task.setTags(tags);
+
+		removeTaskFromData(uuid);
+		writeTaskToData(task, PENDING_DATA);
 	}
 
 	public void deleteTask(UUID uuid) {
-		Log.i("Deleted:", "Task with uuid: " + uuid.toString());
-		ContentValues values = new ContentValues();
-		values.put(SQLiteHelper.COLUMN_STATUS, "deleted");
-		database.update(SQLiteHelper.TABLE_TASKS, values,
-				SQLiteHelper.COLUMN_UUID + " = '" + uuid.toString() + "'", null);
+		finishTask(uuid, "deleted");
 	}
 
 	public void doneTask(UUID uuid) {
-		Log.i("Done:", "Task with id: " + uuid.toString());
-		ContentValues values = new ContentValues();
-		values.put(SQLiteHelper.COLUMN_STATUS, "done");
-		values.put(SQLiteHelper.COLUMN_END, System.currentTimeMillis() / 1000);
-		Log.i("DoneTime:", ":" + System.currentTimeMillis() / 1000);
-		database.update(SQLiteHelper.TABLE_TASKS, values,
-				SQLiteHelper.COLUMN_UUID + " = '" + uuid.toString() + "'", null);
-		values = null;
+		finishTask(uuid, "completed");
+	}
+
+	public void finishTask(UUID uuid, String status) {
+
+		ArrayList<Task> pendingTasks = getPendingTasks();
+		Task finishedTask = new Task();
+
+		for (Task task : pendingTasks) {
+			if (task.getUuid().compareTo(uuid) == 0) {
+				finishedTask = task;
+			}
+		}
+
+		finishedTask.setStatus(status);
+
+		removeTaskFromData(uuid);
+		writeTaskToData(finishedTask, PENDING_DATA);
+	}
+
+	private void removeTaskFromData(UUID uuid) {
+
+		File pendingFile = new File(taskDir, PENDING_DATA);
+		File tempFile = new File(taskDir, TEMP_DATA);
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(
+					pendingFile));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(
+					tempFile, true));
+
+			String currentLine;
+
+			while ((currentLine = reader.readLine()) != null) {
+				if (currentLine.trim().contains(uuid.toString())) {
+					continue;
+				}
+				writer.append(currentLine + "\n");
+			}
+
+			tempFile.renameTo(pendingFile);
+
+			reader.close();
+			writer.close();
+
+		} catch (Exception e) {
+			Toast.makeText(context,
+					e.getMessage() + " Unable to write to external storage.",
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
+	private void writeTaskToData(Task task, String file) {
+
+		File completedFile = new File(taskDir, file);
+
+		try {
+
+			PrintWriter completedWriter = new PrintWriter(new BufferedWriter(
+					new FileWriter(completedFile, true)));
+
+			String output = task.toString();
+			output = output.replaceAll("/", "\\/");
+			output = output.replaceAll("\b", "\\b");
+			output = output.replaceAll("\f", "\\f");
+			output = output.replaceAll("\n", "\\n");
+			output = output.replaceAll("\r", "\\r");
+			output = output.replaceAll("\t", "\\t");
+			completedWriter.println(output);
+			completedWriter.close();
+		} catch (Exception e) {
+			Toast.makeText(context,
+					e.getMessage() + " Unable to write to external storage.",
+					Toast.LENGTH_LONG).show();
+		}
 	}
 
 	public ArrayList<Task> getAllTasks() {
-		ArrayList<Task> tasks = new ArrayList<Task>();
-		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
-				null, null, null, null, null);
 
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Task task = cursorToTask(cursor, allColumns);
-			tasks.add(task);
-			cursor.moveToNext();
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		ArrayList<String> allTasks = getPendingLines();
+		allTasks.addAll(getCompletedLines());
+
+		for (String data : allTasks) {
+			tasks.add(parseTask(data));
 		}
 
-		cursor.close();
 		return tasks;
+	}
+
+	public Task parseTask(String data) {
+
+		Task task = new Task();
+		HashMap<String, String> helperMap = new HashMap<String, String>();
+
+		Pattern pattern = Pattern.compile("[\\[ ](.+?):\"(.+?)\"");
+		Matcher matcher = pattern.matcher(data);
+
+		while (matcher.find() == true) {
+			helperMap.put(matcher.group(1).trim(), matcher.group(2).trim());
+		}
+
+		Iterator<String> it = helperMap.keySet().iterator();
+
+		while (it.hasNext()) {
+			String key = it.next().toString();
+			String value = helperMap.get(key).toString();
+
+			if (key.equals("description")) {
+				value = value.replace("\\/", "/");
+				value = value.replace("\\\"", "\"");
+				value = value.replace("\\f", "\f");
+				value = value.replace("\\t", "\t");
+
+				Pattern unicode = Pattern.compile("\\\\u(.{4})");
+				Matcher m = unicode.matcher(value);
+				StringBuffer sb = new StringBuffer();
+				while (m.find()) {
+					int code = Integer.parseInt(m.group(1), 16);
+					m.appendReplacement(sb, new String(Character.toChars(code)));
+				}
+				m.appendTail(sb);
+				task.setDescription(sb.toString());
+			} else if (key.equals("status")) {
+				task.setStatus(value);
+			} else if (key.equals("entry")) {
+				task.setEntry(Long.parseLong(value));
+			} else if (key.equals("uuid")) {
+				task.setUUID(UUID.fromString(value));
+			} else if (key.equals("start")) {
+				task.setStart(Long.parseLong(value));
+			} else if (key.equals("end")) {
+				task.setEnd(Long.parseLong(value));
+			} else if (key.equals("due")) {
+				task.setDue(new Date(Long.valueOf(value) * 1000));
+			} else if (key.equals("until")) {
+				task.setUntil(new Date(Long.valueOf(value)* 1000));
+			} else if (key.equals("wait")) {
+				task.setWait(new Date(Long.valueOf(value) * 1000));
+			} else if (key.equals("recur")) {
+				task.setRecur(value);
+			} else if (key.equals("mask")) {
+				task.setMask(value);
+			} else if (key.equals("imask")) {
+				task.setImask(value);
+			} else if (key.equals("parent")) {
+				task.setParent(UUID.fromString(value));
+		// } else if (key.equals("annotation")) {
+		//
+		// }
+			} else if (key.equals("project")) {
+				task.setProject(value);
+			} else if (key.equals("tags")) {
+				task.setTags(value);
+			} else if (key.equals("priority")) {
+				task.setPriority(value);
+			} else if (key.equals("depends")) {
+				task.setDepends(value);
+			}
+		}
+
+		task.urgency_c();
+
+		return task;
 	}
 
 	public ArrayList<Task> getPendingTasks() {
 		ArrayList<Task> tasks = new ArrayList<Task>();
-		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
-				SQLiteHelper.COLUMN_STATUS + " = 'pending'", null, null, null,
-				null);
+		ArrayList<String> allTasks = getPendingLines();
 
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Task task = cursorToTask(cursor, allColumns);
+		for (String data : allTasks) {
+			Task task = parseTask(data);
 			tasks.add(task);
-			cursor.moveToNext();
 		}
 
-		cursor.close();
 		return tasks;
 	}
 
-	public ArrayList<Task> getProjects() {
-		ArrayList<Task> tasks = new ArrayList<Task>();
-		Cursor cursor = database.query(true, SQLiteHelper.TABLE_TASKS,
-				projectColumn, SQLiteHelper.COLUMN_STATUS + " = 'pending'",
-				null, null, null, null, null);
+	public ArrayList<String> getProjects() {
+		ArrayList<Task> tasks = getPendingTasks();
+		ArrayList<String> projects = new ArrayList<String>();
 
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Task task = cursorToTask(cursor, projectColumn);
-			tasks.add(task);
-			cursor.moveToNext();
+		for (Task task : tasks) {
+			if (!projects.contains(task.getProject())) {
+				projects.add(task.getProject());
+			}
 		}
 
-		cursor.close();
-		return tasks;
-	}
+		Collections.sort(projects, new Comparator<String>() {
+			@Override
+			public int compare(String lhs, String rhs) {
+				if (lhs == null && rhs == null) {
+					return 0;
+				} else if (lhs == null) {
+					return 1;
+				} else if (rhs == null) {
+					return -1;
+				}
+				return lhs.compareToIgnoreCase(rhs);
+			}
 
-	public Cursor getProjectCursor() {
-		Cursor cursor = database.query(true, SQLiteHelper.TABLE_TASKS,
-				allColumns, SQLiteHelper.COLUMN_STATUS + " = 'pending'",
-				null, null, null, null, null);
+		});
 
-		cursor.moveToFirst();
-
-		return cursor;
+		return projects;
 	}
 
 	public ArrayList<Task> getProjectsTasks(String project) {
-		ArrayList<Task> tasks = new ArrayList<Task>();
-		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
-				SQLiteHelper.COLUMN_PROJECT + "= '" + project + "' and "
-						+ SQLiteHelper.COLUMN_STATUS + " = 'pending'", null,
-				null, null, null);
+		ArrayList<Task> tasks = getPendingTasks();
+		ArrayList<Task> projectsTasks = new ArrayList<Task>();
+		boolean hasProject = false;
 
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			Task task = cursorToTask(cursor, allColumns);
-			tasks.add(task);
-			cursor.moveToNext();
+		for (Task task : tasks) {
+			if (task.getProject() != null) {
+				if (task.getProject().equals(project)) {
+					hasProject = true;
+					projectsTasks.add(task);
+				}
+			} else if (task.getProject() == null && hasProject == false) {
+				projectsTasks.add(task);
+			}
 		}
 
-		cursor.close();
-		return tasks;
+		return projectsTasks;
 	}
 
 	public Task getTask(UUID uuid) {
-		Cursor cursor = database.query(SQLiteHelper.TABLE_TASKS, allColumns,
-				SQLiteHelper.COLUMN_UUID + "= '" + uuid.toString() + "'", null, null, null, null);
-		cursor.moveToFirst();
-		Task task = cursorToTask(cursor, allColumns);
-		cursor.close();
-		return task;
-	}
+		ArrayList<Task> allTasks = getAllTasks();
 
-	private Task cursorToTask(Cursor cursor, String[] columns) {
-		Task task = new Task();
-
-		if (columns.equals(projectColumn)) {
-			task.setProject(cursor.getString(0));
-		} else {
-			task.setId(UUID.fromString(cursor.getString(0)));
-			task.setDescription(cursor.getString(1));
-			Date date = new Date(cursor.getLong(2));
-			task.setDuedate(date);
-			task.setEntry(cursor.getLong(3));
-			task.setStatus(cursor.getString(4));
-			task.setEnd(cursor.getLong(5));
-			task.setProject(cursor.getString(6));
-			task.setPriority(cursor.getString(7));
-			task.setTags(cursor.getString(9));
-			task.urgency_c();
+		for (Task task : allTasks) {
+			if (task.getUuid().equals(uuid)) {
+				return task;
+			}
 		}
 
-		return task;
+		// Should never happen.
+		Task task_not_found = new Task();
+		task_not_found.setDescription("Task not found");
+		return task_not_found;
+	}
+
+	public void createDataIfNotExist() {
+		File pending = new File(taskDir, PENDING_DATA);
+		File completed = new File(taskDir, COMPLETED_DATA);
+		File undo = new File(taskDir, UNDO_DATA);
+
+		try {
+			if (!pending.exists()) {
+				pending.createNewFile();
+			}
+			if (!completed.exists()) {
+				completed.createNewFile();
+			}
+			if (!undo.exists()) {
+				undo.createNewFile();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

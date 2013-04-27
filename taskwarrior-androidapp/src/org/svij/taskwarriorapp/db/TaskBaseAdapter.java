@@ -34,6 +34,7 @@ import org.svij.taskwarriorapp.data.Task;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,8 +100,9 @@ public class TaskBaseAdapter extends BaseAdapter {
 			holder.taskStatus		= (TextView) v.findViewById(R.id.tvRowTaskStatus);
 			holder.taskUrgency		= (TextView) v.findViewById(R.id.tvRowTaskUrgency);
 			v.setTag(holder);
-		} else
+		} else {
 			holder = (ViewHolder) v.getTag();
+		}
 
 		final Task task = entries.get(position);
 		if (task != null) {
@@ -109,42 +111,40 @@ public class TaskBaseAdapter extends BaseAdapter {
 			float urgency = Math.round(task.urgency_c() * 100) / 100.0f;
 			holder.taskUrgency.setText(Float.toString(urgency));
 
-			if (!(task.getDuedate().getTime() == 0)) {
-				if (!DateFormat.getTimeInstance().format(task.getDuedate()).equals("00:00:00")) {
+			if (task.getDue() != null && !(task.getDue().getTime() == 0)) {
+				if (!DateFormat.getTimeInstance().format(task.getDue()).equals("00:00:00")) {
 					holder.taskDueDate.setText(DateFormat.getDateTimeInstance(
 							DateFormat.MEDIUM, DateFormat.SHORT).format(
-							task.getDuedate()));
+							task.getDue()));
 				} else {
 					holder.taskDueDate.setText(DateFormat.getDateInstance()
-							.format(task.getDuedate()));
+							.format(task.getDue()));
 				}
 			} else {
 				holder.taskDueDate.setText(null);
 			}
 
-			if (!task.getPriority().equals("no priority")) {
+			if (!TextUtils.isEmpty(task.getPriority())) {
 				holder.taskPriority.setText(
-						activity.getString(R.string.priority)+
-						": "+
-						task.getPriority()
-						);
-			}
-			if (task.getStatus().equals("done")) {
-				holder.taskStatus.setText(
-						activity.getString(R.string.status)+
-						": "+
-						task.getStatus()
-						);
+						activity.getString(R.string.priority)
+						+ ": " + task.getPriority());
+			} else {
+				holder.taskPriority.setText(null);
 			}
 
-			if (task.getStatus().equals("done") || task.getStatus().equals("deleted")) {
+			if (task.getStatus().equals("completed") || task.getStatus().equals("deleted")) {
 				if (getItemViewType(position) == TYPE_ROW_CLICKED) {
 					LinearLayout llButtonLayout = (LinearLayout) v.findViewById(R.id.taskLinLayout);
 					llButtonLayout.setVisibility(View.GONE);
-
+					
 					View horizBar = v.findViewById(R.id.horizontal_line);
 					horizBar.setVisibility(View.GONE);
 				}
+				holder.taskStatus.setText(activity.getString(
+						R.string.status)
+						+ ": " + task.getStatus());
+			} else {
+				holder.taskStatus.setText(null);
 			}
 		}
 

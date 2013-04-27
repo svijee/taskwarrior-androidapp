@@ -29,13 +29,13 @@ package org.svij.taskwarriorapp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.MenuListView;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -58,6 +58,8 @@ public class TasksActivity extends SherlockFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
+		TaskDataSource datasource = new TaskDataSource(this);
+		datasource.createDataIfNotExist();
 
 		if (savedInstanceState != null) {
 			listFragment = (ArrayListFragment) getSupportFragmentManager().getFragment(savedInstanceState, ArrayListFragment.class.getName());
@@ -85,15 +87,15 @@ public class TasksActivity extends SherlockFragmentActivity {
 
 		TaskDataSource datasource = new TaskDataSource(this);
 
-		datasource.open();
-		ArrayList<Task> values = datasource.getProjects();
-		datasource.close();
+		ArrayList<String> values = datasource.getProjects();
+//		boolean noProject = false;
 
-		for (Task task : values) {
-			if (task.getProject().trim().length() == 0) {
+		for (String project : values) {
+			if (TextUtils.isEmpty(project)) {
 				items.add(new Item(getString(R.string.no_project)));
+//				noProject = true;
 			} else {
-				items.add(new Item(task.getProject()));
+				items.add(new Item(project));
 			}
 		}
 
