@@ -29,7 +29,7 @@ package org.svij.taskwarriorapp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.svij.taskwarriorapp.db.TaskDataSource2;
+import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.MenuListView;
 
 import net.simonvt.menudrawer.MenuDrawer;
@@ -58,7 +58,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
-		TaskDataSource2 datasource = new TaskDataSource2(this);
+		TaskDataSource datasource = new TaskDataSource(this);
 		datasource.createDataIfNotExist();
 
 		if (savedInstanceState != null) {
@@ -85,7 +85,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 		items.add(new Item(getString(R.string.task_all)));
 		items.add(new Category("Projects"));
 
-		TaskDataSource2 datasource = new TaskDataSource2(this);
+		TaskDataSource datasource = new TaskDataSource(this);
 
 		ArrayList<String> values = datasource.getProjects();
 //		boolean noProject = false;

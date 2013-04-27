@@ -174,8 +174,55 @@ public class Task {
 
 	@Override
 	public String toString() {
-		return "[description:\"" + description + "\" entry:\"" + entry
-				+ "\" status:\"" + status + "\" uuid:\"" + uuid.toString() + "\" ";
+		StringBuilder outputString = new StringBuilder();
+
+		outputString.append("[description:\"" + description + "\" ");
+		outputString.append("entry:\"" + entry + "\" ");
+		outputString.append("status:\"" + status + "\" ");
+		outputString.append("uuid:\"" + uuid.toString() + "\" ");
+
+		outputString.append(" end:\"" + System.currentTimeMillis() / 1000 + "\" ");
+
+		if (getStart() != null && getStart() != 0) {
+			outputString.append("start:\"" + getStart() + "\" ");
+		}
+		if (getDue() != null && getDue().getTime() != 0) {
+			outputString.append("due:\"" + getDue().getTime() / 1000 + "\" ");
+		}
+		if (getUntil() != null && getUntil().getTime() != 0) {
+			outputString.append("until:\"" + getUntil().getTime() + "\" ");
+		}
+		if (getWait() != null && getWait().getTime() != 0) {
+			outputString.append("wait:\"" + getWait().getTime() + "\" ");
+		}
+		if (getRecur() != null && TextUtils.isEmpty(getRecur())) {
+			outputString.append("recur:\"" + getRecur() + "\" ");
+		}
+		if (getMask() != null && TextUtils.isEmpty(getMask())) {
+			outputString.append("mask:\"" + getMask() + "\" ");
+		}
+		if (getImask() != null && TextUtils.isEmpty(getImask())) {
+			outputString.append("imask:\"" + getImask() + "\" ");
+		}
+		if (getParent() != null && TextUtils.isEmpty(getParent().toString())) {
+			outputString.append("parent:\"" + getParent().toString() + "\" ");
+		}
+//		if (completedTask.getAnnotation() != null) {
+//
+//		}
+		if (getProject() != null && !TextUtils.isEmpty(getProject())) {
+			outputString.append("project:\"" + getProject() + "\" ");
+		}
+		if (getPriority() != null && !TextUtils.isEmpty(getPriority())) {
+			outputString.append("priority:\"" + getPriority() + "\" ");
+		}
+//		if (completedTask.getTags() != null) {
+//
+//		}
+
+		outputString.append("]");
+
+		return outputString.toString();
 	}
 
 	public Date getDue() {
@@ -235,14 +282,18 @@ public class Task {
 	}
 
 	public int getPriorityID() {
-		if (priority.equals("no priority")) {
+		if (priority == null) {
 			priorityID = 0;
-		} else if (priority.equals("High")) {
-			priorityID = 1;
-		} else if (priority.equals("Middle")) {
-			priorityID = 2;
-		} else if (priority.equals("Low")) {
-			priorityID = 3;
+		} else {
+			if (priority.equals("no priority")) {
+				priorityID = 0;
+			} else if (priority.equals("High")) {
+				priorityID = 1;
+			} else if (priority.equals("Middle")) {
+				priorityID = 2;
+			} else if (priority.equals("Low")) {
+				priorityID = 3;
+			}
 		}
 
 		return priorityID;

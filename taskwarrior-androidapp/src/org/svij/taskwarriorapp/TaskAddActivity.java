@@ -32,7 +32,7 @@ import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
-import org.svij.taskwarriorapp.db.TaskDataSource2;
+import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.DatePickerFragment;
 import org.svij.taskwarriorapp.ui.TimePickerFragment;
 
@@ -62,7 +62,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 public class TaskAddActivity extends SherlockFragmentActivity {
-	private TaskDataSource2 datasource;
+	private TaskDataSource datasource;
 	private String taskID = "";
 	private long timestamp;
 	private GregorianCalendar cal = new GregorianCalendar();
@@ -162,6 +162,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 
 		if (extras != null) {
 			taskID = extras.getString("taskID");
+			datasource = new TaskDataSource(this);
 			Task task = datasource.getTask(UUID.fromString(taskID));
 
 			TextView etTaskAdd	= (TextView) findViewById(R.id.etTaskAdd);
@@ -169,7 +170,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			TextView etTags		= (TextView) findViewById(R.id.etTags);
 
 			etTaskAdd.setText(task.getDescription());
-			if (!(task.getDue().getTime() == 0)) {
+			if (task.getDue() != null && task.getDue().getTime() != 0) {
 				tvDueDate.setText(
 						DateFormat.getDateInstance(DateFormat.SHORT).format(task.getDue())
 								);
@@ -202,7 +203,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			alertDialog.show(getSupportFragmentManager(),"dialog");
 			return true;
 		case R.id.task_add_done:
-			datasource = new TaskDataSource2(this);
+			datasource = new TaskDataSource(this);
 
 			EditText etTaskAdd	= (EditText) findViewById(R.id.etTaskAdd);
 			AutoCompleteTextView actvProject	= (AutoCompleteTextView) findViewById(R.id.actvProject);

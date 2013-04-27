@@ -99,8 +99,9 @@ public class TaskBaseAdapter extends BaseAdapter {
 			holder.taskStatus		= (TextView) v.findViewById(R.id.tvRowTaskStatus);
 			holder.taskUrgency		= (TextView) v.findViewById(R.id.tvRowTaskUrgency);
 			v.setTag(holder);
-		} else
+		} else {
 			holder = (ViewHolder) v.getTag();
+		}
 
 		final Task task = entries.get(position);
 		if (task != null) {

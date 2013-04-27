@@ -33,7 +33,7 @@ import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskBaseAdapter;
-import org.svij.taskwarriorapp.db.TaskDataSource2;
+import org.svij.taskwarriorapp.db.TaskDataSource;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,7 +47,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 
 public class ArrayListFragment extends SherlockListFragment {
 
-	TaskDataSource2 datasource;
+	TaskDataSource datasource;
 	private long selectedItemId = -1;
 	private String column;
 	TaskBaseAdapter adapter = null;
@@ -75,7 +75,7 @@ public class ArrayListFragment extends SherlockListFragment {
 		ArrayList<Task> values;
 		TaskSorter tasksorter = new TaskSorter("urgency");
 
-		datasource = new TaskDataSource2(getActivity());
+		datasource = new TaskDataSource(getActivity());
 
 		if (column == null || column.equals(getString(R.string.task_next))) {
 			values = datasource.getPendingTasks();
