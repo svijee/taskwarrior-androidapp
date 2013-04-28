@@ -59,6 +59,7 @@ public class ArrayListFragment extends SherlockListFragment {
 		setListView();
 
 		ListView listview = getListView();
+		listview.setDividerHeight(0);
 		listview.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -90,7 +91,7 @@ public class ArrayListFragment extends SherlockListFragment {
 			values = datasource.getProjectsTasks(column);
 		}
 		Collections.sort(values, tasksorter);
-		adapter = new TaskBaseAdapter(getActivity(), R.layout.task_row, values);
+		adapter = new TaskBaseAdapter(getActivity(), R.layout.task_row, values, getSherlockActivity());
 		setListAdapter(adapter);
 	}
 

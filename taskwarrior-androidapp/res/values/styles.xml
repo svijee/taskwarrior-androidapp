@@ -8,7 +8,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">?android:attr/textColorSecondaryInverse</item>
         <item name="android:textSize">14sp</item>
-        <!--  <item name="android:textAllCaps">true</item> -->
+        <!-- <item name="android:textAllCaps">true</item> -->
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingLeft">16dp</item>
         <item name="android:background">@drawable/md__category_background</item>
@@ -57,6 +57,13 @@
         <item name="android:textSize">20sp</item>
         <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
+    <style name="task_box_inner">
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_marginBottom">7dp</item>
     </style>
 
 </resources>

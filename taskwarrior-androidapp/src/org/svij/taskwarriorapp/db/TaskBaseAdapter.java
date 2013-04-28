@@ -40,6 +40,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class TaskBaseAdapter extends BaseAdapter {
@@ -49,12 +50,14 @@ public class TaskBaseAdapter extends BaseAdapter {
 	private static final int TYPE_ROW_CLICKED = 1;
 	private static final int TYPE_MAX_COUNT = TYPE_ROW_CLICKED + 1;
 	private ArrayList<Integer> RowClickedList = new ArrayList<Integer>();
+	private Context context;
 
-	public TaskBaseAdapter(Activity a, int layoutID,
-			ArrayList<Task> entries) {
+	public TaskBaseAdapter(Activity a, int layoutID, ArrayList<Task> entries,
+			Context context) {
 		super();
 		this.entries = entries;
 		this.activity = a;
+		this.context = context;
 	}
 
 	public static class ViewHolder {
@@ -64,6 +67,7 @@ public class TaskBaseAdapter extends BaseAdapter {
 		public TextView taskPriority;
 		public TextView taskStatus;
 		public TextView taskUrgency;
+		public RelativeLayout taskRelLayout;
 	}
 
 	public void changeTaskRow(final int position) {
@@ -82,9 +86,9 @@ public class TaskBaseAdapter extends BaseAdapter {
 		if (v == null) {
 			LayoutInflater vi = (LayoutInflater) activity
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			
+
 			int type = getItemViewType(position);
-			
+
 			switch (type) {
 			case TYPE_ROW:
 				v = vi.inflate(R.layout.task_row, null);
@@ -93,12 +97,14 @@ public class TaskBaseAdapter extends BaseAdapter {
 				v = vi.inflate(R.layout.task_row_clicked, null);
 			}
 			holder = new ViewHolder();
-			holder.taskDescription	= (TextView) v.findViewById(R.id.tvRowTaskDescription);
-			holder.taskProject		= (TextView) v.findViewById(R.id.tvRowTaskProject);
-			holder.taskDueDate		= (TextView) v.findViewById(R.id.tvRowTaskDueDate);
-			holder.taskPriority		= (TextView) v.findViewById(R.id.tvRowTaskPriority);
-			holder.taskStatus		= (TextView) v.findViewById(R.id.tvRowTaskStatus);
-			holder.taskUrgency		= (TextView) v.findViewById(R.id.tvRowTaskUrgency);
+			holder.taskDescription = (TextView) v
+					.findViewById(R.id.tvRowTaskDescription);
+			holder.taskProject = (TextView) v
+					.findViewById(R.id.tvRowTaskProject);
+			holder.taskDueDate = (TextView) v
+					.findViewById(R.id.tvRowTaskDueDate);
+			holder.taskRelLayout = (RelativeLayout) v
+					.findViewById(R.id.taskRelLayout);
 			v.setTag(holder);
 		} else {
 			holder = (ViewHolder) v.getTag();
@@ -108,11 +114,10 @@ public class TaskBaseAdapter extends BaseAdapter {
 		if (task != null) {
 			holder.taskDescription.setText(task.getDescription());
 			holder.taskProject.setText(task.getProject());
-			float urgency = Math.round(task.urgency_c() * 100) / 100.0f;
-			holder.taskUrgency.setText(Float.toString(urgency));
 
 			if (task.getDue() != null && !(task.getDue().getTime() == 0)) {
-				if (!DateFormat.getTimeInstance().format(task.getDue()).equals("00:00:00")) {
+				if (!DateFormat.getTimeInstance().format(task.getDue())
+						.equals("00:00:00")) {
 					holder.taskDueDate.setText(DateFormat.getDateTimeInstance(
 							DateFormat.MEDIUM, DateFormat.SHORT).format(
 							task.getDue()));
@@ -125,41 +130,49 @@ public class TaskBaseAdapter extends BaseAdapter {
 			}
 
 			if (!TextUtils.isEmpty(task.getPriority())) {
-				holder.taskPriority.setText(
-						activity.getString(R.string.priority)
-						+ ": " + task.getPriority());
+				if (task.getPriority().equals("H")) {
+					holder.taskRelLayout.setBackgroundColor(context
+							.getResources().getColor(R.color.red));
+				} else if (task.getPriority().equals("M")) {
+					holder.taskRelLayout.setBackgroundColor(context
+							.getResources().getColor(R.color.yellow));
+				} else if (task.getPriority().equals("L")) {
+					holder.taskRelLayout.setBackgroundColor(context
+							.getResources().getColor(R.color.green));
+				} else {
+					holder.taskRelLayout.setBackgroundColor(context
+							.getResources().getColor(R.color.grey));
+				}
 			} else {
-				holder.taskPriority.setText(null);
+				holder.taskRelLayout.setBackgroundColor(context.getResources()
+						.getColor(R.color.grey));
 			}
 
-			if (task.getStatus().equals("completed") || task.getStatus().equals("deleted")) {
+			if (task.getStatus().equals("completed")
+					|| task.getStatus().equals("deleted")) {
 				if (getItemViewType(position) == TYPE_ROW_CLICKED) {
-					LinearLayout llButtonLayout = (LinearLayout) v.findViewById(R.id.taskLinLayout);
+					LinearLayout llButtonLayout = (LinearLayout) v
+							.findViewById(R.id.taskLinLayout);
 					llButtonLayout.setVisibility(View.GONE);
-					
+
 					View horizBar = v.findViewById(R.id.horizontal_line);
 					horizBar.setVisibility(View.GONE);
 				}
-				holder.taskStatus.setText(activity.getString(
-						R.string.status)
-						+ ": " + task.getStatus());
-			} else {
-				holder.taskStatus.setText(null);
 			}
 		}
 
 		return v;
 	}
-	
-    @Override
-    public int getItemViewType(int position) {
-    	return RowClickedList.contains(position) ? TYPE_ROW_CLICKED : TYPE_ROW;
-    }
 
-    @Override
-    public int getViewTypeCount() {
-        return TYPE_MAX_COUNT;
-    }
+	@Override
+	public int getItemViewType(int position) {
+		return RowClickedList.contains(position) ? TYPE_ROW_CLICKED : TYPE_ROW;
+	}
+
+	@Override
+	public int getViewTypeCount() {
+		return TYPE_MAX_COUNT;
+	}
 
 	@Override
 	public int getCount() {
