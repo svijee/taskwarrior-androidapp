@@ -364,15 +364,13 @@ public class TaskDataSource {
 	public ArrayList<Task> getProjectsTasks(String project) {
 		ArrayList<Task> tasks = getPendingTasks();
 		ArrayList<Task> projectsTasks = new ArrayList<Task>();
-		boolean hasProject = false;
 
 		for (Task task : tasks) {
 			if (task.getProject() != null) {
 				if (task.getProject().equals(project)) {
-					hasProject = true;
 					projectsTasks.add(task);
 				}
-			} else if (task.getProject() == null && hasProject == false) {
+			} else if (task.getProject() == null && TextUtils.isEmpty(project)) {
 				projectsTasks.add(task);
 			}
 		}
