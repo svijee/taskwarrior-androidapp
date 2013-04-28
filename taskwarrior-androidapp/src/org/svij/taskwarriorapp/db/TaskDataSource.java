@@ -172,7 +172,12 @@ public class TaskDataSource {
 		finishedTask.setStatus(status);
 
 		removeTaskFromData(uuid);
-		writeTaskToData(finishedTask, PENDING_DATA);
+
+		if (status.equals("completed") || status.equals("deleted")) {
+			writeTaskToData(finishedTask, COMPLETED_DATA);
+		} else {
+			writeTaskToData(finishedTask, PENDING_DATA);
+		}
 	}
 
 	private void removeTaskFromData(UUID uuid) {
