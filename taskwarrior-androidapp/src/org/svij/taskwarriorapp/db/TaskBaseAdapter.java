@@ -132,20 +132,20 @@ public class TaskBaseAdapter extends BaseAdapter {
 			if (!TextUtils.isEmpty(task.getPriority())) {
 				if (task.getPriority().equals("H")) {
 					holder.taskRelLayout.setBackgroundColor(context
-							.getResources().getColor(R.color.red));
+							.getResources().getColor(R.color.task_red));
 				} else if (task.getPriority().equals("M")) {
 					holder.taskRelLayout.setBackgroundColor(context
-							.getResources().getColor(R.color.yellow));
+							.getResources().getColor(R.color.task_yellow));
 				} else if (task.getPriority().equals("L")) {
 					holder.taskRelLayout.setBackgroundColor(context
-							.getResources().getColor(R.color.green));
+							.getResources().getColor(R.color.task_green));
 				} else {
 					holder.taskRelLayout.setBackgroundColor(context
-							.getResources().getColor(R.color.grey));
+							.getResources().getColor(R.color.task_blue));
 				}
 			} else {
 				holder.taskRelLayout.setBackgroundColor(context.getResources()
-						.getColor(R.color.grey));
+						.getColor(R.color.task_blue));
 			}
 
 			if (task.getStatus().equals("completed")
