@@ -140,6 +140,10 @@ public class TasksActivity extends SherlockFragmentActivity {
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			return true;
+		case R.id.menu_settings:
+			Intent intentSettings = new Intent(this, SettingsActivity.class);
+			startActivity(intentSettings);
+			return true;
 		case android.R.id.home:
 			menu.toggleMenu();
 			return true;
