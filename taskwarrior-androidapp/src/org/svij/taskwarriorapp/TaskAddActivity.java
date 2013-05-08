@@ -27,7 +27,9 @@
 package org.svij.taskwarriorapp;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 
@@ -47,11 +49,13 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -106,9 +110,12 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 				if (TextUtils.isEmpty(tvDueTime.getText().toString())) {
 					timestamp = 0;
 				} else {
-					cal.set(Calendar.YEAR, Calendar.getInstance().get(Calendar.YEAR));
-					cal.set(Calendar.MONTH, Calendar.getInstance().get(Calendar.MONTH));
-					cal.set(Calendar.DAY_OF_MONTH,  Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+					cal.set(Calendar.YEAR,
+							Calendar.getInstance().get(Calendar.YEAR));
+					cal.set(Calendar.MONTH,
+							Calendar.getInstance().get(Calendar.MONTH));
+					cal.set(Calendar.DAY_OF_MONTH,
+							Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
 					timestamp = cal.getTimeInMillis();
 				}
 				tvDueDate.setText("");
@@ -133,30 +140,24 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			}
 		});
 
-		// set AutoCompleteTextView
-		AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
-//		datasource = new TaskDataSource2(this);
-//		datasource.open();
-//
-//		// add CursorAdapter to AutoCompleteTextView
-//		Cursor c = datasource.getProjectCursor();
-//		SimpleCursorAdapter sca = new SimpleCursorAdapter(getApplicationContext(),
-//				android.R.layout.simple_dropdown_item_1line,
-//				c,
-//				new String[] {SQLiteHelper.COLUMN_PROJECT},
-//				new int[] {R.id.actvProject},
-//				0);
-//
-//		sca.setCursorToStringConverter(new CursorToStringConverter() {
-//
-//			@Override
-//			public CharSequence convertToString(Cursor cursor) {
-//				final int colIndex = cursor.getColumnIndex(SQLiteHelper.COLUMN_PROJECT);
-//				return cursor.getString(colIndex);
-//			}
-//		});
-//
-//		actvProject.setAdapter(sca);
+		TaskDataSource dataSource = new TaskDataSource(this);
+		ArrayList<String> projectsAR = dataSource.getProjects();
+		projectsAR.removeAll(Collections.singleton(null));
+		String[] projects = projectsAR.toArray(new String[projectsAR.size()]);
+		final AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_list_item_1, projects);
+		actvProject.setAdapter(adapter);
+
+		actvProject.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				actvProject.showDropDown();
+				return false;
+			}
+		});
 
 		Bundle extras = getIntent().getExtras();
 
@@ -165,19 +166,18 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			datasource = new TaskDataSource(this);
 			Task task = datasource.getTask(UUID.fromString(taskID));
 
-			TextView etTaskAdd	= (TextView) findViewById(R.id.etTaskAdd);
-			Spinner  spPriority = (Spinner)  findViewById(R.id.spPriority);
-			TextView etTags		= (TextView) findViewById(R.id.etTags);
+			TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
+			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
+			TextView etTags = (TextView) findViewById(R.id.etTags);
 
 			etTaskAdd.setText(task.getDescription());
 			if (task.getDue() != null && task.getDue().getTime() != 0) {
-				tvDueDate.setText(
-						DateFormat.getDateInstance(DateFormat.SHORT).format(task.getDue())
-								);
-				if (!DateFormat.getTimeInstance().format(task.getDue()).equals("00:00:00")) {
+				tvDueDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
+						.format(task.getDue()));
+				if (!DateFormat.getTimeInstance().format(task.getDue())
+						.equals("00:00:00")) {
 					tvDueTime.setText(DateFormat.getTimeInstance(
-							DateFormat.SHORT).format(task.getDue())
-							);
+							DateFormat.SHORT).format(task.getDue()));
 				}
 				cal.setTime(task.getDue());
 				timestamp = cal.getTimeInMillis();
@@ -200,41 +200,38 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();
-			alertDialog.show(getSupportFragmentManager(),"dialog");
+			alertDialog.show(getSupportFragmentManager(), "dialog");
 			return true;
 		case R.id.task_add_done:
 			datasource = new TaskDataSource(this);
 
-			EditText etTaskAdd	= (EditText) findViewById(R.id.etTaskAdd);
-			AutoCompleteTextView actvProject	= (AutoCompleteTextView) findViewById(R.id.actvProject);
-			Spinner	 spPriority = (Spinner)	 findViewById(R.id.spPriority);
-			EditText etTags		= (EditText) findViewById(R.id.etTags);
+			EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
+			AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
+			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
+			EditText etTags = (EditText) findViewById(R.id.etTags);
 
 			if (etTaskAdd.getText().toString().equals("")) {
 				Toast toast = Toast.makeText(
 						getApplicationContext(),
-						getApplicationContext().getString(R.string.valid_description),
-						Toast.LENGTH_LONG);
+						getApplicationContext().getString(
+								R.string.valid_description), Toast.LENGTH_LONG);
 				toast.show();
 			} else {
 				if (taskID == "") {
-					datasource.createTask(
-							etTaskAdd.getText().toString(),
-							timestamp, "pending",
-							actvProject.getText().toString(),
-							getPriority(spPriority.getSelectedItem().toString()),
-							etTags.getText().toString()
-							);
+					datasource.createTask(etTaskAdd.getText().toString(),
+							timestamp, "pending", actvProject.getText()
+									.toString(), getPriority(spPriority
+									.getSelectedItem().toString()), etTags
+									.getText().toString());
 				} else {
-					datasource.editTask(
-							UUID.fromString(taskID),
-							etTaskAdd.getText().toString(),
-							timestamp,
-							"pending",
-							actvProject.getText().toString(),
-							getPriority(spPriority.getSelectedItem().toString()),
-							etTags.getText().toString()
-							);
+					datasource
+							.editTask(UUID.fromString(taskID), etTaskAdd
+									.getText().toString(), timestamp,
+									"pending",
+									actvProject.getText().toString(),
+									getPriority(spPriority.getSelectedItem()
+											.toString()), etTags.getText()
+											.toString());
 				}
 				this.finish();
 				NavUtils.navigateUpFromSameTask(this);
@@ -242,7 +239,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			return true;
 		case R.id.task_add_cancel:
 			UnsavedDataDialogFragment alertDialog2 = new UnsavedDataDialogFragment();
-			alertDialog2.show(getSupportFragmentManager(),"dialog");
+			alertDialog2.show(getSupportFragmentManager(), "dialog");
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -264,6 +261,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			return "";
 		}
 	}
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -272,7 +270,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	@Override
 	public void onBackPressed() {
 		UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();
-		alertDialog.show(getSupportFragmentManager(),"dialog");
+		alertDialog.show(getSupportFragmentManager(), "dialog");
 	}
 
 	OnDateSetListener onDate = new OnDateSetListener() {
@@ -315,52 +313,57 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	};
 
 	public static class UnsavedDataDialogFragment extends DialogFragment {
-	    @Override
-	    public Dialog onCreateDialog(Bundle savedInstanceState) {
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-	    	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	    	builder.setMessage(R.string.dialog_unsaved_data)
-	    			.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-	                   public void onClick(DialogInterface dialog, int id) {
-	                	   getActivity().finish();
-	                	   NavUtils.navigateUpFromSameTask(getActivity());
-	                   }
-	               })
-	               .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-	                   public void onClick(DialogInterface dialog, int id) {
-	                	   // User cancelled the dialog
-	                	   // Dialog is closing
-	                   }
-	               });
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setMessage(R.string.dialog_unsaved_data)
+					.setPositiveButton(R.string.ok,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									getActivity().finish();
+									NavUtils.navigateUpFromSameTask(getActivity());
+								}
+							})
+					.setNegativeButton(R.string.cancel,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									// User cancelled the dialog
+									// Dialog is closing
+								}
+							});
 
-	        return builder.create();
-	        }
+			return builder.create();
+		}
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
 
-		savedInstanceState.putLong("timestamp",timestamp);
+		savedInstanceState.putLong("timestamp", timestamp);
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 
-		if(savedInstanceState != null) {
+		if (savedInstanceState != null) {
 			timestamp = savedInstanceState.getLong("timestamp");
 
 			if (timestamp != 0) {
 				cal.setTimeInMillis(timestamp);
 
 				TextView tvDueTime = (TextView) findViewById(R.id.tvDueTime);
-				tvDueTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(timestamp));
+				tvDueTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
+						.format(timestamp));
 				TextView tvDueDate = (TextView) findViewById(R.id.tvDueDate);
-				tvDueDate.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(timestamp));				
+				tvDueDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
+						.format(timestamp));
 			}
 		}
 	}
-
 
 }
