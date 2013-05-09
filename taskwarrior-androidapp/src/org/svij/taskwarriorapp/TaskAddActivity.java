@@ -43,7 +43,9 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
@@ -75,6 +77,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_add);
+
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		final TextView tvDueDate = (TextView) findViewById(R.id.tvDueDate);
@@ -159,34 +162,50 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			}
 		});
 
-		Bundle extras = getIntent().getExtras();
+		Intent intent = getIntent();
+		Bundle extras = intent.getExtras();
 
 		if (extras != null) {
 			taskID = extras.getString("taskID");
-			datasource = new TaskDataSource(this);
-			Task task = datasource.getTask(UUID.fromString(taskID));
 
-			TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
-			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
-			TextView etTags = (TextView) findViewById(R.id.etTags);
+			if (taskID != null) {
+				datasource = new TaskDataSource(this);
+				Task task = datasource.getTask(UUID.fromString(taskID));
 
-			etTaskAdd.setText(task.getDescription());
-			if (task.getDue() != null && task.getDue().getTime() != 0) {
-				tvDueDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
-						.format(task.getDue()));
-				if (!DateFormat.getTimeInstance().format(task.getDue())
-						.equals("00:00:00")) {
-					tvDueTime.setText(DateFormat.getTimeInstance(
+				TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
+				Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
+				TextView etTags = (TextView) findViewById(R.id.etTags);
+
+				etTaskAdd.setText(task.getDescription());
+				if (task.getDue() != null && task.getDue().getTime() != 0) {
+
+					tvDueDate.setText(DateFormat.getDateInstance(
 							DateFormat.SHORT).format(task.getDue()));
+					if (!DateFormat.getTimeInstance().format(task.getDue())
+							.equals("00:00:00")) {
+						tvDueTime.setText(DateFormat.getTimeInstance(
+								DateFormat.SHORT).format(task.getDue()));
+					}
+
+					cal.setTime(task.getDue());
+					timestamp = cal.getTimeInMillis();
+
 				}
-				cal.setTime(task.getDue());
-				timestamp = cal.getTimeInMillis();
+				actvProject.setText(task.getProject());
+				Log.i("PriorityID", ":" + task.getPriorityID());
+				spPriority.setSelection(task.getPriorityID());
+				etTags.setText(task.getTags());
+			} else {
+				String action = intent.getAction();
+				if (action.equalsIgnoreCase(Intent.ACTION_SEND)
+						&& intent.hasExtra(Intent.EXTRA_TEXT)) {
+					String s = intent.getStringExtra(Intent.EXTRA_TEXT);
+					TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
+					etTaskAdd.setText(s);
+				}
 			}
-			actvProject.setText(task.getProject());
-			Log.i("PriorityID", ":" + task.getPriorityID());
-			spPriority.setSelection(task.getPriorityID());
-			etTags.setText(task.getTags());
 		}
+
 	}
 
 	@Override
