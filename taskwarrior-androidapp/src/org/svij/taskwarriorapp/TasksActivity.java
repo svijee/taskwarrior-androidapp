@@ -39,7 +39,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -62,15 +64,17 @@ public class TasksActivity extends SherlockFragmentActivity {
 		datasource.createDataIfNotExist();
 
 		if (savedInstanceState != null) {
-			listFragment = (ArrayListFragment) getSupportFragmentManager().getFragment(savedInstanceState, ArrayListFragment.class.getName());
+			listFragment = (ArrayListFragment) getSupportFragmentManager()
+					.getFragment(savedInstanceState,
+							ArrayListFragment.class.getName());
 		} else {
 			listFragment = new ArrayListFragment();
-			getSupportFragmentManager().beginTransaction().replace(android.R.id.content, listFragment).commit();
+			getSupportFragmentManager().beginTransaction()
+					.replace(android.R.id.content, listFragment).commit();
 		}
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		setMenu();
-
 	}
 
 	private void setMenu() {
@@ -88,12 +92,10 @@ public class TasksActivity extends SherlockFragmentActivity {
 		TaskDataSource datasource = new TaskDataSource(this);
 
 		ArrayList<String> values = datasource.getProjects();
-//		boolean noProject = false;
 
 		for (String project : values) {
 			if (TextUtils.isEmpty(project)) {
 				items.add(new Item(getString(R.string.no_project)));
-//				noProject = true;
 			} else {
 				items.add(new Item(project));
 			}

@@ -27,6 +27,7 @@
 package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.UUID;
@@ -55,7 +56,6 @@ public class ArrayListFragment extends SherlockListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-
 		setListView();
 
 		ListView listview = getListView();
@@ -91,7 +91,8 @@ public class ArrayListFragment extends SherlockListFragment {
 			values = datasource.getProjectsTasks(column);
 		}
 		Collections.sort(values, tasksorter);
-		adapter = new TaskBaseAdapter(getActivity(), R.layout.task_row, values, getSherlockActivity());
+		adapter = new TaskBaseAdapter(getActivity(), R.layout.task_row, values,
+				getSherlockActivity());
 		setListAdapter(adapter);
 	}
 
@@ -102,6 +103,16 @@ public class ArrayListFragment extends SherlockListFragment {
 			break;
 		case R.id.btnTaskModify:
 			showAddTaskActivity(getTaskWithId(selectedItemId));
+			break;
+		case R.id.btnTaskAddReminder:
+			Task task = datasource.getTask(getTaskWithId(selectedItemId));
+			Intent intent = new Intent(Intent.ACTION_EDIT);
+			intent.setType("vnd.android.cursor.item/event");
+			if (task.getDue() != null) {
+				intent.putExtra("beginTime", task.getDue().getTime());
+			}
+			intent.putExtra("title", task.getDescription());
+			startActivity(intent);
 			break;
 		case R.id.btnTaskDone:
 			doneTask(getTaskWithId(selectedItemId));
