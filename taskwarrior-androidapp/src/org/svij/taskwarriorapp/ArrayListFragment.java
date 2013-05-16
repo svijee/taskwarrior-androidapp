@@ -27,7 +27,6 @@
 package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.UUID;

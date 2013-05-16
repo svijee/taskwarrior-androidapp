@@ -29,12 +29,23 @@
     <string name="task_all">task all</string>
     <string name="task_long">task long</string>
     <string name="task_next">task next</string>
+    <string name="task_action_done">Task fertig</string>
+    <string name="task_action_delete">Task gelöscht</string>
+    <string name="task_action_reminder">Erinnerung hinzugefügt</string>
+    <string name="task_all">task all</string>
+    <string name="task_delete">löschen</string>
+    <string name="task_done">task done</string>
+    <string name="task_long">task long</string>
+    <string name="task_modify">modify</string>
+    <string name="task_next">task next</string>
+    <string name="task_reminder">Erinnerung hinzufügen</string>
     <string name="task_selected">Task ausgewählt</string>
     <string name="title_activity_main">Taskwarrior</string>
     <string name="title_activity_task_add">Task hinzufügen</string>
     <string name="tvTaskDescription">Beschreibung</string>
     <string name="typeTask">Task hinzufügen …</string>
     <string name="valid_description">Ein Task muss eine Beschreibung besitzen.</string>
+
     <string-array name="priority_list">
         <item>Keine Priorität</item>
         <item>Hoch</item>
