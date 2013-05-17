@@ -39,6 +39,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -68,6 +69,8 @@ public class TaskBaseAdapter extends BaseAdapter {
 		public TextView taskStatus;
 		public TextView taskUrgency;
 		public RelativeLayout taskRelLayout;
+		public FrameLayout taskFramelayout;
+		public View taskPriorityView;
 	}
 
 	public void changeTaskRow(final int position) {
@@ -105,6 +108,8 @@ public class TaskBaseAdapter extends BaseAdapter {
 					.findViewById(R.id.tvRowTaskDueDate);
 			holder.taskRelLayout = (RelativeLayout) v
 					.findViewById(R.id.taskRelLayout);
+			holder.taskPriorityView = (View) v
+					.findViewById(R.id.horizontal_line_priority);
 			v.setTag(holder);
 		} else {
 			holder = (ViewHolder) v.getTag();
@@ -131,21 +136,18 @@ public class TaskBaseAdapter extends BaseAdapter {
 
 			if (!TextUtils.isEmpty(task.getPriority())) {
 				if (task.getPriority().equals("H")) {
-					holder.taskRelLayout.setBackgroundColor(context
+					holder.taskPriorityView.setBackgroundColor(context
 							.getResources().getColor(R.color.task_red));
 				} else if (task.getPriority().equals("M")) {
-					holder.taskRelLayout.setBackgroundColor(context
+					holder.taskPriorityView.setBackgroundColor(context
 							.getResources().getColor(R.color.task_yellow));
 				} else if (task.getPriority().equals("L")) {
-					holder.taskRelLayout.setBackgroundColor(context
+					holder.taskPriorityView.setBackgroundColor(context
 							.getResources().getColor(R.color.task_green));
-				} else {
-					holder.taskRelLayout.setBackgroundColor(context
-							.getResources().getColor(R.color.task_blue));
 				}
 			} else {
-				holder.taskRelLayout.setBackgroundColor(context.getResources()
-						.getColor(R.color.task_blue));
+				holder.taskPriorityView.setBackgroundColor(context
+						.getResources().getColor(android.R.color.transparent));
 			}
 
 			if (task.getStatus().equals("completed")

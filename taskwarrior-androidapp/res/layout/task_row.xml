@@ -1,58 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/taskRelLayout"
+    style="@style/task_box_inner"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/task_bg_shadow"
+    android:descendantFocusability="blocksDescendants" >
 
-    <FrameLayout
-        android:id="@+id/box_inner2"
-        style="@style/task_box_inner"
+    <View
+        android:id="@+id/horizontal_line"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="1dp"
+        android:layout_above="@+id/tvRowTaskDescription"
+        android:background="@android:color/darker_gray" />
 
-        <RelativeLayout
-            android:id="@+id/taskRelLayout"
-            style="@style/task_box_inner"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
+    <TextView
+        android:id="@+id/tvRowTaskDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textIsSelectable="false" />
 
-            <View
-                android:id="@+id/horizontal_line"
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:layout_above="@+id/tvRowTaskDescription"
-                android:background="@android:color/darker_gray" />
+    <TextView
+        android:id="@+id/tvRowTaskProject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvRowTaskDescription"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textIsSelectable="false" />
 
-            <TextView
-                android:id="@+id/tvRowTaskDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textIsSelectable="false" />
+    <TextView
+        android:id="@+id/tvRowTaskDueDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvRowTaskProject"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textIsSelectable="false" />
 
-            <TextView
-                android:id="@+id/tvRowTaskProject"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvRowTaskDescription"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textIsSelectable="false" />
-
-            <TextView
-                android:id="@+id/tvRowTaskDueDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/tvRowTaskProject"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textIsSelectable="false" />
-
-            <View
-                android:id="@+id/horizontal_line"
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/tvRowTaskDueDate"
-                android:background="@android:color/darker_gray" />
-        </RelativeLayout>
-    </FrameLayout>
+    <View
+        android:id="@+id/horizontal_line_priority"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_below="@id/tvRowTaskDueDate" />
 
 </RelativeLayout>
