@@ -40,6 +40,7 @@
         android:layout_below="@id/tvRowTaskDueDate"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
         android:background="@android:color/darker_gray" />
 
     <LinearLayout
@@ -50,58 +51,64 @@
         android:layout_below="@+id/horizontal_line"
         android:orientation="horizontal" >
 
-        <ImageButton
+        <Button
             android:id="@+id/btnTaskDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_margin="7dp"
-            android:background="@color/md__transparent"
-            android:contentDescription="@string/task_delete"
+            style="@style/Widget.Sherlock.ActionButton"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_action_delete"
+            android:focusable="false"
             android:onClick="onTaskButtonClick"
-            android:src="@drawable/ic_action_delete" />
+            android:text="@string/task_delete"
+            android:textSize="12sp" />
 
         <View
             android:id="@+id/vertical_line1"
             android:layout_width="1dp"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:background="@android:color/darker_gray" />
 
-        <ImageButton
+        <Button
             android:id="@+id/btnTaskModify"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_margin="7dp"
-            android:background="@color/md__transparent"
-            android:contentDescription="@string/task_modify"
+            style="@style/Widget.Sherlock.ActionButton"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_action_edit"
+            android:focusable="false"
             android:onClick="onTaskButtonClick"
-            android:src="@drawable/ic_action_edit" />
+            android:text="@string/task_modify"
+            android:textSize="12sp" />
 
         <View
             android:id="@+id/vertical_line2"
             android:layout_width="1dp"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:background="@android:color/darker_gray" />
 
-        <ImageButton
+        <Button
             android:id="@+id/btnTaskAddReminder"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_margin="7dp"
-            android:background="@color/md__transparent"
-            android:contentDescription="@string/task_reminder"
+            style="@style/Widget.Sherlock.ActionButton"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/ic_action_reminder"
+            android:focusable="false"
             android:onClick="onTaskButtonClick"
-            android:src="@drawable/ic_action_reminder" />
+            android:text="@string/task_reminder"
+            android:textSize="12sp" />
 
         <View
             android:id="@+id/vertical_line3"
             android:layout_width="1dp"
             android:layout_height="fill_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:background="@android:color/darker_gray" />
 
         <Button
@@ -109,12 +116,12 @@
             style="@style/Widget.Sherlock.ActionButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_margin="7dp"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/ic_action_done_holo_light"
+            android:drawableTop="@drawable/ic_action_done_holo_light"
             android:focusable="false"
             android:onClick="onTaskButtonClick"
-            android:text="@string/task_done" />
+            android:text="@string/task_done"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <View

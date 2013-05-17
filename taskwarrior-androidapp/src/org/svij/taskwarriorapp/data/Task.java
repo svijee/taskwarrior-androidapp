@@ -285,14 +285,14 @@ public class Task {
 		if (priority == null) {
 			priorityID = 0;
 		} else {
-			if (priority.equals("no priority")) {
-				priorityID = 0;
-			} else if (priority.equals("High")) {
+			if (priority.equals("H")) {
 				priorityID = 1;
-			} else if (priority.equals("Middle")) {
+			} else if (priority.equals("M")) {
 				priorityID = 2;
-			} else if (priority.equals("Low")) {
+			} else if (priority.equals("L")) {
 				priorityID = 3;
+			} else {
+				priorityID = 0;
 			}
 		}
 
