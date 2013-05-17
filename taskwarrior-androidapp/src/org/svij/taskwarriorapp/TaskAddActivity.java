@@ -235,7 +235,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 								R.string.valid_description), Toast.LENGTH_LONG);
 				toast.show();
 			} else {
-				if (taskID == "") {
+				if (taskID == null || TextUtils.isEmpty(taskID)) {
 					datasource.createTask(etTaskAdd.getText().toString(),
 							timestamp, "pending", actvProject.getText()
 									.toString(), getPriority(spPriority

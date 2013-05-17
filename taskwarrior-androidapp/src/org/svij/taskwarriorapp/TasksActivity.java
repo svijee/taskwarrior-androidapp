@@ -85,6 +85,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 		items.add(new Item(getString(R.string.task_next)));
 		items.add(new Item(getString(R.string.task_long)));
 		items.add(new Item(getString(R.string.task_all)));
+		items.add(new Item(getString(R.string.task_wait)));
 		items.add(new Category("Projects"));
 
 		TaskDataSource datasource = new TaskDataSource(this);

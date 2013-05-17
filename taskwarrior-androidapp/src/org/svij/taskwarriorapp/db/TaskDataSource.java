@@ -332,7 +332,23 @@ public class TaskDataSource {
 
 		for (String data : allTasks) {
 			Task task = parseTask(data);
-			tasks.add(task);
+			if (task.getWait() == null || task.getWait().before(new Date())) {
+				tasks.add(task);
+			}
+		}
+
+		return tasks;
+	}
+
+	public ArrayList<Task> getWaitingTasks() {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		ArrayList<String> allTasks = getPendingLines();
+
+		for (String data : allTasks) {
+			Task task = parseTask(data);
+			if (task.getWait() != null && task.getWait().after(new Date())) {
+				tasks.add(task);
+			}
 		}
 
 		return tasks;

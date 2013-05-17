@@ -86,6 +86,8 @@ public class ArrayListFragment extends SherlockListFragment {
 			values = datasource.getProjectsTasks("");
 		} else if (column.equals(getString(R.string.task_all))) {
 			values = datasource.getAllTasks();
+		} else if (column.equals(getString(R.string.task_wait))) {
+			values = datasource.getWaitingTasks();
 		} else {
 			values = datasource.getProjectsTasks(column);
 		}
