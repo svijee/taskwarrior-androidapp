@@ -71,6 +71,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 			listFragment = (ArrayListFragment) getSupportFragmentManager()
 					.getFragment(savedInstanceState,
 							ArrayListFragment.class.getName());
+			listFragment.setColumn(savedInstanceState.getString(PROJECT));
 		} else {
 			listFragment = new ArrayListFragment();
 			getSupportFragmentManager().beginTransaction()
@@ -193,7 +194,6 @@ public class TasksActivity extends SherlockFragmentActivity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
 		super.onSaveInstanceState(outState);
 		getSupportFragmentManager().putFragment(outState,
 				ArrayListFragment.class.getName(), listFragment);
