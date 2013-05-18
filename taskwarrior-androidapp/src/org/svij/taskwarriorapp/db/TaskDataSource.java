@@ -33,9 +33,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
@@ -188,8 +190,8 @@ public class TaskDataSource {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(
 					pendingFile));
-			BufferedWriter writer = new BufferedWriter(new FileWriter(
-					tempFile, true));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile,
+					true));
 
 			String currentLine;
 
@@ -296,7 +298,7 @@ public class TaskDataSource {
 			} else if (key.equals("due")) {
 				task.setDue(new Date(Long.valueOf(value) * 1000));
 			} else if (key.equals("until")) {
-				task.setUntil(new Date(Long.valueOf(value)* 1000));
+				task.setUntil(new Date(Long.valueOf(value) * 1000));
 			} else if (key.equals("wait")) {
 				task.setWait(new Date(Long.valueOf(value) * 1000));
 			} else if (key.equals("recur")) {
@@ -307,9 +309,9 @@ public class TaskDataSource {
 				task.setImask(value);
 			} else if (key.equals("parent")) {
 				task.setParent(UUID.fromString(value));
-		// } else if (key.equals("annotation")) {
-		//
-		// }
+				// } else if (key.equals("annotation")) {
+				//
+				// }
 			} else if (key.equals("project")) {
 				task.setProject(value);
 			} else if (key.equals("tags")) {
@@ -412,6 +414,27 @@ public class TaskDataSource {
 		Task task_not_found = new Task();
 		task_not_found.setDescription("Task not found");
 		return task_not_found;
+	}
+
+	public ArrayList<String> getDueTasks() {
+		ArrayList<String> tasks = new ArrayList<String>();
+		ArrayList<Task> pendingTasks = getPendingTasks();
+
+		for (Task task : pendingTasks) {
+			Calendar date = new GregorianCalendar();
+
+			date.set(Calendar.HOUR_OF_DAY, 23);
+			date.set(Calendar.MINUTE, 59);
+			date.set(Calendar.SECOND, 59);
+
+			if (task.getDue() != null) {
+				if (task.getDue().before(date.getTime())) {
+					tasks.add(task.getDescription());
+				}
+			}
+		}
+
+		return tasks;
 	}
 
 	public void createDataIfNotExist() {

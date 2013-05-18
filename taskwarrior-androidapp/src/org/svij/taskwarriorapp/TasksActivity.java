@@ -27,14 +27,20 @@
 package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.svij.taskwarriorapp.db.TaskDataSource;
 import org.svij.taskwarriorapp.ui.MenuListView;
 
 import net.simonvt.menudrawer.MenuDrawer;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,6 +166,24 @@ public class TasksActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		long date_long = prefs.getLong("notifications_alarm_time", System.currentTimeMillis());
+
+		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+		Intent i = new Intent(this, NotificationService.class);
+		PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(date_long);
+
+		if (!calendar.getTime().before(new Date())) {
+			am.cancel(pi);
+			am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+					calendar.getTimeInMillis(), calendar.getTimeInMillis()
+							+ AlarmManager.INTERVAL_DAY, pi);
+		}
+
 	}
 
 	@Override

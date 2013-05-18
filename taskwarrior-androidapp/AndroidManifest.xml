@@ -43,6 +43,12 @@
             android:name="org.svij.taskwarriorapp.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+
+        <service
+            android:name="org.svij.taskwarriorapp.NotificationService"
+            android:exported="false" >
+        </service>
+
     </application>
 
 </manifest>
