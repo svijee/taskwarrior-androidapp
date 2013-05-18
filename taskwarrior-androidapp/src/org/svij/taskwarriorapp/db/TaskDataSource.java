@@ -443,6 +443,9 @@ public class TaskDataSource {
 		File undo = new File(taskDir, UNDO_DATA);
 
 		try {
+			if (!taskDir.exists()) {
+				taskDir.mkdirs();
+			}
 			if (!pending.exists()) {
 				pending.createNewFile();
 			}
