@@ -28,26 +28,17 @@ package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-
-import net.simonvt.menudrawer.MenuDrawer;
 
 import org.svij.taskwarriorapp.db.TaskDataSource;
-import org.svij.taskwarriorapp.ui.MenuListView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -56,23 +47,18 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-
 public class TasksActivity extends SherlockFragmentActivity {
 	private static final String PROJECT = "project";
 	private ArrayListFragment listFragment;
 	private DrawerLayout drawerLayout;
 	private ActionBarDrawerToggle drawerToggle;
 	private ListView drawerList;
-	private MenuListView menulist;
 
 	private CharSequence title_commands;
-	private CharSequence title_projects;
 	private CharSequence drawerTitle;
 
-	private String[] task_commands;
-	private String[] task_projects;
+	private String[] taskMenuCommands;
 
-	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
@@ -83,14 +69,24 @@ public class TasksActivity extends SherlockFragmentActivity {
 		datasource.createDataIfNotExist();
 
 		title_commands = drawerTitle = getTitle();
-		ArrayList<String> projects = datasource.getProjects();
-		projects.removeAll(Collections.singleton(null));
+		ArrayList<String> menuCommands = new ArrayList<String>();
 
-		task_projects = projects.toArray(new String[projects.size()]);
+		menuCommands.add("task next");
+		menuCommands.add("task long");
+		menuCommands.add("task all");
+
+		menuCommands.addAll(datasource.getProjects());
+		if (menuCommands.remove(null)) {
+			menuCommands.add(getString(R.string.no_project));
+		}
+		menuCommands.removeAll(Collections.singleton(null));
+
+		taskMenuCommands = menuCommands.toArray(new String[menuCommands.size()]);
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		drawerList = (ListView) findViewById(R.id.left_drawer);
 
-		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, task_projects));
+		drawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, taskMenuCommands));
 		drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 		if (savedInstanceState != null) {
@@ -100,7 +96,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 		} else {
 			listFragment = new ArrayListFragment();
 			getSupportFragmentManager().beginTransaction()
-					.replace(android.R.id.content, listFragment).commit();
+					.replace(R.id.content_frame, listFragment).commit();
 		}
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -121,7 +117,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 				supportInvalidateOptionsMenu();
 			}
 		};
-		
+
 		drawerLayout.setDrawerListener(drawerToggle);
 
 	}
@@ -142,14 +138,15 @@ public class TasksActivity extends SherlockFragmentActivity {
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (drawerToggle.onOptionsItemSelected(item)) {
-			
-		}
-//		if (drawerToggle.onOptionsItemSelected(item)) {
-//			return true;
-//		}
 
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			if (drawerLayout.isDrawerOpen(drawerList)) {
+				drawerLayout.closeDrawer(drawerList);
+			} else {
+				drawerLayout.openDrawer(drawerList);
+			}
+			return true;
 		case R.id.task_add:
 			Intent intent = new Intent(this, TaskAddActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -170,9 +167,9 @@ public class TasksActivity extends SherlockFragmentActivity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			listFragment.onTaskButtonClick(view);
-
+			listFragment.setColumn(((TextView) view).getText().toString());
+			listFragment.setListView();
 			drawerList.setItemChecked(position, true);
-			setTitle("task 42");
 			drawerLayout.closeDrawer(drawerList);
 		}
 	}
