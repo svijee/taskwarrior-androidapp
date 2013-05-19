@@ -10,6 +10,8 @@
     <string name="dueDate">Due date</string>
     <string name="duedate">Due</string>
     <string name="dueTime">Due time</string>
+    <string name="drawer_open">Open drawer</string>
+    <string name="drawer_close">Close drawer</string>
     <string name="lb_date">Date</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_done">Done</string>

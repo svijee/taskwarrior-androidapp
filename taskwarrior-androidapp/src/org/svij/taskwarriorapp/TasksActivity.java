@@ -28,44 +28,73 @@ package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import org.svij.taskwarriorapp.db.TaskDataSource;
-import org.svij.taskwarriorapp.ui.MenuListView;
 
-import net.simonvt.menudrawer.MenuDrawer;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 public class TasksActivity extends SherlockFragmentActivity {
 	private static final String PROJECT = "project";
 	private ArrayListFragment listFragment;
-	private MenuDrawer menu;
-	private MenuAdapter mAdapter;
-	private MenuListView mList;
-	private int mActivePosition = -1;
+	private DrawerLayout drawerLayout;
+	private ActionBarDrawerToggle drawerToggle;
+	private ListView drawerList;
+
+	private CharSequence title_commands;
+	private CharSequence drawerTitle;
+
+	private String[] taskMenuCommands;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.sidebar);
+
 		TaskDataSource datasource = new TaskDataSource(this);
 		datasource.createDataIfNotExist();
+
+		title_commands = drawerTitle = getTitle();
+		ArrayList<String> menuCommands = new ArrayList<String>();
+
+		menuCommands.add("task next");
+		menuCommands.add("task long");
+		menuCommands.add("task all");
+		menuCommands.add("task wait");
+
+		menuCommands.addAll(datasource.getProjects());
+		if (menuCommands.remove(null)) {
+			menuCommands.add(getString(R.string.no_project));
+		}
+		menuCommands.removeAll(Collections.singleton(null));
+
+		taskMenuCommands = menuCommands.toArray(new String[menuCommands.size()]);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawerList = (ListView) findViewById(R.id.left_drawer);
+
+		drawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, taskMenuCommands));
+		drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
 		if (savedInstanceState != null) {
 			listFragment = (ArrayListFragment) getSupportFragmentManager()
@@ -75,74 +104,57 @@ public class TasksActivity extends SherlockFragmentActivity {
 		} else {
 			listFragment = new ArrayListFragment();
 			getSupportFragmentManager().beginTransaction()
-					.replace(android.R.id.content, listFragment).commit();
+					.replace(R.id.content_frame, listFragment).commit();
 		}
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		setMenu();
-	}
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
 
-	private void setMenu() {
+		title_commands = drawerTitle = getTitle();
 
-		menu = MenuDrawer.attach(this, MenuDrawer.MENU_DRAG_WINDOW);
-		menu.setContentView(R.layout.activity_main);
-
-		List<Object> items = new ArrayList<Object>();
-		items.add(new Category("task commands"));
-		items.add(new Item(getString(R.string.task_next)));
-		items.add(new Item(getString(R.string.task_long)));
-		items.add(new Item(getString(R.string.task_all)));
-		items.add(new Item(getString(R.string.task_wait)));
-		items.add(new Category("Projects"));
-
-		TaskDataSource datasource = new TaskDataSource(this);
-
-		ArrayList<String> values = datasource.getProjects();
-
-		for (String project : values) {
-			if (TextUtils.isEmpty(project)) {
-				items.add(new Item(getString(R.string.no_project)));
-			} else {
-				items.add(new Item(project));
+		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+				R.drawable.ic_drawer, R.string.drawer_open,
+				R.string.drawer_close) {
+			public void onDrawerClosed(View view) {
+				getActionBar().setTitle(title_commands);
+				supportInvalidateOptionsMenu();
 			}
-		}
 
-		// A custom ListView is needed so the drawer can be notified when it's
-		// scrolled. This is to update the position
-		// of the arrow indicator.
-		mList = new MenuListView(this);
-		mAdapter = new MenuAdapter(items);
-		mList.setAdapter(mAdapter);
-		mList.setOnItemClickListener(mItemClickListener);
-		mList.setOnScrollChangedListener(new MenuListView.OnScrollChangedListener() {
-			@Override
-			public void onScrollChanged() {
-				menu.getMenuView().invalidate();
+			public void onDrawerOpened(View drawerView) {
+				getActionBar().setTitle(drawerTitle);
+				supportInvalidateOptionsMenu();
 			}
-		});
+		};
 
-		menu.setMenuView(mList);
+		drawerLayout.setDrawerListener(drawerToggle);
+
 	}
-
-	private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			mActivePosition = position;
-			menu.setActiveView(view, position);
-			listFragment.setColumn(((TextView) view).getText().toString());
-			listFragment.setListView();
-			menu.closeMenu();
-		}
-	};
 
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
+		MenuInflater inflater = getSupportMenuInflater();
+		inflater.inflate(R.menu.activity_main, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// If the nav drawer is open, hide action items related to the content
+		// view
+		boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
+		menu.findItem(R.id.task_add).setVisible(!drawerOpen);
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
+
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			if (drawerLayout.isDrawerOpen(drawerList)) {
+				drawerLayout.closeDrawer(drawerList);
+			} else {
+				drawerLayout.openDrawer(drawerList);
+			}
+			return true;
 		case R.id.task_add:
 			Intent intent = new Intent(this, TaskAddActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -152,16 +164,38 @@ public class TasksActivity extends SherlockFragmentActivity {
 			Intent intentSettings = new Intent(this, SettingsActivity.class);
 			startActivity(intentSettings);
 			return true;
-		case android.R.id.home:
-			menu.toggleMenu();
-			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
+	private class DrawerItemClickListener implements
+			ListView.OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			listFragment.onTaskButtonClick(view);
+			listFragment.setColumn(((TextView) view).getText().toString());
+			listFragment.setListView();
+			drawerList.setItemChecked(position, true);
+			drawerLayout.closeDrawer(drawerList);
+		}
+	}
+
 	public void onTaskButtonClick(View view) {
 		listFragment.onTaskButtonClick(view);
+	}
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		drawerToggle.syncState();
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		drawerToggle.onConfigurationChanged(newConfig);
 	}
 
 	@Override
@@ -198,122 +232,5 @@ public class TasksActivity extends SherlockFragmentActivity {
 		getSupportFragmentManager().putFragment(outState,
 				ArrayListFragment.class.getName(), listFragment);
 		outState.putString(PROJECT, listFragment.getColumn());
-	}
-
-	@Override
-	public void onBackPressed() {
-		final int drawerState = menu.getDrawerState();
-		if (drawerState == MenuDrawer.STATE_OPEN
-				|| drawerState == MenuDrawer.STATE_OPENING) {
-			menu.closeMenu();
-			return;
-		}
-
-		super.onBackPressed();
-	}
-
-	/*
-	 * Item, which represents an item in the MenuList
-	 */
-
-	private static class Item {
-
-		String mTitle;
-
-		Item(String title) {
-			mTitle = title;
-		}
-	}
-
-	/*
-	 * Category, which represents a category in the MenuList
-	 */
-
-	private static class Category {
-
-		String mTitle;
-
-		Category(String title) {
-			mTitle = title;
-		}
-	}
-
-	/*
-	 * The MenuAdapter
-	 */
-	public class MenuAdapter extends BaseAdapter {
-
-		private List<Object> mItems;
-
-		MenuAdapter(List<Object> items) {
-			mItems = items;
-		}
-
-		@Override
-		public int getCount() {
-			return mItems.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return mItems.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public int getItemViewType(int position) {
-			return getItem(position) instanceof Item ? 0 : 1;
-		}
-
-		@Override
-		public int getViewTypeCount() {
-			return 2;
-		}
-
-		@Override
-		public boolean isEnabled(int position) {
-			return getItem(position) instanceof Item;
-		}
-
-		@Override
-		public boolean areAllItemsEnabled() {
-			return false;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View v = convertView;
-			Object item = getItem(position);
-
-			if (item instanceof Category) {
-				if (v == null) {
-					v = getLayoutInflater().inflate(R.layout.menu_row_category,
-							parent, false);
-				}
-
-				((TextView) v).setText(((Category) item).mTitle);
-
-			} else {
-				if (v == null) {
-					v = getLayoutInflater().inflate(R.layout.menu_row_item,
-							parent, false);
-				}
-
-				TextView tv = (TextView) v;
-				tv.setText(((Item) item).mTitle);
-			}
-
-			v.setTag(R.id.mdActiveViewPosition, position);
-
-			if (position == mActivePosition) {
-				menu.setActiveView(v, position);
-			}
-
-			return v;
-		}
 	}
 }
