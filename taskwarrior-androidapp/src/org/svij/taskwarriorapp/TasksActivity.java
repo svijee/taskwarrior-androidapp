@@ -77,10 +77,10 @@ public class TasksActivity extends SherlockFragmentActivity {
 		title_commands = drawerTitle = getTitle();
 		ArrayList<String> menuCommands = new ArrayList<String>();
 
-		menuCommands.add("task next");
-		menuCommands.add("task long");
-		menuCommands.add("task all");
-		menuCommands.add("task wait");
+		menuCommands.add(getResources().getString(R.string.task_next));
+		menuCommands.add(getResources().getString(R.string.task_long));
+		menuCommands.add(getResources().getString(R.string.task_all));
+		menuCommands.add(getResources().getString(R.string.task_wait));
 
 		menuCommands.addAll(datasource.getProjects());
 		if (menuCommands.remove(null)) {

@@ -31,9 +31,6 @@
     <string name="setTime">Pick a time</string>
     <string name="status">Status</string>
     <string name="tags">Tags</string>
-    <string name="task_action_done">Completed task</string>
-    <string name="task_action_delete">Deleted task</string>
-    <string name="task_action_reminder">Added reminder</string>
     <string name="task_all">task all</string>
     <string name="task_delete">delete</string>
     <string name="task_done">task done</string>
