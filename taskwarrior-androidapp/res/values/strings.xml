@@ -42,6 +42,7 @@
     <string name="task_wait">task wait</string>
     <string name="title_activity_main">Taskwarrior</string>
     <string name="title_activity_task_add">Add Task</string>
+    <string name="title_task_counter">\u0020Tasks</string>
     <string name="tvTaskDescription">Task Description</string>
     <string name="typeTask">task add …</string>
     <string name="valid_description">A task must have a description.</string>

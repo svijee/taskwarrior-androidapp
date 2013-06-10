@@ -40,8 +40,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -56,13 +55,8 @@ import com.actionbarsherlock.view.MenuItem;
 public class TasksActivity extends SherlockFragmentActivity {
 	private static final String PROJECT = "project";
 	private ArrayListFragment listFragment;
-	private DrawerLayout drawerLayout;
-	private ActionBarDrawerToggle drawerToggle;
-	private ListView drawerList;
-
-	private CharSequence title_commands;
-	private CharSequence drawerTitle;
-
+	private SlidingPaneLayout paneLayout;
+	private ListView menuList;
 	private String[] taskMenuCommands;
 
 	@Override
@@ -74,7 +68,6 @@ public class TasksActivity extends SherlockFragmentActivity {
 		TaskDataSource datasource = new TaskDataSource(this);
 		datasource.createDataIfNotExist();
 
-		title_commands = drawerTitle = getTitle();
 		ArrayList<String> menuCommands = new ArrayList<String>();
 
 		menuCommands.add(getResources().getString(R.string.task_next));
@@ -88,13 +81,47 @@ public class TasksActivity extends SherlockFragmentActivity {
 		}
 		menuCommands.removeAll(Collections.singleton(null));
 
-		taskMenuCommands = menuCommands.toArray(new String[menuCommands.size()]);
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		drawerList = (ListView) findViewById(R.id.left_drawer);
+		taskMenuCommands = menuCommands
+				.toArray(new String[menuCommands.size()]);
+		paneLayout = (SlidingPaneLayout) findViewById(R.id.drawer_layout);
+		menuList = (ListView) findViewById(R.id.left_drawer);
 
-		drawerList.setAdapter(new ArrayAdapter<String>(this,
+		menuList.setAdapter(new ArrayAdapter<String>(this,
 				R.layout.drawer_list_item, taskMenuCommands));
-		drawerList.setOnItemClickListener(new DrawerItemClickListener());
+		menuList.setOnItemClickListener(new DrawerItemClickListener());
+
+		paneLayout
+				.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
+
+					@Override
+					public void onPanelSlide(View arg0, float arg1) {
+						// empty
+					}
+
+					@Override
+					public void onPanelOpened(View view) {
+						switch (view.getId()) {
+						case R.id.content_frame:
+							getActionBar().setHomeButtonEnabled(false);
+							getActionBar().setDisplayHomeAsUpEnabled(false);
+							break;
+						default:
+							break;
+						}
+					}
+
+					@Override
+					public void onPanelClosed(View view) {
+						switch (view.getId()) {
+						case R.id.content_frame:
+							getActionBar().setHomeButtonEnabled(true);
+							getActionBar().setDisplayHomeAsUpEnabled(true);
+							break;
+						default:
+							break;
+						}
+					}
+				});
 
 		if (savedInstanceState != null) {
 			listFragment = (ArrayListFragment) getSupportFragmentManager()
@@ -107,26 +134,25 @@ public class TasksActivity extends SherlockFragmentActivity {
 					.replace(R.id.content_frame, listFragment).commit();
 		}
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(false);
+		getActionBar().setHomeButtonEnabled(false);
+		listFragment.setColumn(getResources().getString(R.string.task_next));
+	}
 
-		title_commands = drawerTitle = getTitle();
+	private void setActionBarTitle() {
+		int counter = listFragment.getListView().getCount();
 
-		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-				R.drawable.ic_drawer, R.string.drawer_open,
-				R.string.drawer_close) {
-			public void onDrawerClosed(View view) {
-				getActionBar().setTitle(title_commands);
-				supportInvalidateOptionsMenu();
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				getActionBar().setTitle(drawerTitle);
-				supportInvalidateOptionsMenu();
-			}
-		};
-
-		drawerLayout.setDrawerListener(drawerToggle);
+		if (counter == 1) {
+			getActionBar().setTitle(
+					listFragment.getColumn() + " (1 Task)");
+		} else if (counter > 1) {
+			getActionBar().setTitle(
+					listFragment.getColumn()
+							+ " ("
+							+ listFragment.getListView().getCount()
+							+ getResources().getString(
+									R.string.title_task_counter) + ")");
+		}
 
 	}
 
@@ -138,10 +164,6 @@ public class TasksActivity extends SherlockFragmentActivity {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
-		boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
-		menu.findItem(R.id.task_add).setVisible(!drawerOpen);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -149,11 +171,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			if (drawerLayout.isDrawerOpen(drawerList)) {
-				drawerLayout.closeDrawer(drawerList);
-			} else {
-				drawerLayout.openDrawer(drawerList);
-			}
+			paneLayout.openPane();
 			return true;
 		case R.id.task_add:
 			Intent intent = new Intent(this, TaskAddActivity.class);
@@ -175,10 +193,12 @@ public class TasksActivity extends SherlockFragmentActivity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			listFragment.onTaskButtonClick(view);
-			listFragment.setColumn(((TextView) view).getText().toString());
+			String menu_text = ((TextView) view).getText().toString();
+			listFragment.setColumn(menu_text);
 			listFragment.setListView();
-			drawerList.setItemChecked(position, true);
-			drawerLayout.closeDrawer(drawerList);
+			paneLayout.closePane();
+			setActionBarTitle();
+			menuList.setItemChecked(position, true);
 		}
 	}
 
@@ -189,21 +209,23 @@ public class TasksActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		drawerToggle.syncState();
 	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		drawerToggle.onConfigurationChanged(newConfig);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		long date_long = prefs.getLong("notifications_alarm_time", System.currentTimeMillis());
+		setActionBarTitle();
+
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		long date_long = prefs.getLong("notifications_alarm_time",
+				System.currentTimeMillis());
 
 		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 		Intent i = new Intent(this, NotificationService.class);
