@@ -5,4 +5,12 @@
         android:summary="@string/pref_storage_directory"
         android:title="@string/pref_title_storage_directory" />
 
+    <ListPreference
+        android:defaultValue="@string/task_next"
+        android:entries="@array/pref_default_report"
+        android:entryValues="@array/pref_default_report"
+        android:key="settings_date_alignement"
+        android:summary="@string/pref_default_report_summary"
+        android:title="@string/pref_default_report_title" />
+
 </PreferenceScreen>

@@ -78,7 +78,11 @@ public class TasksActivity extends SherlockFragmentActivity {
 
 			fragmentTransaction.replace(R.id.content_frame, listFragment);
 			fragmentTransaction.commit();
-			listFragment.setColumn(getResources().getString(R.string.task_next));
+
+			SharedPreferences prefs = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			String defaultReport = prefs.getString("settings_date_alignement", getResources().getString(R.string.task_next));
+			listFragment.setColumn(defaultReport);
 		} else {
 			listFragment = (ArrayListFragment) getSupportFragmentManager()
 					.getFragment(savedInstanceState,
