@@ -26,12 +26,9 @@
 
 package org.svij.taskwarriorapp;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-
-import org.svij.taskwarriorapp.db.TaskDataSource;
+import java.util.Locale;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -40,12 +37,13 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -56,8 +54,14 @@ public class TasksActivity extends SherlockFragmentActivity {
 	private static final String PROJECT = "project";
 	private ArrayListFragment listFragment;
 	private SlidingPaneLayout paneLayout;
-	private ListView menuList;
-	private String[] taskMenuCommands;
+
+	public SlidingPaneLayout getPaneLayout() {
+		return paneLayout;
+	}
+
+	public void setPaneLayout(SlidingPaneLayout paneLayout) {
+		this.paneLayout = paneLayout;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -65,30 +69,30 @@ public class TasksActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sidebar);
 
-		TaskDataSource datasource = new TaskDataSource(this);
-		datasource.createDataIfNotExist();
+		if (savedInstanceState == null) {
+			FragmentManager fragmentManager = getSupportFragmentManager();
+			FragmentTransaction fragmentTransaction = fragmentManager
+					.beginTransaction();
 
-		ArrayList<String> menuCommands = new ArrayList<String>();
+			listFragment = new ArrayListFragment();
 
-		menuCommands.add(getResources().getString(R.string.task_next));
-		menuCommands.add(getResources().getString(R.string.task_long));
-		menuCommands.add(getResources().getString(R.string.task_all));
-		menuCommands.add(getResources().getString(R.string.task_wait));
-
-		menuCommands.addAll(datasource.getProjects());
-		if (menuCommands.remove(null)) {
-			menuCommands.add(getString(R.string.no_project));
+			fragmentTransaction.replace(R.id.content_frame, listFragment);
+			fragmentTransaction.commit();
+			listFragment.setColumn(getResources().getString(R.string.task_next));
+		} else {
+			listFragment = (ArrayListFragment) getSupportFragmentManager()
+					.getFragment(savedInstanceState,
+							ArrayListFragment.class.getName());
+		listFragment.setColumn(savedInstanceState.getString(PROJECT));
 		}
-		menuCommands.removeAll(Collections.singleton(null));
 
-		taskMenuCommands = menuCommands
-				.toArray(new String[menuCommands.size()]);
+		SectionsPagerAdapter adapter = new SectionsPagerAdapter(
+				getSupportFragmentManager());
+		ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+		viewPager.setOffscreenPageLimit(3);
+		viewPager.setAdapter(adapter);
+
 		paneLayout = (SlidingPaneLayout) findViewById(R.id.drawer_layout);
-		menuList = (ListView) findViewById(R.id.left_drawer);
-
-		menuList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, taskMenuCommands));
-		menuList.setOnItemClickListener(new DrawerItemClickListener());
 
 		paneLayout
 				.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
@@ -102,8 +106,9 @@ public class TasksActivity extends SherlockFragmentActivity {
 					public void onPanelOpened(View view) {
 						switch (view.getId()) {
 						case R.id.content_frame:
-							getActionBar().setHomeButtonEnabled(false);
-							getActionBar().setDisplayHomeAsUpEnabled(false);
+							getSupportActionBar().setHomeButtonEnabled(false);
+							getSupportActionBar().setDisplayHomeAsUpEnabled(
+									false);
 							break;
 						default:
 							break;
@@ -114,8 +119,9 @@ public class TasksActivity extends SherlockFragmentActivity {
 					public void onPanelClosed(View view) {
 						switch (view.getId()) {
 						case R.id.content_frame:
-							getActionBar().setHomeButtonEnabled(true);
-							getActionBar().setDisplayHomeAsUpEnabled(true);
+							getSupportActionBar().setHomeButtonEnabled(true);
+							getSupportActionBar().setDisplayHomeAsUpEnabled(
+									true);
 							break;
 						default:
 							break;
@@ -123,36 +129,11 @@ public class TasksActivity extends SherlockFragmentActivity {
 					}
 				});
 
-		if (savedInstanceState != null) {
-			listFragment = (ArrayListFragment) getSupportFragmentManager()
-					.getFragment(savedInstanceState,
-							ArrayListFragment.class.getName());
-			listFragment.setColumn(savedInstanceState.getString(PROJECT));
-		} else {
-			listFragment = new ArrayListFragment();
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, listFragment).commit();
-		}
-
-		getActionBar().setDisplayHomeAsUpEnabled(false);
-		getActionBar().setHomeButtonEnabled(false);
-		listFragment.setColumn(getResources().getString(R.string.task_next));
+		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+		getSupportActionBar().setHomeButtonEnabled(false);
 	}
 
-	private void setActionBarTitle() {
-		int counter = listFragment.getListView().getCount();
-
-		if (counter == 1) {
-			getActionBar().setTitle(
-					listFragment.getColumn() + " (1 Task)");
-		} else if (counter > 1) {
-			getActionBar().setTitle(
-					listFragment.getColumn()
-							+ " ("
-							+ listFragment.getListView().getCount()
-							+ getResources().getString(
-									R.string.title_task_counter) + ")");
-		}
+	public void onActivityCreated() {
 
 	}
 
@@ -184,21 +165,6 @@ public class TasksActivity extends SherlockFragmentActivity {
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			listFragment.onTaskButtonClick(view);
-			String menu_text = ((TextView) view).getText().toString();
-			listFragment.setColumn(menu_text);
-			listFragment.setListView();
-			paneLayout.closePane();
-			setActionBarTitle();
-			menuList.setItemChecked(position, true);
 		}
 	}
 
@@ -254,5 +220,66 @@ public class TasksActivity extends SherlockFragmentActivity {
 		getSupportFragmentManager().putFragment(outState,
 				ArrayListFragment.class.getName(), listFragment);
 		outState.putString(PROJECT, listFragment.getColumn());
+	}
+
+	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+		public SectionsPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int position) {
+			if (position == 0) {
+				Fragment fragment = new MenuListFragment();
+				Bundle args = new Bundle();
+				args.putInt("section_number", position + 1);
+				fragment.setArguments(args);
+				return fragment;
+			} else if (position == 1) {
+				Fragment fragment = new ArrayListFragment();
+				Bundle args = new Bundle();
+				args.putInt("section_number", position + 1);
+				fragment.setArguments(args);
+				return fragment;
+			}
+
+			return null;
+
+		}
+
+		@Override
+		public int getCount() {
+			// Show 1 total page.
+			return 1;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			Locale l = Locale.getDefault();
+			switch (position) {
+			case 0:
+				return getString(R.string.pager_title_report).toUpperCase(l);
+			case 1:
+				return getString(R.string.pager_title_filter).toUpperCase(l);
+			}
+			return null;
+		}
+	}
+
+	public void setActionBarTitle() {
+		int counter = listFragment.getListView().getCount();
+
+		if (counter == 1) {
+			getSherlock().getActionBar().setTitle(
+					listFragment.getColumn() + " (1 Task)");
+		} else if (counter > 1) {
+			getSherlock().getActionBar().setTitle(
+					listFragment.getColumn()
+							+ " ("
+							+ listFragment.getListView().getCount()
+							+ getResources().getString(
+									R.string.title_task_counter) + ")");
+		}
 	}
 }

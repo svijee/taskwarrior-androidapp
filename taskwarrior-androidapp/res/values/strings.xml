@@ -21,6 +21,8 @@
     <string name="notification_content_text">\u0020tasks needs to be done today.</string>
     <string name="no_project">no project</string>
     <string name="ok">OK</string>
+    <string name="pager_title_report">Report</string>
+    <string name="pager_title_filter">Filter</string>
     <string name="priority">Priority</string>
     <string name="project">Project</string>
     <string name="set">Set</string>
