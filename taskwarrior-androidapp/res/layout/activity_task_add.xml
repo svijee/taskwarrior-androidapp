@@ -9,33 +9,52 @@
 
         <TextView
             android:id="@+id/tvTaskDescription"
+            style="@style/listViewHeaderItem"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:text="@string/tvTaskDescription"
-            android:textSize="20sp" />
+            android:textIsSelectable="false" />
+
+        <View
+            android:id="@+id/item_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lvDividerHeight"
+            android:layout_below="@id/tvTaskDescription"
+            android:layout_marginTop="@dimen/lvSectionDividerMarginTop"
+            android:background="@android:color/holo_blue_dark" />
 
         <EditText
             android:id="@+id/etTaskAdd"
+            style="@style/listViewItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/tvTaskDescription"
-            android:hint="@string/typeTask"
-            android:textSize="20sp" >
+            android:layout_margin="10dp"
+            android:hint="@string/typeTask" >
 
             <requestFocus />
         </EditText>
 
         <TextView
             android:id="@+id/tvDueDateStatic"
+            style="@style/listViewHeaderItem"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/etTaskAdd"
             android:text="@string/dueDate"
-            android:textSize="20sp" />
+            android:textIsSelectable="false" />
+
+        <View
+            android:id="@+id/item_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lvDividerHeight"
+            android:layout_below="@id/tvDueDateStatic"
+            android:layout_marginTop="@dimen/lvSectionDividerMarginTop"
+            android:background="@android:color/holo_blue_dark" />
 
         <TextView
             android:id="@+id/tvDueDate"
@@ -44,6 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvDueDateStatic"
+            android:layout_marginLeft="10dp"
             android:layout_toLeftOf="@+id/tvDueTime"
             android:gravity="center"
             android:hint="@string/setDate"
@@ -56,61 +76,95 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/tvDueDateStatic"
+            android:layout_marginRight="10dp"
             android:gravity="center"
             android:hint="@string/setTime"
             android:textIsSelectable="false" />
 
         <TextView
             android:id="@+id/tvProjectStatic"
+            style="@style/listViewHeaderItem"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvDueTime"
             android:text="@string/project"
-            android:textSize="20sp" />
+            android:textIsSelectable="false" />
+
+        <View
+            android:id="@+id/item_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lvDividerHeight"
+            android:layout_below="@id/tvProjectStatic"
+            android:layout_marginTop="@dimen/lvSectionDividerMarginTop"
+            android:background="@android:color/holo_blue_dark" />
 
         <AutoCompleteTextView
             android:id="@+id/actvProject"
+            style="@style/listViewItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvProjectStatic"
+            android:layout_margin="10dp"
+            android:completionThreshold="1"
             android:hint="@string/setProject"
-            android:singleLine="true"
-            android:completionThreshold="1" />
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/tvPriorityStatic"
+            style="@style/listViewHeaderItem"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/actvProject"
             android:text="@string/priority"
-            android:textSize="20sp" />
+            android:textIsSelectable="false" />
+
+        <View
+            android:id="@+id/item_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lvDividerHeight"
+            android:layout_below="@id/tvPriorityStatic"
+            android:layout_marginTop="@dimen/lvSectionDividerMarginTop"
+            android:background="@android:color/holo_blue_dark" />
 
         <Spinner
             android:id="@+id/spPriority"
+            style="@style/listViewItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvPriorityStatic"
-            android:entries="@array/priority_list"
-            android:textSize="20sp" />
+            android:layout_margin="10dp"
+            android:entries="@array/priority_list" />
 
         <TextView
             android:id="@+id/tvTagsStatic"
+            style="@style/listViewHeaderItem"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/spPriority"
             android:text="@string/tags"
-            android:textSize="20sp" />
+            android:textIsSelectable="false"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/item_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lvDividerHeight"
+            android:layout_below="@id/tvTagsStatic"
+            android:layout_marginTop="@dimen/lvSectionDividerMarginTop"
+            android:background="@android:color/holo_blue_dark" />
 
         <EditText
             android:id="@+id/etTags"
+            style="@style/listViewItem"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvTagsStatic"
+            android:layout_margin="10dp"
             android:hint="@string/setTag"
             android:singleLine="true" />
     </RelativeLayout>
