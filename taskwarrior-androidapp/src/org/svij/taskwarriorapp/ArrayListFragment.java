@@ -27,15 +27,15 @@
 package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskBaseAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
-
-import com.actionbarsherlock.app.SherlockListFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +45,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.SherlockListFragment;
 
 public class ArrayListFragment extends SherlockListFragment {
 
@@ -112,6 +113,12 @@ public class ArrayListFragment extends SherlockListFragment {
 			intent.setType("vnd.android.cursor.item/event");
 			if (task.getDue() != null) {
 				intent.putExtra("beginTime", task.getDue().getTime());
+				intent.putExtra("endTime", task.getDue().getTime() + (30 * 60 * 1000));
+			} else {
+				Calendar cal = new GregorianCalendar();
+				intent.putExtra("beginTime", cal.getTime().getTime());
+				cal.add(Calendar.MINUTE, 30);
+				intent.putExtra("endTime", cal.getTime().getTime());
 			}
 			intent.putExtra("title", task.getDescription());
 			startActivity(intent);
