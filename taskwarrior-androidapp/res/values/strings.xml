@@ -21,7 +21,7 @@
     <string name="notification_content_text">\u0020tasks needs to be done today.</string>
     <string name="no_project">no project</string>
     <string name="ok">OK</string>
-    <string name="pager_title_report">Report</string>
+    <string name="pager_title_projects">Projects</string>
     <string name="pager_title_filter">Filter</string>
     <string name="priority">Priority</string>
     <string name="project">Project</string>
@@ -56,6 +56,15 @@
         <item>High</item>
         <item>Middle</item>
         <item>Low</item>
+    </string-array>
+
+    <string-array name="reports">
+        <item>@string/task_next</item>
+        <item>@string/task_long</item>
+        <item>@string/task_all</item>
+        <item>@string/task_wait</item>
+        <item>@string/task_newest</item>
+        <item>@string/task_oldest</item>
     </string-array>
 
 </resources>

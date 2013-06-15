@@ -44,14 +44,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
+import android.widget.ArrayAdapter;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-public class TasksActivity extends SherlockFragmentActivity {
+public class TasksActivity extends SherlockFragmentActivity implements
+		ActionBar.OnNavigationListener {
 	private static final String PROJECT = "project";
+	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	private ArrayListFragment listFragment;
 	private SlidingPaneLayout paneLayout;
 
@@ -81,13 +85,14 @@ public class TasksActivity extends SherlockFragmentActivity {
 
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(this);
-			String defaultReport = prefs.getString("settings_date_alignement", getResources().getString(R.string.task_next));
+			String defaultReport = prefs.getString("settings_date_alignement",
+					getResources().getString(R.string.task_next));
 			listFragment.setColumn(defaultReport);
 		} else {
 			listFragment = (ArrayListFragment) getSupportFragmentManager()
 					.getFragment(savedInstanceState,
 							ArrayListFragment.class.getName());
-		listFragment.setColumn(savedInstanceState.getString(PROJECT));
+			listFragment.setColumn(savedInstanceState.getString(PROJECT));
 		}
 
 		SectionsPagerAdapter adapter = new SectionsPagerAdapter(
@@ -133,12 +138,32 @@ public class TasksActivity extends SherlockFragmentActivity {
 					}
 				});
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-		getSupportActionBar().setHomeButtonEnabled(false);
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
+		String[] menuDropdown = getResources().getStringArray(R.array.reports);
+
+		ArrayAdapter<String> dropdownAdapter = new ArrayAdapter<String>(
+				actionBar.getThemedContext(),
+				android.R.layout.simple_spinner_item, android.R.id.text1,
+				menuDropdown);
+		dropdownAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		actionBar.setListNavigationCallbacks(dropdownAdapter, this);
+
+		actionBar.setDisplayHomeAsUpEnabled(false);
+		actionBar.setHomeButtonEnabled(false);
 	}
 
-	public void onActivityCreated() {
-
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		// Restore the previously serialized current dropdown position.
+		if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
+			getActionBar().setSelectedNavigationItem(
+					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
+		}
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -190,7 +215,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 	protected void onResume() {
 		super.onResume();
 
-		setActionBarTitle();
+		// setActionBarTitle();
 
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -224,6 +249,8 @@ public class TasksActivity extends SherlockFragmentActivity {
 		getSupportFragmentManager().putFragment(outState,
 				ArrayListFragment.class.getName(), listFragment);
 		outState.putString(PROJECT, listFragment.getColumn());
+		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getSupportActionBar()
+				.getSelectedNavigationIndex());
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -263,7 +290,7 @@ public class TasksActivity extends SherlockFragmentActivity {
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.pager_title_report).toUpperCase(l);
+				return getString(R.string.pager_title_projects).toUpperCase(l);
 			case 1:
 				return getString(R.string.pager_title_filter).toUpperCase(l);
 			}
@@ -271,19 +298,29 @@ public class TasksActivity extends SherlockFragmentActivity {
 		}
 	}
 
-	public void setActionBarTitle() {
-		int counter = listFragment.getListView().getCount();
-
-		if (counter == 1) {
-			getSherlock().getActionBar().setTitle(
-					listFragment.getColumn() + " (1 Task)");
-		} else if (counter > 1) {
-			getSherlock().getActionBar().setTitle(
-					listFragment.getColumn()
-							+ " ("
-							+ listFragment.getListView().getCount()
-							+ getResources().getString(
-									R.string.title_task_counter) + ")");
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		switch (itemPosition) {
+		case 0:
+			listFragment.setColumn(getString(R.string.task_next));
+			break;
+		case 1:
+			listFragment.setColumn(getString(R.string.task_long));
+			break;
+		case 2:
+			listFragment.setColumn(getString(R.string.task_all));
+			break;
+		case 3:
+			listFragment.setColumn(getString(R.string.task_wait));
+			break;
+		case 4:
+			listFragment.setColumn(getString(R.string.task_newest));
+			break;
+		case 5:
+			listFragment.setColumn(getString(R.string.task_oldest));
+			break;
 		}
+		listFragment.setListView();
+		return false;
 	}
 }

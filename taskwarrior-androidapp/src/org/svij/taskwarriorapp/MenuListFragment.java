@@ -78,7 +78,6 @@ public class MenuListFragment extends SherlockListFragment {
 				listFragment.setColumn(menu_text);
 				listFragment.setListView();
 				paneLayout.closePane();
-				setActionBarTitle();
 				getListView().setItemChecked(position, true);
 			}
 		});
@@ -90,13 +89,6 @@ public class MenuListFragment extends SherlockListFragment {
 
 		ArrayList<String> menuCommands = new ArrayList<String>();
 
-		menuCommands.add(getResources().getString(R.string.task_next));
-		menuCommands.add(getResources().getString(R.string.task_long));
-		menuCommands.add(getResources().getString(R.string.task_all));
-		menuCommands.add(getResources().getString(R.string.task_wait));
-		menuCommands.add(getResources().getString(R.string.task_newest));
-		menuCommands.add(getResources().getString(R.string.task_oldest));
-
 		menuCommands.addAll(datasource.getProjects());
 		if (menuCommands.remove(null)) {
 			menuCommands.add(getString(R.string.no_project));
@@ -106,22 +98,6 @@ public class MenuListFragment extends SherlockListFragment {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
 				android.R.layout.simple_list_item_1, menuCommands);
 		setListAdapter(adapter);
-	}
-
-	public void setActionBarTitle() {
-		int counter = listFragment.getListView().getCount();
-
-		if (counter == 1) {
-			getSherlockActivity().getSupportActionBar().setTitle(
-					listFragment.getColumn() + " (1 Task)");
-		} else if (counter > 1) {
-			getSherlockActivity().getSupportActionBar().setTitle(
-					listFragment.getColumn()
-							+ " ("
-							+ listFragment.getListView().getCount()
-							+ getResources().getString(
-									R.string.title_task_counter) + ")");
-		}
 	}
 
 	public void onTaskButtonClick(View view) {
