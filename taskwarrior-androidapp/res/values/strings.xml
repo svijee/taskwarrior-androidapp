@@ -38,7 +38,9 @@
     <string name="task_done">task done</string>
     <string name="task_long">task long</string>
     <string name="task_modify">modify</string>
+    <string name="task_newest">task newest</string>
     <string name="task_next">task next</string>
+    <string name="task_oldest">task oldest</string>
     <string name="task_reminder">Add reminder</string>
     <string name="task_selected">Task selected</string>
     <string name="task_wait">task wait</string>

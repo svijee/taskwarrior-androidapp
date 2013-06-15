@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 
@@ -90,6 +91,12 @@ public class ArrayListFragment extends SherlockListFragment {
 			values = datasource.getAllTasks();
 		} else if (column.equals(getString(R.string.task_wait))) {
 			values = datasource.getWaitingTasks();
+		} else if (column.equals(getString(R.string.task_oldest))) {
+			values = datasource.getPendingTasks();
+			tasksorter = new TaskSorter("oldest");
+		} else if (column.equals(getString(R.string.task_newest))) {
+			values = datasource.getPendingTasks();
+			tasksorter = new TaskSorter("newest");
 		} else {
 			values = datasource.getProjectsTasks(column);
 		}
@@ -113,7 +120,8 @@ public class ArrayListFragment extends SherlockListFragment {
 			intent.setType("vnd.android.cursor.item/event");
 			if (task.getDue() != null) {
 				intent.putExtra("beginTime", task.getDue().getTime());
-				intent.putExtra("endTime", task.getDue().getTime() + (30 * 60 * 1000));
+				intent.putExtra("endTime", task.getDue().getTime()
+						+ (30 * 60 * 1000));
 			} else {
 				Calendar cal = new GregorianCalendar();
 				intent.putExtra("beginTime", cal.getTime().getTime());
@@ -201,7 +209,7 @@ public class ArrayListFragment extends SherlockListFragment {
 		public int compare(Task task1, Task task2) {
 			if (sortType.equals("urgency")) {
 				return Float.compare(task2.getUrgency(), task1.getUrgency());
-			} else {
+			} else if (sortType.equals("long")) {
 				if (task1.getDue() == null && task2.getDue() == null) {
 					return 0;
 				} else if (task1.getDue() == null) {
@@ -209,6 +217,28 @@ public class ArrayListFragment extends SherlockListFragment {
 				} else if (task2.getDue() == null) {
 					return -1;
 				}
+				return task1.getDue().compareTo(task2.getDue());
+			} else if (sortType.equals("oldest")) {
+				Date task1date = new Date(task1.getEntry());
+				Date task2date = new Date(task2.getEntry());
+				if (task1date.before(task2date)) {
+					return -1;
+				} else if (task1date.after(task2date)) {
+					return 1;
+				} else {
+					return 0;
+				}
+			} else if (sortType.equals("newest")) {
+				Date task1date = new Date(task1.getEntry());
+				Date task2date = new Date(task2.getEntry());
+				if (task2date.before(task1date)) {
+					return -1;
+				} else if (task2date.after(task1date)) {
+					return 1;
+				} else {
+					return 0;
+				}
+			} else {
 				return task1.getDue().compareTo(task2.getDue());
 			}
 		}

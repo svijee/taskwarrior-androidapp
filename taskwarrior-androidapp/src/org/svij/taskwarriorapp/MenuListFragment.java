@@ -28,7 +28,6 @@ package org.svij.taskwarriorapp;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.UUID;
 
 import org.svij.taskwarriorapp.data.Task;
@@ -51,7 +50,6 @@ public class MenuListFragment extends SherlockListFragment {
 
 	TaskDataSource datasource;
 	private long selectedItemId = -1;
-	private String column;
 	ArrayListFragment listFragment;
 
 	@Override
@@ -96,6 +94,8 @@ public class MenuListFragment extends SherlockListFragment {
 		menuCommands.add(getResources().getString(R.string.task_long));
 		menuCommands.add(getResources().getString(R.string.task_all));
 		menuCommands.add(getResources().getString(R.string.task_wait));
+		menuCommands.add(getResources().getString(R.string.task_newest));
+		menuCommands.add(getResources().getString(R.string.task_oldest));
 
 		menuCommands.addAll(datasource.getProjects());
 		if (menuCommands.remove(null)) {
@@ -205,37 +205,5 @@ public class MenuListFragment extends SherlockListFragment {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-	}
-
-	public String getColumn() {
-		return column;
-	}
-
-	public void setColumn(String column) {
-		this.column = column;
-	}
-
-	class TaskSorter implements Comparator<Task> {
-		private String sortType;
-
-		public TaskSorter(String sortType) {
-			this.sortType = sortType;
-		}
-
-		@Override
-		public int compare(Task task1, Task task2) {
-			if (sortType.equals("urgency")) {
-				return Float.compare(task2.getUrgency(), task1.getUrgency());
-			} else {
-				if (task1.getDue() == null && task2.getDue() == null) {
-					return 0;
-				} else if (task1.getDue() == null) {
-					return 1;
-				} else if (task2.getDue() == null) {
-					return -1;
-				}
-				return task1.getDue().compareTo(task2.getDue());
-			}
-		}
 	}
 }
