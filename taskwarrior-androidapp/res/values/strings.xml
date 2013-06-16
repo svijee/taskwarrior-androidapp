@@ -12,6 +12,7 @@
     <string name="dueTime">Due time</string>
     <string name="drawer_open">Open drawer</string>
     <string name="drawer_close">Close drawer</string>
+    <string name="error_message_unable_read_storage">Unable to read to external storage. Disable USB mass storage mode to use Taskwarrior.</string>
     <string name="lb_date">Date</string>
     <string name="menu_delete">Delete</string>
     <string name="menu_done">Done</string>
@@ -57,7 +58,6 @@
         <item>Middle</item>
         <item>Low</item>
     </string-array>
-
     <string-array name="reports">
         <item>@string/task_next</item>
         <item>@string/task_long</item>

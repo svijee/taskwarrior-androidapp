@@ -44,6 +44,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
 
 import android.content.Context;
@@ -104,8 +105,9 @@ public class TaskDataSource {
 			}
 			br.close();
 		} catch (Exception e) {
-			Toast.makeText(context,
-					e.getMessage() + " Unable to read to external storage.",
+			Toast.makeText(
+					context,
+					context.getString(R.string.error_message_unable_read_storage),
 					Toast.LENGTH_LONG).show();
 		}
 
@@ -129,8 +131,9 @@ public class TaskDataSource {
 			}
 			br.close();
 		} catch (Exception e) {
-			Toast.makeText(context,
-					e.getMessage() + " Unable to read to external storage.",
+			Toast.makeText(
+					context,
+					context.getString(R.string.error_message_unable_read_storage),
 					Toast.LENGTH_LONG).show();
 		}
 
@@ -208,8 +211,9 @@ public class TaskDataSource {
 			writer.close();
 
 		} catch (Exception e) {
-			Toast.makeText(context,
-					e.getMessage() + " Unable to write to external storage.",
+			Toast.makeText(
+					context,
+					context.getString(R.string.error_message_unable_read_storage),
 					Toast.LENGTH_LONG).show();
 		}
 	}
@@ -233,8 +237,9 @@ public class TaskDataSource {
 			completedWriter.println(output);
 			completedWriter.close();
 		} catch (Exception e) {
-			Toast.makeText(context,
-					e.getMessage() + " Unable to write to external storage.",
+			Toast.makeText(
+					context,
+					context.getString(R.string.error_message_unable_read_storage),
 					Toast.LENGTH_LONG).show();
 		}
 	}
