@@ -71,6 +71,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	private String taskID = "";
 	private long timestamp;
 	private GregorianCalendar cal = new GregorianCalendar();
+	private boolean addingTaskFromOtherApp = false;
 
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
@@ -196,11 +197,12 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 				etTags.setText(task.getTags());
 			} else {
 				String action = intent.getAction();
-				if (action.equalsIgnoreCase(Intent.ACTION_SEND)
+				if ((action.equalsIgnoreCase(Intent.ACTION_SEND) || action.equalsIgnoreCase("com.google.android.gm.action.AUTO_SEND"))
 						&& intent.hasExtra(Intent.EXTRA_TEXT)) {
 					String s = intent.getStringExtra(Intent.EXTRA_TEXT);
 					TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
 					etTaskAdd.setText(s);
+					addingTaskFromOtherApp = true;
 				}
 			}
 		}
@@ -241,6 +243,10 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 									.toString(), getPriority(spPriority
 									.getSelectedItem().toString()), etTags
 									.getText().toString());
+					if (addingTaskFromOtherApp) {
+						Toast addedToast = Toast.makeText(this, getResources().getString(R.string.task_added), Toast.LENGTH_LONG);
+						addedToast.show();
+					}
 				} else {
 					datasource
 							.editTask(UUID.fromString(taskID), etTaskAdd

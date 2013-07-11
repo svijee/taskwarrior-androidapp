@@ -50,6 +50,7 @@
     <string name="tvTaskDescription">Beschreibung</string>
     <string name="typeTask">Task hinzufügen …</string>
     <string name="valid_description">Ein Task braucht eine Beschreibung.</string>
+    <string name="task_added">Task hinzugefügt</string>
 
     <string-array name="priority_list">
         <item>Keine Priorität</item>
