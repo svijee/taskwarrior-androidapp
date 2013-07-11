@@ -196,7 +196,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 				etTags.setText(task.getTags());
 			} else {
 				String action = intent.getAction();
-				if (action.equalsIgnoreCase(Intent.ACTION_SEND)
+				if ((action.equalsIgnoreCase(Intent.ACTION_SEND) || action.equalsIgnoreCase("com.google.android.gm.action.AUTO_SEND"))
 						&& intent.hasExtra(Intent.EXTRA_TEXT)) {
 					String s = intent.getStringExtra(Intent.EXTRA_TEXT);
 					TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
