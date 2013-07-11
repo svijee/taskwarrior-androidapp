@@ -219,8 +219,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();
-			alertDialog.show(getSupportFragmentManager(), "dialog");
+			safelyDismissActivity();
 			return true;
 		case R.id.task_add_done:
 			datasource = new TaskDataSource(this);
@@ -262,13 +261,13 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 			}
 			return true;
 		case R.id.task_add_cancel:
-			UnsavedDataDialogFragment alertDialog2 = new UnsavedDataDialogFragment();
-			alertDialog2.show(getSupportFragmentManager(), "dialog");
+			safelyDismissActivity();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
+
 
 	public String getPriority(String priority) {
 		Resources res = getResources();
@@ -293,8 +292,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-		UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();
-		alertDialog.show(getSupportFragmentManager(), "dialog");
+		safelyDismissActivity();
 	}
 
 	OnDateSetListener onDate = new OnDateSetListener() {
@@ -390,4 +388,28 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 		}
 	}
 
+	private void safelyDismissActivity() {
+			if (haveUnsavedData()) {
+				UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();
+				alertDialog.show(getSupportFragmentManager(), "dialog");
+			} else {
+				this.finish();
+				NavUtils.navigateUpFromSameTask(this);
+			}
+	}
+
+	private boolean haveUnsavedData() {
+		TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
+		TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
+		TextView etTaskTime = (TextView) findViewById(R.id.tvDueTime);
+		TextView actvProject = (TextView) findViewById(R.id.actvProject);
+		Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
+		TextView etTags = (TextView) findViewById(R.id.etTags);
+		return	etTaskAdd.getText().length() != 0 ||
+				etTaskDate.getText().length() != 0 ||
+				etTaskTime.getText().length() != 0 ||
+				actvProject.getText().length() != 0 ||
+				!getPriority(spPriority.getSelectedItem().toString()).equals("") ||
+				etTags.getText().length() != 0;
+	}
 }
