@@ -1,10 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <Preference
-        android:key="filePicker"
-        android:summary="@string/pref_storage_directory"
-        android:title="@string/pref_title_storage_directory" />
-
     <ListPreference
         android:defaultValue="@string/task_next"
         android:entries="@array/pref_default_report"

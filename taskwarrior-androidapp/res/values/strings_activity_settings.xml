@@ -9,8 +9,6 @@
     <string name="pref_default_report_title">Default report.</string>
     <string name="pref_default_report_summary">Set the default report.</string>
     <string name="pref_header_general">General</string>
-    <string name="pref_title_storage_directory">Storage Directory</string>
-    <string name="pref_storage_directory">Storage directory for Task Datafiles.</string>
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
     <string name="pref_title_due_task_notifications">Notifications</string>

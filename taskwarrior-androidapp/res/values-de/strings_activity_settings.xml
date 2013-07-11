@@ -7,8 +7,6 @@
 
     <!-- Example General settings -->
     <string name="pref_header_general">Allgemein</string>
-    <string name="pref_title_storage_directory">Speicherort</string>
-    <string name="pref_storage_directory">Speicherort der Task Datafiles.</string>
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Benachrichtigungen</string>
     <string name="pref_title_due_task_notifications">Benachrichtigungen</string>
