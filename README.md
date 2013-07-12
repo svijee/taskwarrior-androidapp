@@ -10,6 +10,16 @@ Developed By
 
 * Sujeevan Vijayakumaran - <mail@svij.org>
 
+Screenshots
+============
+**Main screen**
+
+![Main screen](img/screenshot_main.png)
+
+**Add task**
+
+![Add task](img/screenshot_addtask.png)
+
 License
 =======
 
@@ -47,13 +57,13 @@ See LICENSE in the subdirectories com_actionbar.
 Development
 =========
 
-# Requirements
+### Requirements
 
  * Installed [Android SDK](http://developer.android.com/sdk/) with tools
 
-# Set up
+### Set up
 
-## CLI way
+#### CLI way
 
 Fork this project at Github and add this repository as upstream.
 
@@ -96,6 +106,6 @@ $ adb lolcat
 When everything works make sure that your branch looks good, no generate files are committed and then make a pull request back here.
 
 
-## Eclipse way
+#### Eclipse way
 
 To be written...
