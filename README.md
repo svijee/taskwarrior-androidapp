@@ -57,6 +57,13 @@ See LICENSE in the subdirectories com_actionbar.
 Development
 =========
 
+## Mailinglist
+
+You can find development information on our [Mailinglist on Google Groups](https://groups.google.com/forum/#!forum/taskwarrior-android).
+Mailinlist subscribers can activate their Tester-Account for this App on [Google Play](https://play.google.com/apps/testing/org.svij.taskwarriorapp).
+
+## Coding
+
 ### Requirements
 
  * Installed [Android SDK](http://developer.android.com/sdk/) with tools
@@ -109,3 +116,16 @@ When everything works make sure that your branch looks good, no generate files a
 #### Eclipse way
 
 To be written...
+
+Contributors
+============
+Thanks to following contributers for sending in patches:
+
+ * [D-E-N](https://github.com/D-E-N)
+ * [erikw](https://github.com/erikw)
+ * [sitaktif](https://github.com/sitaktif)
+ * [dandyism](https://github.com/dandyism)
+ * [Hypfer](https://github.com/Hypfer)
+
+A big thanks goes to pbeckingham for creating [Taskwarrior](http://taskwarrior.org).
+
