@@ -26,10 +26,12 @@
 
 package org.svij.taskwarriorapp;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.svij.taskwarriorapp.db.ActionBarAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
 import android.app.AlarmManager;
@@ -46,7 +48,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -147,15 +149,17 @@ public class TasksActivity extends SherlockFragmentActivity implements
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		String[] menuDropdown = getResources().getStringArray(R.array.reports);
+		ArrayList<String> alMenuCommands = new ArrayList<String>();
 
-		ArrayAdapter<String> dropdownAdapter = new ArrayAdapter<String>(
-				actionBar.getThemedContext(),
-				android.R.layout.simple_spinner_item, android.R.id.text1,
-				menuDropdown);
-		dropdownAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		for (String s : menuDropdown) {
+			alMenuCommands.add(s);
+		}
 
-		actionBar.setListNavigationCallbacks(dropdownAdapter, this);
+		ActionBarAdapter abAdapter = new ActionBarAdapter(this,
+				R.layout.ab_main_view, alMenuCommands,
+				getSupportFragmentManager());
+
+		actionBar.setListNavigationCallbacks(abAdapter, this);
 
 		actionBar.setDisplayHomeAsUpEnabled(false);
 		actionBar.setHomeButtonEnabled(false);
@@ -218,8 +222,6 @@ public class TasksActivity extends SherlockFragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		// setActionBarTitle();
 
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
@@ -304,6 +306,7 @@ public class TasksActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+
 		switch (itemPosition) {
 		case 0:
 			listFragment.setColumn(getString(R.string.task_next));
@@ -325,6 +328,8 @@ public class TasksActivity extends SherlockFragmentActivity implements
 			break;
 		}
 		listFragment.setListView();
+		TextView subtitle = (TextView) findViewById(R.id.ab_basemaps_subtitle);
+		subtitle.setText(listFragment.getListView().getCount() + " Tasks");
 		return false;
 	}
 }
