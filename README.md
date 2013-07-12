@@ -93,7 +93,7 @@ Generate ant build files and more, API 15 is assumed to be target 1 (list with $
 
 ```bash
 $ android update project --path taskwarrior-androidapp/ --target 1
-$ android update project --path android-menudrawer/ --target 1
+$ android update project --path com_actionbar/ --target 1
 ```
 
 Create a virtual device (if you don't want to develop directly for you phone).
