@@ -5,7 +5,9 @@
     <string name="ab_submit">Task erstellen</string>
     <string name="app_name">Taskwarrior-App</string>
     <string name="cancel">Abbrechen</string>
+    <string name="database_default">Default</string>
     <string name="dialog_unsaved_data">Task verwerfen?</string>
+    <string name="dialog_database">Wähle Datenbank</string>
     <string name="done">Fertig</string>
     <string name="dueDate">Fällig bis</string>
     <string name="duedate">Fällig</string>
@@ -17,6 +19,7 @@
     <string name="menu_done">Fertig</string>
     <string name="menu_edit">Bearbeiten</string>
     <string name="menu_settings">Einstellungen</string>
+    <string name="menu_changeDatabase">Datenbanken</string>
     <string name="notification_title">\u0020Tasks fällig</string>
     <string name="notification_content_text">\u0020Tasks stehen heute an.</string>
     <string name="no_project">Kein Projekt</string>

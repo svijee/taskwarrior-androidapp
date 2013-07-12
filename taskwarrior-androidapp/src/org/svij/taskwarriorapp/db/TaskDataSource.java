@@ -48,15 +48,19 @@ import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 public class TaskDataSource {
 
 	private Context context;
-	private File taskDir = new File(Environment.getExternalStorageDirectory()
-			.toString() + "/taskwarrior");
+	SharedPreferences prefs;
+	private File taskDir = new File(Environment.getExternalStorageDirectory(), "taskwarrior");
+	private File taskDefault;
+
 	private static String COMPLETED_DATA = "completed.data";
 	private static String PENDING_DATA = "pending.data";
 	private static String UNDO_DATA = "undo.data";
@@ -64,6 +68,9 @@ public class TaskDataSource {
 
 	public TaskDataSource(Context context) {
 		this.context = context;
+		prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		taskDefault = new File(taskDir, prefs.getString("pref_database",
+				"default"));
 	}
 
 	public void createTask(String description, long due, String status,
@@ -85,14 +92,14 @@ public class TaskDataSource {
 			task.setDue(new Date(due));
 		}
 
-		taskDir.mkdirs();
+		taskDefault.mkdirs();
 		writeTaskToData(task, PENDING_DATA);
 	}
 
 	private ArrayList<String> getPendingLines() {
 		ArrayList<String> taskPending = new ArrayList<String>();
 
-		File pending = new File(taskDir, PENDING_DATA);
+		File pending = new File(taskDefault, PENDING_DATA);
 
 		try {
 			FileReader fr = new FileReader(pending);
@@ -118,7 +125,7 @@ public class TaskDataSource {
 
 		ArrayList<String> taskCompleted = new ArrayList<String>();
 
-		File completed = new File(taskDir, COMPLETED_DATA);
+		File completed = new File(taskDefault, COMPLETED_DATA);
 
 		try {
 			FileReader fr = new FileReader(completed);
@@ -187,8 +194,8 @@ public class TaskDataSource {
 
 	private void removeTaskFromData(UUID uuid) {
 
-		File pendingFile = new File(taskDir, PENDING_DATA);
-		File tempFile = new File(taskDir, TEMP_DATA);
+		File pendingFile = new File(taskDefault, PENDING_DATA);
+		File tempFile = new File(taskDefault, TEMP_DATA);
 
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(
@@ -220,7 +227,7 @@ public class TaskDataSource {
 
 	private void writeTaskToData(Task task, String file) {
 
-		File completedFile = new File(taskDir, file);
+		File completedFile = new File(taskDefault, file);
 
 		try {
 
@@ -443,13 +450,13 @@ public class TaskDataSource {
 	}
 
 	public void createDataIfNotExist() {
-		File pending = new File(taskDir, PENDING_DATA);
-		File completed = new File(taskDir, COMPLETED_DATA);
-		File undo = new File(taskDir, UNDO_DATA);
+		File pending = new File(taskDefault, PENDING_DATA);
+		File completed = new File(taskDefault, COMPLETED_DATA);
+		File undo = new File(taskDefault, UNDO_DATA);
 
 		try {
-			if (!taskDir.exists()) {
-				taskDir.mkdirs();
+			if (!taskDefault.exists()) {
+				taskDefault.mkdirs();
 			}
 			if (!pending.exists()) {
 				pending.createNewFile();

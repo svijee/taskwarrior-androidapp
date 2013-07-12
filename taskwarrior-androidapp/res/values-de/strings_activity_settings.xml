@@ -7,6 +7,10 @@
 
     <!-- Example General settings -->
     <string name="pref_header_general">Allgemein</string>
+    <string name="pref_default_report_title">Standard report</string>
+    <string name="pref_default_report_summary">Setze den standard report.</string>
+    <string name="pref_database">Datenbank</string>
+    <string name="pref_database_summary">Wähle die zu nutzende Datenbank.</string>
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Benachrichtigungen</string>
     <string name="pref_title_due_task_notifications">Benachrichtigungen</string>

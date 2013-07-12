@@ -31,7 +31,6 @@
         style="@android:style/TextAppearance.Large"
         android:dependency="notifications_due_task"
         android:key="notifications_alarm_time"
-        android:summary="Set your desired time for the lunch alarm"
         android:title="@string/pref_time" />
 
 </PreferenceScreen>

@@ -1,5 +1,7 @@
 package org.svij.taskwarriorapp;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -11,6 +13,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
@@ -29,6 +33,8 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 	 * shown on tablets.
 	 */
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
+	final static File taskDir = new File(Environment
+			.getExternalStorageDirectory().toString() + "/taskwarrior");
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -54,6 +60,28 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 
 		// Add 'general' preferences.
 		addPreferencesFromResource(R.xml.pref_general);
+
+		// Get task databases
+		ArrayList<String> alDatabases = new ArrayList<String>();
+
+		for (File file : taskDir.listFiles()) {
+			if (file.isDirectory()) {
+				alDatabases.add(file.getName().toString());
+			}
+		}
+
+		if (alDatabases.size() > 1) {
+			CharSequence[] cs = alDatabases
+					.toArray(new CharSequence[alDatabases.size()]);
+
+			ListPreference listPref = (ListPreference) findPreference("pref_database");
+			listPref.setEntries(cs);
+			listPref.setEntryValues(cs);
+			listPref.setSummary(listPref.getValue());
+			listPref.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+		} else {
+			getPreferenceScreen().removePreference((ListPreference) findPreference("pref_database"));
+		}
 
 		// Add 'notifications' preferences, and a corresponding header.
 		PreferenceCategory fakeHeader = new PreferenceCategory(this);

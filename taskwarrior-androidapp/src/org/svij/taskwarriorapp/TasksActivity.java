@@ -30,6 +30,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.svij.taskwarriorapp.db.TaskDataSource;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -72,6 +74,8 @@ public class TasksActivity extends SherlockFragmentActivity implements
 		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sidebar);
+		TaskDataSource datasource = new TaskDataSource(this);
+		datasource.createDataIfNotExist();
 
 		if (savedInstanceState == null) {
 			FragmentManager fragmentManager = getSupportFragmentManager();

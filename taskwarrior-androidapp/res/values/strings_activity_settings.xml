@@ -8,6 +8,8 @@
     <!-- Example General settings -->
     <string name="pref_default_report_title">Default report.</string>
     <string name="pref_default_report_summary">Set the default report.</string>
+    <string name="pref_database">Database</string>
+    <string name="pref_database_summary">Select the database.</string>
     <string name="pref_header_general">General</string>
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
