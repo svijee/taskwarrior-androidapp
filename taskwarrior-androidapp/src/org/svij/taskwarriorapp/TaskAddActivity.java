@@ -409,7 +409,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 				etTaskDate.getText().length() != 0 ||
 				etTaskTime.getText().length() != 0 ||
 				actvProject.getText().length() != 0 ||
-				!getPriority(spPriority.getSelectedItem().toString()).equals("") ||
+				!TextUtils.isEmpty(getPriority(spPriority.getSelectedItem().toString())) ||
 				etTags.getText().length() != 0;
 	}
 }
