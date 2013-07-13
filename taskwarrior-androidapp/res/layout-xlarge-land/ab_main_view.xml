@@ -15,12 +15,11 @@
 
     <TextView
         android:id="@+id/ab_basemaps_subtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/ab_basemaps_title"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="15sp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_below="@+id/ab_basemaps_title"
+        android:layout_alignParentBottom="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/white" />
 
 </RelativeLayout>
