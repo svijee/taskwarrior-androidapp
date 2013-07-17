@@ -9,6 +9,7 @@
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -49,7 +50,6 @@
             android:name="org.svij.taskwarriorapp.NotificationService"
             android:exported="false" >
         </service>
-
     </application>
 
 </manifest>

@@ -49,6 +49,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -190,6 +191,11 @@ public class TasksActivity extends SherlockFragmentActivity implements
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			paneLayout.openPane();
+			return true;
+		case R.id.task_sync:
+			Toast toast = Toast.makeText(this, "Sync will be added soon.",
+					Toast.LENGTH_LONG);
+			toast.show();
 			return true;
 		case R.id.task_add:
 			Intent intent = new Intent(this, TaskAddActivity.class);

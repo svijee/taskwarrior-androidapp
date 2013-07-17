@@ -3,6 +3,7 @@
     <string name="ab_cancel">Cancel task</string>
     <string name="ab_createTask">Create task</string>
     <string name="ab_submit">Submit task</string>
+    <string name="ab_syncTasks">Sync tasks</string>
     <string name="app_name">Taskwarrior-App</string>
     <string name="cancel">Cancel</string>
     <string name="dialog_unsaved_data">Dismiss task?</string>
