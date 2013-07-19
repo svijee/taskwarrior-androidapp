@@ -49,7 +49,7 @@
             android:textIsSelectable="false" />
 
         <View
-            android:id="@+id/item_separator"
+            android:id="@+id/item_separator2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/lvDividerHeight"
             android:layout_below="@id/tvDueDateStatic"
@@ -62,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/tvDueDateStatic"
+            android:layout_below="@+id/item_separator2"
             android:layout_marginLeft="10dp"
             android:layout_toLeftOf="@+id/tvDueTime"
             android:gravity="center"
@@ -75,7 +75,7 @@
             android:layout_width="128dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/tvDueDateStatic"
+            android:layout_below="@+id/item_separator2"
             android:layout_marginRight="10dp"
             android:gravity="center"
             android:hint="@string/setTime"

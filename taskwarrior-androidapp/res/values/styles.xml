@@ -5,7 +5,7 @@
     <style name="TextAppearance" parent="android:TextAppearance"></style>
 
     <style name="Dropdown.TextView" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
@@ -25,6 +25,7 @@
 
     <style name="listViewItem">
         <item name="android:padding">10dp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 </resources>
