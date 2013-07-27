@@ -34,12 +34,18 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 
+import org.svij.taskwarriorapp.TaskAddActivity.UnsavedDataDialogFragment;
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskBaseAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.NavUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -109,7 +115,26 @@ public class ArrayListFragment extends SherlockListFragment {
 	public void onTaskButtonClick(View view) {
 		switch (view.getId()) {
 		case R.id.btnTaskDelete:
-			deleteTask(getTaskWithId(selectedItemId));
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			builder.setMessage(R.string.dialog_delete_task)
+					.setPositiveButton(R.string.ok,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									deleteTask(getTaskWithId(selectedItemId));
+								}
+							})
+					.setNegativeButton(R.string.cancel,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									// User cancelled the dialog
+									// Dialog is closing
+								}
+							});
+
+			builder.create();
+			builder.show();
 			break;
 		case R.id.btnTaskModify:
 			showAddTaskActivity(getTaskWithId(selectedItemId));

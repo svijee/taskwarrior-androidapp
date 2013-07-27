@@ -7,6 +7,7 @@
     <string name="app_name">Taskwarrior-App</string>
     <string name="cancel">Cancel</string>
     <string name="dialog_unsaved_data">Dismiss task?</string>
+    <string name="dialog_delete_task">Permanently delete task?</string>
     <string name="done">Done</string>
     <string name="dueDate">Due date</string>
     <string name="duedate">Due</string>
