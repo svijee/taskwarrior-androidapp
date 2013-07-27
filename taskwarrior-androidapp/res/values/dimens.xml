@@ -7,4 +7,7 @@
     <dimen name="lvDividerWidth">1dp</dimen>
     <dimen name="lvSectionDividerMarginTop">5dp</dimen>
 
+    <dimen name="taskDescription_small">8sp</dimen>
+    <dimen name="taskDescription_medium">10sp</dimen>
+    <dimen name="taskDescription_large">12sp</dimen>
 </resources>

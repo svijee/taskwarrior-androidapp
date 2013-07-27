@@ -34,6 +34,8 @@ import org.svij.taskwarriorapp.data.Task;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -118,6 +120,17 @@ public class TaskBaseAdapter extends BaseAdapter {
 		final Task task = entries.get(position);
 		if (task != null) {
 			holder.taskDescription.setText(task.getDescription());
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			String textAppearance = prefs.getString("pref_appearance_descriptionTextSize", context.getResources().getString(R.string.pref_appearance_descriptionTextSize_small));
+
+			if (textAppearance.equals(context.getResources().getString(R.string.pref_appearance_descriptionTextSize_small))) {
+				holder.taskDescription.setTextSize(context.getResources().getDimension(R.dimen.taskDescription_small));
+			} else if (textAppearance.equals(context.getResources().getString(R.string.pref_appearance_descriptionTextSize_medium))) {
+				holder.taskDescription.setTextSize(context.getResources().getDimension(R.dimen.taskDescription_medium));
+			} else {
+				holder.taskDescription.setTextSize(context.getResources().getDimension(R.dimen.taskDescription_large));
+			}
+
 			holder.taskProject.setText(task.getProject());
 
 			if (task.getDue() != null && !(task.getDue().getTime() == 0)) {

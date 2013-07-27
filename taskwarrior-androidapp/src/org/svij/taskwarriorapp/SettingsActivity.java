@@ -89,6 +89,14 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		getPreferenceScreen().addPreference(fakeHeader);
 		addPreferencesFromResource(R.xml.pref_notification);
 
+		PreferenceCategory fakeHeader2 = new PreferenceCategory(this);
+		fakeHeader2.setTitle(R.string.pref_header_appearance);
+		getPreferenceScreen().addPreference(fakeHeader2);
+		addPreferencesFromResource(R.xml.pref_appearance);
+
+		ListPreference listPrefTextSize = (ListPreference) findPreference("pref_appearance_descriptionTextSize");
+		listPrefTextSize.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+		listPrefTextSize.setSummary(listPrefTextSize.getValue());
 		bindPreferenceSummaryToValue(findPreference("notifications_due_task_ringtone"));
 	}
 

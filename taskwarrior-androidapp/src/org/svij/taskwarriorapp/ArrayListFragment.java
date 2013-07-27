@@ -173,6 +173,7 @@ public class ArrayListFragment extends SherlockListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		setListView();
 	}
 
 	@Override

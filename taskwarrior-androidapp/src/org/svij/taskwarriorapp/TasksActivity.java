@@ -102,12 +102,6 @@ public class TasksActivity extends SherlockFragmentActivity implements
 			listFragment.setColumn(savedInstanceState.getString(PROJECT));
 		}
 
-		SectionsPagerAdapter adapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
-		ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-		viewPager.setOffscreenPageLimit(3);
-		viewPager.setAdapter(adapter);
-
 		paneLayout = (SlidingPaneLayout) findViewById(R.id.drawer_layout);
 
 		paneLayout
@@ -144,26 +138,6 @@ public class TasksActivity extends SherlockFragmentActivity implements
 						}
 					}
 				});
-
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
-		String[] menuDropdown = getResources().getStringArray(R.array.reports);
-		ArrayList<String> alMenuCommands = new ArrayList<String>();
-
-		for (String s : menuDropdown) {
-			alMenuCommands.add(s);
-		}
-
-		ActionBarAdapter abAdapter = new ActionBarAdapter(this,
-				R.layout.ab_main_view, alMenuCommands,
-				getSupportFragmentManager());
-
-		actionBar.setListNavigationCallbacks(abAdapter, this);
-
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setHomeButtonEnabled(true);
 	}
 
 	@Override
@@ -248,6 +222,31 @@ public class TasksActivity extends SherlockFragmentActivity implements
 							+ AlarmManager.INTERVAL_DAY, pi);
 		}
 
+		SectionsPagerAdapter adapter = new SectionsPagerAdapter(
+				getSupportFragmentManager());
+		ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+		viewPager.setOffscreenPageLimit(3);
+		viewPager.setAdapter(adapter);
+
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
+		String[] menuDropdown = getResources().getStringArray(R.array.reports);
+		ArrayList<String> alMenuCommands = new ArrayList<String>();
+
+		for (String s : menuDropdown) {
+			alMenuCommands.add(s);
+		}
+
+		ActionBarAdapter abAdapter = new ActionBarAdapter(this,
+				R.layout.ab_main_view, alMenuCommands,
+				getSupportFragmentManager());
+
+		actionBar.setListNavigationCallbacks(abAdapter, this);
+
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setHomeButtonEnabled(true);
 	}
 
 	@Override
