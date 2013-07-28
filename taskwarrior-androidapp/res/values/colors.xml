@@ -6,5 +6,6 @@
     <color name="task_yellow">#FFFF99</color>
     <color name="task_green">#99FF99</color>
     <color name="task_blue">#99FFFF</color>
+    <color name="stroke">#dddddd</color>
 
 </resources>

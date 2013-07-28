@@ -47,7 +47,7 @@
     <string name="task_newest">Neueste Tasks</string>
     <string name="task_next">task next</string>
     <string name="task_oldest">Älteste Tasks</string>
-    <string name="task_reminder">Erinnerung hinzufügen</string>
+    <string name="task_reminder">Erinnerung</string>
     <string name="task_selected">Task ausgewählt</string>
     <string name="task_wait">Wartende Tasks</string>
     <string name="title_activity_main">Taskwarrior</string>

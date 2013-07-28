@@ -120,18 +120,29 @@ public class TaskBaseAdapter extends BaseAdapter {
 		final Task task = entries.get(position);
 		if (task != null) {
 			holder.taskDescription.setText(task.getDescription());
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-			String textAppearance = prefs.getString("pref_appearance_descriptionTextSize", context.getResources().getString(R.string.pref_appearance_descriptionTextSize_small));
+			SharedPreferences prefs = PreferenceManager
+					.getDefaultSharedPreferences(context);
+			String textAppearance = prefs
+					.getString(
+							"pref_appearance_descriptionTextSize",
+							context.getResources()
+									.getString(
+											R.string.pref_appearance_descriptionTextSize_small));
 
-			if (textAppearance.equals(context.getResources().getString(R.string.pref_appearance_descriptionTextSize_small))) {
-				holder.taskDescription.setTextSize(context.getResources().getDimension(R.dimen.taskDescription_small));
-			} else if (textAppearance.equals(context.getResources().getString(R.string.pref_appearance_descriptionTextSize_medium))) {
-				holder.taskDescription.setTextSize(context.getResources().getDimension(R.dimen.taskDescription_medium));
+			if (textAppearance.equals(context.getResources().getString(
+					R.string.pref_appearance_descriptionTextSize_small))) {
+				holder.taskDescription.setTextSize(context.getResources()
+						.getDimension(R.dimen.taskDescription_small));
+			} else if (textAppearance.equals(context.getResources().getString(
+					R.string.pref_appearance_descriptionTextSize_medium))) {
+				holder.taskDescription.setTextSize(context.getResources()
+						.getDimension(R.dimen.taskDescription_medium));
 			} else {
-				holder.taskDescription.setTextSize(context.getResources().getDimension(R.dimen.taskDescription_large));
+				holder.taskDescription.setTextSize(context.getResources()
+						.getDimension(R.dimen.taskDescription_large));
 			}
 
-			if(task.getProject() != null) {
+			if (task.getProject() != null) {
 				holder.taskProject.setText(task.getProject());
 			} else {
 				holder.taskProject.setVisibility(View.GONE);
@@ -163,7 +174,8 @@ public class TaskBaseAdapter extends BaseAdapter {
 							.getResources().getColor(R.color.task_green));
 				}
 			} else {
-				holder.taskPriorityView.setVisibility(View.GONE);
+				holder.taskPriorityView.setBackgroundColor(context
+						.getResources().getColor(android.R.color.transparent));
 			}
 
 			if (task.getStatus().equals("completed")

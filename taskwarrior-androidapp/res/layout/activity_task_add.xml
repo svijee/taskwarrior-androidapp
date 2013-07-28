@@ -92,7 +92,7 @@
             android:textIsSelectable="false" />
 
         <View
-            android:id="@+id/item_separator"
+            android:id="@+id/item_separator3"
             android:layout_width="match_parent"
             android:layout_height="@dimen/lvDividerHeight"
             android:layout_below="@id/tvProjectStatic"
@@ -122,7 +122,7 @@
             android:textIsSelectable="false" />
 
         <View
-            android:id="@+id/item_separator"
+            android:id="@+id/item_separator4"
             android:layout_width="match_parent"
             android:layout_height="@dimen/lvDividerHeight"
             android:layout_below="@id/tvPriorityStatic"
@@ -150,7 +150,7 @@
             android:textSize="18sp" />
 
         <View
-            android:id="@+id/item_separator"
+            android:id="@+id/item_separator5"
             android:layout_width="match_parent"
             android:layout_height="@dimen/lvDividerHeight"
             android:layout_below="@id/tvTagsStatic"
