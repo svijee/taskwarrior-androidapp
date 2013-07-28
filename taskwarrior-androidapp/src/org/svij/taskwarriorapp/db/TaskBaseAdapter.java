@@ -131,7 +131,11 @@ public class TaskBaseAdapter extends BaseAdapter {
 				holder.taskDescription.setTextSize(context.getResources().getDimension(R.dimen.taskDescription_large));
 			}
 
-			holder.taskProject.setText(task.getProject());
+			if(task.getProject() != null) {
+				holder.taskProject.setText(task.getProject());
+			} else {
+				holder.taskProject.setVisibility(View.GONE);
+			}
 
 			if (task.getDue() != null && !(task.getDue().getTime() == 0)) {
 				if (!DateFormat.getTimeInstance().format(task.getDue())
@@ -144,7 +148,7 @@ public class TaskBaseAdapter extends BaseAdapter {
 							.format(task.getDue()));
 				}
 			} else {
-				holder.taskDueDate.setText(null);
+				holder.taskDueDate.setVisibility(View.GONE);
 			}
 
 			if (!TextUtils.isEmpty(task.getPriority())) {
@@ -159,8 +163,7 @@ public class TaskBaseAdapter extends BaseAdapter {
 							.getResources().getColor(R.color.task_green));
 				}
 			} else {
-				holder.taskPriorityView.setBackgroundColor(context
-						.getResources().getColor(android.R.color.transparent));
+				holder.taskPriorityView.setVisibility(View.GONE);
 			}
 
 			if (task.getStatus().equals("completed")
