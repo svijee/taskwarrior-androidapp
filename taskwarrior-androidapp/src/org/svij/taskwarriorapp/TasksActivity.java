@@ -63,6 +63,7 @@ public class TasksActivity extends SherlockFragmentActivity implements
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	private ArrayListFragment listFragment;
 	private SlidingPaneLayout paneLayout;
+	private ActionBar actionBar;
 
 	public SlidingPaneLayout getPaneLayout() {
 		return paneLayout;
@@ -138,6 +139,30 @@ public class TasksActivity extends SherlockFragmentActivity implements
 						}
 					}
 				});
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		actionBar = getSupportActionBar();
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
+		String[] menuDropdown = getResources().getStringArray(R.array.reports);
+		ArrayList<String> alMenuCommands = new ArrayList<String>();
+
+		for (String s : menuDropdown) {
+			alMenuCommands.add(s);
+		}
+
+		ActionBarAdapter abAdapter = new ActionBarAdapter(this,
+				R.layout.ab_main_view, alMenuCommands,
+				getSupportFragmentManager());
+
+		actionBar.setListNavigationCallbacks(abAdapter, this);
+
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setHomeButtonEnabled(true);
 	}
 
 	@Override
@@ -227,26 +252,6 @@ public class TasksActivity extends SherlockFragmentActivity implements
 		ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
 		viewPager.setOffscreenPageLimit(3);
 		viewPager.setAdapter(adapter);
-
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
-		String[] menuDropdown = getResources().getStringArray(R.array.reports);
-		ArrayList<String> alMenuCommands = new ArrayList<String>();
-
-		for (String s : menuDropdown) {
-			alMenuCommands.add(s);
-		}
-
-		ActionBarAdapter abAdapter = new ActionBarAdapter(this,
-				R.layout.ab_main_view, alMenuCommands,
-				getSupportFragmentManager());
-
-		actionBar.setListNavigationCallbacks(abAdapter, this);
-
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setHomeButtonEnabled(true);
 	}
 
 	@Override
