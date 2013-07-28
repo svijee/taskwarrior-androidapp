@@ -7,8 +7,5 @@
         android:key="settings_date_alignement"
         android:summary="@string/pref_default_report_summary"
         android:title="@string/pref_default_report_title" />
-    <ListPreference
-        android:key="pref_database"
-        android:title="@string/pref_database" />
 
 </PreferenceScreen>

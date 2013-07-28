@@ -7,6 +7,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -74,13 +75,19 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 			CharSequence[] cs = alDatabases
 					.toArray(new CharSequence[alDatabases.size()]);
 
-			ListPreference listPref = (ListPreference) findPreference("pref_database");
+			SharedPreferences prefs = PreferenceManager
+					.getDefaultSharedPreferences(this);
+
+			ListPreference listPref = new ListPreference(this);
+			// ListPreference listPref = (ListPreference)
+			// findPreference("pref_database");
+			listPref.setKey("pref_database");
+			listPref.setTitle(getString(R.string.pref_database));
 			listPref.setEntries(cs);
 			listPref.setEntryValues(cs);
-			listPref.setSummary(listPref.getValue());
+			listPref.setSummary(prefs.getString("pref_database", "default"));
 			listPref.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-		} else {
-			getPreferenceScreen().removePreference((ListPreference) findPreference("pref_database"));
+			getPreferenceScreen().addPreference(listPref);
 		}
 
 		// Add 'notifications' preferences, and a corresponding header.
@@ -95,7 +102,8 @@ public class SettingsActivity extends SherlockPreferenceActivity {
 		addPreferencesFromResource(R.xml.pref_appearance);
 
 		ListPreference listPrefTextSize = (ListPreference) findPreference("pref_appearance_descriptionTextSize");
-		listPrefTextSize.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+		listPrefTextSize
+				.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 		listPrefTextSize.setSummary(listPrefTextSize.getValue());
 		bindPreferenceSummaryToValue(findPreference("notifications_due_task_ringtone"));
 	}
