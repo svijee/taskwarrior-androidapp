@@ -143,12 +143,14 @@ public class TaskBaseAdapter extends BaseAdapter {
 			}
 
 			if (task.getProject() != null) {
+				holder.taskProject.setVisibility(View.VISIBLE);
 				holder.taskProject.setText(task.getProject());
 			} else {
 				holder.taskProject.setVisibility(View.GONE);
 			}
 
 			if (task.getDue() != null && !(task.getDue().getTime() == 0)) {
+				holder.taskDueDate.setVisibility(View.VISIBLE);
 				if (!DateFormat.getTimeInstance().format(task.getDue())
 						.equals("00:00:00")) {
 					holder.taskDueDate.setText(DateFormat.getDateTimeInstance(
