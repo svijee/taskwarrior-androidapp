@@ -233,18 +233,17 @@ public class TasksActivity extends SherlockFragmentActivity implements
 		long date_long = prefs.getLong("notifications_alarm_time",
 				System.currentTimeMillis());
 
-		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-		Intent i = new Intent(this, NotificationService.class);
-		PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
+		Intent myIntent = new Intent(this, NotificationService.class);
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		PendingIntent pendingIntent = PendingIntent.getService(this, 0, myIntent, 0);
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(date_long);
 
+		alarmManager.cancel(pendingIntent);
 		if (!calendar.getTime().before(new Date())) {
-			am.cancel(pi);
-			am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-					calendar.getTimeInMillis(), calendar.getTimeInMillis()
-							+ AlarmManager.INTERVAL_DAY, pi);
+			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+					calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);		
 		}
 
 		SectionsPagerAdapter adapter = new SectionsPagerAdapter(
