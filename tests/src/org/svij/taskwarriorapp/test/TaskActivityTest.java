@@ -1,6 +1,6 @@
 package org.svij.taskwarriorapp.test;
 
-import org.svij.taskwarriorapp.ArrayListFragment;
+import org.svij.taskwarriorapp.MenuListFragment;
 import org.svij.taskwarriorapp.TaskAddActivity;
 import org.svij.taskwarriorapp.TasksActivity;
 
@@ -16,7 +16,7 @@ public class TaskActivityTest extends
 		ActivityInstrumentationTestCase2<TasksActivity> {
 	private TasksActivity taskActivity;
 	private TaskAddActivity taskAddActivity;
-	private ArrayListFragment alFragment;
+	private MenuListFragment alFragment;
 
 	public TaskActivityTest() {
 		super(TasksActivity.class);
@@ -27,7 +27,7 @@ public class TaskActivityTest extends
 
 		setActivityInitialTouchMode(false);
 		taskActivity = (TasksActivity) getActivity();
-		alFragment = (ArrayListFragment) taskActivity
+		alFragment = (MenuListFragment) taskActivity
 				.getSupportFragmentManager().findFragmentById(
 						org.svij.taskwarriorapp.R.id.content_frame);
 	}

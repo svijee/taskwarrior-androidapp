@@ -4,7 +4,7 @@
 
     <style name="TextAppearance" parent="android:TextAppearance"></style>
 
-    <style name="Dropdown.TextView" parent="@android:style/Widget.DropDownItem.Spinner">
+    <style name="Dropdown.TextView" parent="@android:style/Widget.DeviceDefault.Light.Spinner">
         <item name="android:textSize">18sp</item>
         <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
