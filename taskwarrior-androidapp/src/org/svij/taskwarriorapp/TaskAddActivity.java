@@ -47,26 +47,25 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
-
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
-public class TaskAddActivity extends SherlockFragmentActivity {
+public class TaskAddActivity extends FragmentActivity {
 	private TaskDataSource datasource;
 	private String taskID = "";
 	private long timestamp;
@@ -74,11 +73,11 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 	private boolean addingTaskFromOtherApp = false;
 
 	public void onCreate(Bundle savedInstanceState) {
-		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
+		setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_add);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		final TextView tvDueDate = (TextView) findViewById(R.id.tvDueDate);
 		tvDueDate.setOnClickListener(new View.OnClickListener() {
@@ -211,7 +210,7 @@ public class TaskAddActivity extends SherlockFragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.activity_task_add, menu);
+		getMenuInflater().inflate(R.menu.activity_task_add, menu);
 		return true;
 	}
 

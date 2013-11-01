@@ -33,10 +33,9 @@ import java.util.UUID;
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
 import android.widget.AdapterView;
@@ -46,11 +45,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MenuListFragment extends SherlockListFragment {
+public class MenuListFragment extends ListFragment {
 
 	TaskDataSource datasource;
 	private long selectedItemId = -1;
-	ArrayListFragment listFragment;
+	TaskListFragment taskListFragment;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -60,7 +59,7 @@ public class MenuListFragment extends SherlockListFragment {
 		ListView listview = getListView();
 		listview.setDividerHeight(0);
 
-		listFragment = (ArrayListFragment) getSherlockActivity()
+		taskListFragment = (TaskListFragment) getActivity()
 				.getSupportFragmentManager().findFragmentById(
 						R.id.content_frame);
 
@@ -73,10 +72,10 @@ public class MenuListFragment extends SherlockListFragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 
-				listFragment.onTaskButtonClick(view);
+				taskListFragment.onTaskButtonClick(view);
 				String menu_text = ((TextView) view).getText().toString();
-				listFragment.setColumn(menu_text);
-				listFragment.setListView();
+				taskListFragment.setColumn(menu_text);
+				taskListFragment.setListView();
 				paneLayout.closePane();
 				getListView().setItemChecked(position, true);
 			}
@@ -129,7 +128,7 @@ public class MenuListFragment extends SherlockListFragment {
 	protected void onSavedInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		getChildFragmentManager().putFragment(outState,
-				ArrayListFragment.class.getName(), listFragment);
+				TaskListFragment.class.getName(), taskListFragment);
 	}
 
 	private void showAddTaskActivity(UUID uuid) {

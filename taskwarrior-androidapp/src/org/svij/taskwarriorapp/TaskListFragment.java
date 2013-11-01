@@ -42,15 +42,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-
-public class ArrayListFragment extends SherlockListFragment {
+public class TaskListFragment extends ListFragment {
 
 	TaskDataSource datasource;
 	private long selectedItemId = -1;

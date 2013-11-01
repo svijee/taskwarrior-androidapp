@@ -34,6 +34,8 @@ import java.util.Locale;
 import org.svij.taskwarriorapp.db.ActionBarAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -42,26 +44,23 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SlidingPaneLayout;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-
-public class TasksActivity extends SherlockFragmentActivity implements
-		ActionBar.OnNavigationListener {
+public class TasksActivity extends FragmentActivity implements OnNavigationListener {
 	private static final String PROJECT = "project";
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-	private ArrayListFragment listFragment;
+	private TaskListFragment taskListFragment;
 	private SlidingPaneLayout paneLayout;
 	private ActionBar actionBar;
 
@@ -75,7 +74,7 @@ public class TasksActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		setTheme(R.style.Theme_Sherlock_Light_DarkActionBar);
+		setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sidebar);
 		TaskDataSource datasource = new TaskDataSource(this);
@@ -86,21 +85,21 @@ public class TasksActivity extends SherlockFragmentActivity implements
 			FragmentTransaction fragmentTransaction = fragmentManager
 					.beginTransaction();
 
-			listFragment = new ArrayListFragment();
+			taskListFragment = new TaskListFragment();
 
-			fragmentTransaction.replace(R.id.content_frame, listFragment);
+			fragmentTransaction.replace(R.id.content_frame, taskListFragment);
 			fragmentTransaction.commit();
 
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(this);
 			String defaultReport = prefs.getString("settings_date_alignement",
 					getResources().getString(R.string.task_next));
-			listFragment.setColumn(defaultReport);
+			taskListFragment.setColumn(defaultReport);
 		} else {
-			listFragment = (ArrayListFragment) getSupportFragmentManager()
+			taskListFragment = (TaskListFragment) getSupportFragmentManager()
 					.getFragment(savedInstanceState,
-							ArrayListFragment.class.getName());
-			listFragment.setColumn(savedInstanceState.getString(PROJECT));
+							TaskListFragment.class.getName());
+			taskListFragment.setColumn(savedInstanceState.getString(PROJECT));
 		}
 
 		paneLayout = (SlidingPaneLayout) findViewById(R.id.drawer_layout);
@@ -117,8 +116,8 @@ public class TasksActivity extends SherlockFragmentActivity implements
 					public void onPanelOpened(View view) {
 						switch (view.getId()) {
 						case R.id.content_frame:
-							getSupportActionBar().setHomeButtonEnabled(false);
-							getSupportActionBar().setDisplayHomeAsUpEnabled(
+							getActionBar().setHomeButtonEnabled(false);
+							getActionBar().setDisplayHomeAsUpEnabled(
 									false);
 							break;
 						default:
@@ -130,8 +129,8 @@ public class TasksActivity extends SherlockFragmentActivity implements
 					public void onPanelClosed(View view) {
 						switch (view.getId()) {
 						case R.id.content_frame:
-							getSupportActionBar().setHomeButtonEnabled(true);
-							getSupportActionBar().setDisplayHomeAsUpEnabled(
+							getActionBar().setHomeButtonEnabled(true);
+							getActionBar().setDisplayHomeAsUpEnabled(
 									true);
 							break;
 						default:
@@ -144,7 +143,7 @@ public class TasksActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onStart() {
 		super.onStart();
-		actionBar = getSupportActionBar();
+		actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
@@ -169,13 +168,13 @@ public class TasksActivity extends SherlockFragmentActivity implements
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		// Restore the previously serialized current dropdown position.
 		if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-			getSupportActionBar().setSelectedNavigationItem(
+			getActionBar().setSelectedNavigationItem(
 					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
 		}
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
+		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.activity_main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -211,7 +210,7 @@ public class TasksActivity extends SherlockFragmentActivity implements
 	}
 
 	public void onTaskButtonClick(View view) {
-		listFragment.onTaskButtonClick(view);
+		taskListFragment.onTaskButtonClick(view);
 	}
 
 	@Override
@@ -262,9 +261,9 @@ public class TasksActivity extends SherlockFragmentActivity implements
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		getSupportFragmentManager().putFragment(outState,
-				ArrayListFragment.class.getName(), listFragment);
-		outState.putString(PROJECT, listFragment.getColumn());
-		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getSupportActionBar()
+				TaskListFragment.class.getName(), taskListFragment);
+		outState.putString(PROJECT, taskListFragment.getColumn());
+		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar()
 				.getSelectedNavigationIndex());
 	}
 
@@ -283,7 +282,7 @@ public class TasksActivity extends SherlockFragmentActivity implements
 				fragment.setArguments(args);
 				return fragment;
 			} else if (position == 1) {
-				Fragment fragment = new ArrayListFragment();
+				Fragment fragment = new TaskListFragment();
 				Bundle args = new Bundle();
 				args.putInt("section_number", position + 1);
 				fragment.setArguments(args);
@@ -318,27 +317,27 @@ public class TasksActivity extends SherlockFragmentActivity implements
 
 		switch (itemPosition) {
 		case 0:
-			listFragment.setColumn(getString(R.string.task_next));
+			taskListFragment.setColumn(getString(R.string.task_next));
 			break;
 		case 1:
-			listFragment.setColumn(getString(R.string.task_long));
+			taskListFragment.setColumn(getString(R.string.task_long));
 			break;
 		case 2:
-			listFragment.setColumn(getString(R.string.task_all));
+			taskListFragment.setColumn(getString(R.string.task_all));
 			break;
 		case 3:
-			listFragment.setColumn(getString(R.string.task_wait));
+			taskListFragment.setColumn(getString(R.string.task_wait));
 			break;
 		case 4:
-			listFragment.setColumn(getString(R.string.task_newest));
+			taskListFragment.setColumn(getString(R.string.task_newest));
 			break;
 		case 5:
-			listFragment.setColumn(getString(R.string.task_oldest));
+			taskListFragment.setColumn(getString(R.string.task_oldest));
 			break;
 		}
-		listFragment.setListView();
+		taskListFragment.setListView();
 		TextView subtitle = (TextView) findViewById(R.id.ab_basemaps_subtitle);
-		subtitle.setText(listFragment.getListView().getCount() + " Tasks");
+		subtitle.setText(taskListFragment.getListView().getCount() + " Tasks");
 		return false;
 	}
 }

@@ -52,7 +52,7 @@
 
         <Button
             android:id="@+id/btnTaskDelete"
-            style="@style/Widget.Sherlock.ActionButton"
+            style="@android:style/Widget.ActionButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -72,7 +72,7 @@
 
         <Button
             android:id="@+id/btnTaskModify"
-            style="@style/Widget.Sherlock.ActionButton"
+            style="@android:style/Widget.ActionButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -92,7 +92,7 @@
 
         <Button
             android:id="@+id/btnTaskAddReminder"
-            style="@style/Widget.Sherlock.ActionButton"
+            style="@android:style/Widget.ActionButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -112,7 +112,7 @@
 
         <Button
             android:id="@+id/btnTaskDone"
-            style="@style/Widget.Sherlock.ActionButton"
+            style="@android:style/Widget.ActionButton"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"

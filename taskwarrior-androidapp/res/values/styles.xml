@@ -1,10 +1,10 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="Theme.Sherlock.Light.DarkActionBar" />
+    <style name="AppTheme" parent="@android:style/Theme.Holo.Light" />
 
     <style name="TextAppearance" parent="android:TextAppearance"></style>
 
-    <style name="Dropdown.TextView" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
+    <style name="Dropdown.TextView" parent="@android:style/Widget.DropDownItem.Spinner">
         <item name="android:textSize">18sp</item>
         <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
