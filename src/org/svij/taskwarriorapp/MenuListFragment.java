@@ -47,7 +47,7 @@ import android.widget.Toast;
 
 public class MenuListFragment extends ListFragment {
 
-	TaskDataSource datasource;
+	TaskDataSource data;
 	private long selectedItemId = -1;
 	TaskListFragment taskListFragment;
 
@@ -83,12 +83,12 @@ public class MenuListFragment extends ListFragment {
 	}
 
 	public void setListView() {
-		datasource = new TaskDataSource(getActivity());
-		datasource.createDataIfNotExist();
+		data = new TaskDataSource(getActivity());
+		data.createDataIfNotExist();
 
 		ArrayList<String> menuCommands = new ArrayList<String>();
 
-		menuCommands.addAll(datasource.getProjects());
+		menuCommands.addAll(data.getProjects());
 		if (menuCommands.remove(null)) {
 			menuCommands.add(getString(R.string.no_project));
 		}
@@ -108,7 +108,7 @@ public class MenuListFragment extends ListFragment {
 			showAddTaskActivity(getTaskWithId(selectedItemId));
 			break;
 		case R.id.btnTaskAddReminder:
-			Task task = datasource.getTask(getTaskWithId(selectedItemId));
+			Task task = data.getTask(getTaskWithId(selectedItemId));
 			Intent intent = new Intent(Intent.ACTION_EDIT);
 			intent.setType("vnd.android.cursor.item/event");
 			if (task.getDue() != null) {
@@ -138,22 +138,22 @@ public class MenuListFragment extends ListFragment {
 	}
 
 	private void deleteTask(UUID uuid) {
-		datasource.deleteTask(uuid);
+		data.deleteTask(uuid);
 		setListView();
 		Toast.makeText(
 				getActivity(),
 				getString(R.string.task_action_delete) + " '"
-						+ datasource.getTask(uuid).getDescription() + "'",
+						+ data.getTask(uuid).getDescription() + "'",
 				Toast.LENGTH_SHORT).show();
 	}
 
 	private void doneTask(UUID uuid) {
-		datasource.doneTask(uuid);
+		data.doneTask(uuid);
 		setListView();
 		Toast.makeText(
 				getActivity(),
 				getString(R.string.task_action_done) + " '"
-						+ datasource.getTask(uuid).getDescription() + "'",
+						+ data.getTask(uuid).getDescription() + "'",
 				Toast.LENGTH_SHORT).show();
 	}
 

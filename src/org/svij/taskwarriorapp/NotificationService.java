@@ -21,15 +21,15 @@ public class NotificationService extends Service {
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		TaskDataSource datasource = new TaskDataSource(getApplicationContext());
-		ArrayList<String> tasks = datasource.getDueTasks();
+		TaskDataSource data = new TaskDataSource(getApplicationContext());
+		ArrayList<String> tasks = data.getDueTasks();
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
 
 		if (prefs.getBoolean("notifications_due_task", true)) {
 
 			if (tasks.size() > 0) {
-				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+				NotificationCompat.Builder builder = new NotificationCompat.Builder(
 						this)
 						.setSmallIcon(R.drawable.ic_launcher)
 						.setContentTitle(
@@ -41,18 +41,18 @@ public class NotificationService extends Service {
 										+ getResources()
 												.getString(
 														R.string.notification_content_text));
-				mBuilder.setAutoCancel(true);
+				builder.setAutoCancel(true);
 
 				String alarms = prefs.getString(
 						"notifications_due_task_ringtone", "default ringtone");
 				Uri uri = Uri.parse(alarms);
 
-				mBuilder.setSound(uri);
+				builder.setSound(uri);
 
 				if (prefs.getBoolean("notifications_due_task_vibrate", true)) {
-					mBuilder.setDefaults(Notification.DEFAULT_ALL);
+					builder.setDefaults(Notification.DEFAULT_ALL);
 				} else {
-					mBuilder.setDefaults(Notification.DEFAULT_SOUND);
+					builder.setDefaults(Notification.DEFAULT_SOUND);
 				}
 
 				Intent resultIntent = new Intent(this, TasksActivity.class);
@@ -63,12 +63,10 @@ public class NotificationService extends Service {
 				PendingIntent resultPendingIntent = stackBuilder
 						.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-				mBuilder.setContentIntent(resultPendingIntent);
+				builder.setContentIntent(resultPendingIntent);
 
-				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-				mNotificationManager.notify(0, mBuilder.build());
-
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.notify(0, builder.build());
 			}
 		}
 

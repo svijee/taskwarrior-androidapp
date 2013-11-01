@@ -57,42 +57,35 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TasksActivity extends FragmentActivity implements OnNavigationListener {
+public class TasksActivity extends FragmentActivity implements
+		OnNavigationListener {
 	private static final String PROJECT = "project";
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	private TaskListFragment taskListFragment;
 	private SlidingPaneLayout paneLayout;
 	private ActionBar actionBar;
 
-	public SlidingPaneLayout getPaneLayout() {
-		return paneLayout;
-	}
-
-	public void setPaneLayout(SlidingPaneLayout paneLayout) {
-		this.paneLayout = paneLayout;
-	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sidebar);
+
 		TaskDataSource datasource = new TaskDataSource(this);
 		datasource.createDataIfNotExist();
 
 		if (savedInstanceState == null) {
-			FragmentManager fragmentManager = getSupportFragmentManager();
-			FragmentTransaction fragmentTransaction = fragmentManager
-					.beginTransaction();
+			FragmentManager fManager = getSupportFragmentManager();
+			FragmentTransaction fTransaction = fManager.beginTransaction();
 
 			taskListFragment = new TaskListFragment();
 
-			fragmentTransaction.replace(R.id.content_frame, taskListFragment);
-			fragmentTransaction.commit();
+			fTransaction.replace(R.id.content_frame, taskListFragment);
+			fTransaction.commit();
 
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(this);
-			String defaultReport = prefs.getString("settings_date_alignement",
+			String defaultReport = prefs.getString("settings_date_alignment",
 					getResources().getString(R.string.task_next));
 			taskListFragment.setColumn(defaultReport);
 		} else {
@@ -117,8 +110,7 @@ public class TasksActivity extends FragmentActivity implements OnNavigationListe
 						switch (view.getId()) {
 						case R.id.content_frame:
 							getActionBar().setHomeButtonEnabled(false);
-							getActionBar().setDisplayHomeAsUpEnabled(
-									false);
+							getActionBar().setDisplayHomeAsUpEnabled(false);
 							break;
 						default:
 							break;
@@ -130,8 +122,7 @@ public class TasksActivity extends FragmentActivity implements OnNavigationListe
 						switch (view.getId()) {
 						case R.id.content_frame:
 							getActionBar().setHomeButtonEnabled(true);
-							getActionBar().setDisplayHomeAsUpEnabled(
-									true);
+							getActionBar().setDisplayHomeAsUpEnabled(true);
 							break;
 						default:
 							break;
@@ -148,20 +139,75 @@ public class TasksActivity extends FragmentActivity implements OnNavigationListe
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		String[] menuDropdown = getResources().getStringArray(R.array.reports);
-		ArrayList<String> alMenuCommands = new ArrayList<String>();
+		ArrayList<String> menuCommands = new ArrayList<String>();
 
 		for (String s : menuDropdown) {
-			alMenuCommands.add(s);
+			menuCommands.add(s);
 		}
 
 		ActionBarAdapter abAdapter = new ActionBarAdapter(this,
-				R.layout.ab_main_view, alMenuCommands,
+				R.layout.ab_main_view, menuCommands,
 				getSupportFragmentManager());
 
 		actionBar.setListNavigationCallbacks(abAdapter, this);
 
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		long date_long = prefs.getLong("notifications_alarm_time",
+				System.currentTimeMillis());
+
+		Intent myIntent = new Intent(this, NotificationService.class);
+		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		PendingIntent pendingIntent = PendingIntent.getService(this, 0,
+				myIntent, 0);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(date_long);
+
+		alarmManager.cancel(pendingIntent);
+		if (!calendar.getTime().before(new Date())) {
+			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+					calendar.getTimeInMillis(), 24 * 60 * 60 * 1000,
+					pendingIntent);
+		}
+
+		SectionsPagerAdapter adapter = new SectionsPagerAdapter(
+				getSupportFragmentManager());
+
+		ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+		viewPager.setOffscreenPageLimit(3);
+		viewPager.setAdapter(adapter);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		getSupportFragmentManager().putFragment(outState,
+				TaskListFragment.class.getName(), taskListFragment);
+		outState.putString(PROJECT, taskListFragment.getColumn());
+		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar()
+				.getSelectedNavigationIndex());
+	}
+
+	public SlidingPaneLayout getPaneLayout() {
+		return paneLayout;
+	}
+
+	public void setPaneLayout(SlidingPaneLayout paneLayout) {
+		this.paneLayout = paneLayout;
 	}
 
 	@Override
@@ -223,50 +269,6 @@ public class TasksActivity extends FragmentActivity implements OnNavigationListe
 		super.onConfigurationChanged(newConfig);
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		long date_long = prefs.getLong("notifications_alarm_time",
-				System.currentTimeMillis());
-
-		Intent myIntent = new Intent(this, NotificationService.class);
-		AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		PendingIntent pendingIntent = PendingIntent.getService(this, 0, myIntent, 0);
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(date_long);
-
-		alarmManager.cancel(pendingIntent);
-		if (!calendar.getTime().before(new Date())) {
-			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-					calendar.getTimeInMillis(), 24 * 60 * 60 * 1000, pendingIntent);		
-		}
-
-		SectionsPagerAdapter adapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
-		ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-		viewPager.setOffscreenPageLimit(3);
-		viewPager.setAdapter(adapter);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		getSupportFragmentManager().putFragment(outState,
-				TaskListFragment.class.getName(), taskListFragment);
-		outState.putString(PROJECT, taskListFragment.getColumn());
-		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar()
-				.getSelectedNavigationIndex());
-	}
-
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 		public SectionsPagerAdapter(FragmentManager fm) {
@@ -288,9 +290,7 @@ public class TasksActivity extends FragmentActivity implements OnNavigationListe
 				fragment.setArguments(args);
 				return fragment;
 			}
-
 			return null;
-
 		}
 
 		@Override

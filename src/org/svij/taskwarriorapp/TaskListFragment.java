@@ -51,7 +51,7 @@ import android.widget.Toast;
 
 public class TaskListFragment extends ListFragment {
 
-	TaskDataSource datasource;
+	TaskDataSource data;
 	private long selectedItemId = -1;
 	private String column;
 	TaskBaseAdapter adapter = null;
@@ -79,27 +79,27 @@ public class TaskListFragment extends ListFragment {
 		ArrayList<Task> values;
 		TaskSorter tasksorter = new TaskSorter("urgency");
 
-		datasource = new TaskDataSource(getActivity());
+		data = new TaskDataSource(getActivity());
 
 		if (column == null || column.equals(getString(R.string.task_next))) {
-			values = datasource.getPendingTasks();
+			values = data.getPendingTasks();
 		} else if (column.equals(getString(R.string.task_long))) {
-			values = datasource.getPendingTasks();
+			values = data.getPendingTasks();
 			tasksorter = new TaskSorter("long");
 		} else if (column.equals(getString(R.string.no_project))) {
-			values = datasource.getProjectsTasks("");
+			values = data.getProjectsTasks("");
 		} else if (column.equals(getString(R.string.task_all))) {
-			values = datasource.getAllTasks();
+			values = data.getAllTasks();
 		} else if (column.equals(getString(R.string.task_wait))) {
-			values = datasource.getWaitingTasks();
+			values = data.getWaitingTasks();
 		} else if (column.equals(getString(R.string.task_oldest))) {
-			values = datasource.getPendingTasks();
+			values = data.getPendingTasks();
 			tasksorter = new TaskSorter("oldest");
 		} else if (column.equals(getString(R.string.task_newest))) {
-			values = datasource.getPendingTasks();
+			values = data.getPendingTasks();
 			tasksorter = new TaskSorter("newest");
 		} else {
-			values = datasource.getProjectsTasks(column);
+			values = data.getProjectsTasks(column);
 		}
 		Collections.sort(values, tasksorter);
 		adapter = new TaskBaseAdapter(getActivity(), R.layout.task_row, values,
@@ -135,7 +135,7 @@ public class TaskListFragment extends ListFragment {
 			showAddTaskActivity(getTaskWithId(selectedItemId));
 			break;
 		case R.id.btnTaskAddReminder:
-			Task task = datasource.getTask(getTaskWithId(selectedItemId));
+			Task task = data.getTask(getTaskWithId(selectedItemId));
 			Intent intent = new Intent(Intent.ACTION_EDIT);
 			intent.setType("vnd.android.cursor.item/event");
 			if (task.getDue() != null) {
@@ -166,22 +166,22 @@ public class TaskListFragment extends ListFragment {
 	}
 
 	private void deleteTask(UUID uuid) {
-		datasource.deleteTask(uuid);
+		data.deleteTask(uuid);
 		setListView();
 		Toast.makeText(
 				getActivity(),
 				getString(R.string.task_action_delete) + " '"
-						+ datasource.getTask(uuid).getDescription() + "'",
+						+ data.getTask(uuid).getDescription() + "'",
 				Toast.LENGTH_SHORT).show();
 	}
 
 	private void doneTask(UUID uuid) {
-		datasource.doneTask(uuid);
+		data.doneTask(uuid);
 		setListView();
 		Toast.makeText(
 				getActivity(),
 				getString(R.string.task_action_done) + " '"
-						+ datasource.getTask(uuid).getDescription() + "'",
+						+ data.getTask(uuid).getDescription() + "'",
 				Toast.LENGTH_SHORT).show();
 	}
 

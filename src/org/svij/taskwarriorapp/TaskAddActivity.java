@@ -66,7 +66,7 @@ import android.widget.Toast;
 
 
 public class TaskAddActivity extends FragmentActivity {
-	private TaskDataSource datasource;
+	private TaskDataSource data;
 	private String taskID = "";
 	private long timestamp;
 	private GregorianCalendar cal = new GregorianCalendar();
@@ -143,15 +143,13 @@ public class TaskAddActivity extends FragmentActivity {
 		});
 
 		TaskDataSource dataSource = new TaskDataSource(this);
-		ArrayList<String> projectsAR = dataSource.getProjects();
-		projectsAR.removeAll(Collections.singleton(null));
-		String[] projects = projectsAR.toArray(new String[projectsAR.size()]);
+		ArrayList<String> projects = dataSource.getProjects();
+		projects.removeAll(Collections.singleton(null));
 		final AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, projects);
+				android.R.layout.simple_list_item_1, projects.toArray(new String[projects.size()]));
 		actvProject.setAdapter(adapter);
-
 		actvProject.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -168,8 +166,8 @@ public class TaskAddActivity extends FragmentActivity {
 			taskID = extras.getString("taskID");
 
 			if (taskID != null) {
-				datasource = new TaskDataSource(this);
-				Task task = datasource.getTask(UUID.fromString(taskID));
+				data = new TaskDataSource(this);
+				Task task = data.getTask(UUID.fromString(taskID));
 
 				TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
 				Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
@@ -221,7 +219,7 @@ public class TaskAddActivity extends FragmentActivity {
 			safelyDismissActivity();
 			return true;
 		case R.id.task_add_done:
-			datasource = new TaskDataSource(this);
+			data = new TaskDataSource(this);
 
 			EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
 			AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
@@ -236,7 +234,7 @@ public class TaskAddActivity extends FragmentActivity {
 				toast.show();
 			} else {
 				if (taskID == null || TextUtils.isEmpty(taskID)) {
-					datasource.createTask(etTaskAdd.getText().toString(),
+					data.createTask(etTaskAdd.getText().toString(),
 							timestamp, "pending", actvProject.getText()
 									.toString(), getPriority(spPriority
 									.getSelectedItem().toString()), etTags
@@ -246,7 +244,7 @@ public class TaskAddActivity extends FragmentActivity {
 						addedToast.show();
 					}
 				} else {
-					datasource
+					data
 							.editTask(UUID.fromString(taskID), etTaskAdd
 									.getText().toString(), timestamp,
 									"pending",
