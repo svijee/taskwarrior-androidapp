@@ -42,18 +42,6 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-Libraries
-=========
-
-Taskwarrior for Android is using following Libraries, which are licensed under
-Apache License 2.0:
-
- * ActionBarSherlock – by Jake Wharton
- 
-See LICENSE in the subdirectories com_actionbar.
-
-
 Development
 =========
 
@@ -93,7 +81,6 @@ Generate ant build files and more, API 15 is assumed to be target 1 (list with $
 
 ```bash
 $ android update project --path taskwarrior-androidapp/ --target 1
-$ android update project --path com_actionbar/ --target 1
 ```
 
 Create a virtual device (if you don't want to develop directly for you phone).
@@ -127,5 +114,5 @@ Thanks to following contributers for sending in patches:
  * [dandyism](https://github.com/dandyism)
  * [Hypfer](https://github.com/Hypfer)
 
-A big thanks goes to pbeckingham for creating [Taskwarrior](http://taskwarrior.org).
+A big thanks goes to pbeckingham and the Taskwarrior Dev-Team for creating [Taskwarrior](http://taskwarrior.org).
 
