@@ -42,10 +42,10 @@
     <string name="task_all">Alle Tasks</string>
     <string name="task_delete">Löschen</string>
     <string name="task_done">Task fertig</string>
-    <string name="task_long">task long</string>
+    <string name="task_long">Long</string>
     <string name="task_modify">Bearbeiten</string>
     <string name="task_newest">Neueste Tasks</string>
-    <string name="task_next">task next</string>
+    <string name="task_next">Next</string>
     <string name="task_oldest">Älteste Tasks</string>
     <string name="task_reminder">Erinnerung</string>
     <string name="task_selected">Task ausgewählt</string>
@@ -62,6 +62,14 @@
         <item>Hoch</item>
         <item>Mittel</item>
         <item>Niedrig</item>
+    </string-array>
+    <string-array name="reports">
+        <item>@string/task_next</item>
+        <item>@string/task_long</item>
+        <item>@string/task_all</item>
+        <item>@string/task_wait</item>
+        <item>@string/task_newest</item>
+        <item>@string/task_oldest</item>
     </string-array>
 
 </resources>

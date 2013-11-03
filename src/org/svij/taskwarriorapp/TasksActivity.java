@@ -26,15 +26,11 @@
 
 package org.svij.taskwarriorapp;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
-import org.svij.taskwarriorapp.db.ActionBarAdapter;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
-import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -43,27 +39,31 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SlidingPaneLayout;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class TasksActivity extends FragmentActivity implements
 		OnNavigationListener {
 	private static final String PROJECT = "project";
-	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 	private TaskListFragment taskListFragment;
-	private SlidingPaneLayout paneLayout;
-	private ActionBar actionBar;
+	private MenuListFragment menuListFragment;
+	private DrawerLayout drawerLayout;
+	private ListView drawerList;
+	private ActionBarDrawerToggle drawerToggle;
+	private String column;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,22 +71,25 @@ public class TasksActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sidebar);
 
-		TaskDataSource datasource = new TaskDataSource(this);
-		datasource.createDataIfNotExist();
+		TaskDataSource data = new TaskDataSource(this);
+		data.createDataIfNotExist();
 
 		if (savedInstanceState == null) {
 			FragmentManager fManager = getSupportFragmentManager();
 			FragmentTransaction fTransaction = fManager.beginTransaction();
 
 			taskListFragment = new TaskListFragment();
+			menuListFragment = new MenuListFragment();
 
 			fTransaction.replace(R.id.content_frame, taskListFragment);
+			fTransaction.replace(R.id.right_drawer, menuListFragment);
 			fTransaction.commit();
 
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(this);
 			String defaultReport = prefs.getString("settings_date_alignment",
 					getResources().getString(R.string.task_next));
+			column = defaultReport;
 			taskListFragment.setColumn(defaultReport);
 		} else {
 			taskListFragment = (TaskListFragment) getSupportFragmentManager()
@@ -95,64 +98,41 @@ public class TasksActivity extends FragmentActivity implements
 			taskListFragment.setColumn(savedInstanceState.getString(PROJECT));
 		}
 
-		paneLayout = (SlidingPaneLayout) findViewById(R.id.drawer_layout);
+		drawerList = (ListView) findViewById(R.id.left_drawer);
+		drawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, getResources().getStringArray(
+						R.array.reports)));
+		drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-		paneLayout
-				.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+				GravityCompat.START);
 
-					@Override
-					public void onPanelSlide(View arg0, float arg1) {
-						// empty
-					}
+		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+				R.drawable.ic_drawer, R.string.drawer_open,
+				R.string.drawer_close) {
 
-					@Override
-					public void onPanelOpened(View view) {
-						switch (view.getId()) {
-						case R.id.content_frame:
-							getActionBar().setHomeButtonEnabled(false);
-							getActionBar().setDisplayHomeAsUpEnabled(false);
-							break;
-						default:
-							break;
-						}
-					}
+			/** Called when a drawer has settled in a completely closed state. */
+			public void onDrawerClosed(View view) {
+				getActionBar().setTitle(getTitle());
+				invalidateOptionsMenu();
+			}
 
-					@Override
-					public void onPanelClosed(View view) {
-						switch (view.getId()) {
-						case R.id.content_frame:
-							getActionBar().setHomeButtonEnabled(true);
-							getActionBar().setDisplayHomeAsUpEnabled(true);
-							break;
-						default:
-							break;
-						}
-					}
-				});
+			/** Called when a drawer has settled in a completely open state. */
+			public void onDrawerOpened(View drawerView) {
+				getActionBar().setTitle(getTitle());
+				invalidateOptionsMenu();
+			}
+		};
+
+		drawerLayout.setDrawerListener(drawerToggle);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayShowTitleEnabled(true);
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		actionBar = getActionBar();
-		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
-		String[] menuDropdown = getResources().getStringArray(R.array.reports);
-		ArrayList<String> menuCommands = new ArrayList<String>();
-
-		for (String s : menuDropdown) {
-			menuCommands.add(s);
-		}
-
-		ActionBarAdapter abAdapter = new ActionBarAdapter(this,
-				R.layout.ab_main_view, menuCommands,
-				getSupportFragmentManager());
-
-		actionBar.setListNavigationCallbacks(abAdapter, this);
-
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setHomeButtonEnabled(true);
 	}
 
 	@Override
@@ -178,13 +158,6 @@ public class TasksActivity extends FragmentActivity implements
 					calendar.getTimeInMillis(), 24 * 60 * 60 * 1000,
 					pendingIntent);
 		}
-
-		SectionsPagerAdapter adapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
-
-		ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
-		viewPager.setOffscreenPageLimit(3);
-		viewPager.setAdapter(adapter);
 	}
 
 	@Override
@@ -198,25 +171,11 @@ public class TasksActivity extends FragmentActivity implements
 		getSupportFragmentManager().putFragment(outState,
 				TaskListFragment.class.getName(), taskListFragment);
 		outState.putString(PROJECT, taskListFragment.getColumn());
-		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar()
-				.getSelectedNavigationIndex());
-	}
-
-	public SlidingPaneLayout getPaneLayout() {
-		return paneLayout;
-	}
-
-	public void setPaneLayout(SlidingPaneLayout paneLayout) {
-		this.paneLayout = paneLayout;
 	}
 
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		// Restore the previously serialized current dropdown position.
-		if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
-			getActionBar().setSelectedNavigationItem(
-					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
-		}
+		taskListFragment.setColumn(savedInstanceState.getString(PROJECT));
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -232,10 +191,10 @@ public class TasksActivity extends FragmentActivity implements
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			paneLayout.openPane();
+		if (drawerToggle.onOptionsItemSelected(item)) {
 			return true;
+		}
+		switch (item.getItemId()) {
 		case R.id.task_sync:
 			Toast toast = Toast.makeText(this, "Sync will be added soon.",
 					Toast.LENGTH_LONG);
@@ -262,6 +221,7 @@ public class TasksActivity extends FragmentActivity implements
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
+		drawerToggle.syncState();
 	}
 
 	@Override
@@ -269,75 +229,28 @@ public class TasksActivity extends FragmentActivity implements
 		super.onConfigurationChanged(newConfig);
 	}
 
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		return false;
+	}
 
-		public SectionsPagerAdapter(FragmentManager fm) {
-			super(fm);
-		}
-
+	private class DrawerItemClickListener implements
+			ListView.OnItemClickListener {
 		@Override
-		public Fragment getItem(int position) {
-			if (position == 0) {
-				Fragment fragment = new MenuListFragment();
-				Bundle args = new Bundle();
-				args.putInt("section_number", position + 1);
-				fragment.setArguments(args);
-				return fragment;
-			} else if (position == 1) {
-				Fragment fragment = new TaskListFragment();
-				Bundle args = new Bundle();
-				args.putInt("section_number", position + 1);
-				fragment.setArguments(args);
-				return fragment;
-			}
-			return null;
-		}
-
-		@Override
-		public int getCount() {
-			// Show 1 total page.
-			return 1;
-		}
-
-		@Override
-		public CharSequence getPageTitle(int position) {
-			Locale l = Locale.getDefault();
-			switch (position) {
-			case 0:
-				return getString(R.string.pager_title_projects).toUpperCase(l);
-			case 1:
-				return getString(R.string.pager_title_filter).toUpperCase(l);
-			}
-			return null;
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			selectItem(position);
 		}
 	}
 
-	@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+	private void selectItem(int position) {
+		drawerList.setItemChecked(position, true);
+		TextView selectedTextView = (TextView) drawerList.getChildAt(position);
+		column = selectedTextView.getText().toString();
+		setTitle(column);
+		taskListFragment.setColumn(column);
 
-		switch (itemPosition) {
-		case 0:
-			taskListFragment.setColumn(getString(R.string.task_next));
-			break;
-		case 1:
-			taskListFragment.setColumn(getString(R.string.task_long));
-			break;
-		case 2:
-			taskListFragment.setColumn(getString(R.string.task_all));
-			break;
-		case 3:
-			taskListFragment.setColumn(getString(R.string.task_wait));
-			break;
-		case 4:
-			taskListFragment.setColumn(getString(R.string.task_newest));
-			break;
-		case 5:
-			taskListFragment.setColumn(getString(R.string.task_oldest));
-			break;
-		}
 		taskListFragment.setListView();
-		TextView subtitle = (TextView) findViewById(R.id.ab_basemaps_subtitle);
-		subtitle.setText(taskListFragment.getListView().getCount() + " Tasks");
-		return false;
+		drawerLayout.closeDrawers();
 	}
 }

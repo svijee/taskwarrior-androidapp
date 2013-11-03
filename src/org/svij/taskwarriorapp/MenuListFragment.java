@@ -36,7 +36,6 @@ import org.svij.taskwarriorapp.db.TaskDataSource;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -63,9 +62,6 @@ public class MenuListFragment extends ListFragment {
 				.getSupportFragmentManager().findFragmentById(
 						R.id.content_frame);
 
-		final SlidingPaneLayout paneLayout = (SlidingPaneLayout) getActivity()
-				.findViewById(R.id.drawer_layout);
-
 		listview.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -76,7 +72,6 @@ public class MenuListFragment extends ListFragment {
 				String menu_text = ((TextView) view).getText().toString();
 				taskListFragment.setColumn(menu_text);
 				taskListFragment.setListView();
-				paneLayout.closePane();
 				getListView().setItemChecked(position, true);
 			}
 		});
