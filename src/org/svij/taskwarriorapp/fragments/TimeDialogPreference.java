@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.svij.taskwarriorapp.ui;
+package org.svij.taskwarriorapp.fragments;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,19 +30,19 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
 
-public class TimePreference extends DialogPreference {
+public class TimeDialogPreference extends DialogPreference {
 	private Calendar calendar;
 	private TimePicker picker = null;
 
-	public TimePreference(Context ctxt) {
+	public TimeDialogPreference(Context ctxt) {
 		this(ctxt, null);
 	}
 
-	public TimePreference(Context ctxt, AttributeSet attrs) {
+	public TimeDialogPreference(Context ctxt, AttributeSet attrs) {
 		this(ctxt, attrs, 0);
 	}
 
-	public TimePreference(Context ctxt, AttributeSet attrs, int defStyle) {
+	public TimeDialogPreference(Context ctxt, AttributeSet attrs, int defStyle) {
 		super(ctxt, attrs, defStyle);
 
 		setPositiveButtonText(R.string.set);

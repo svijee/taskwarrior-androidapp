@@ -1,8 +1,8 @@
 package org.svij.taskwarriorapp.test;
 
-import org.svij.taskwarriorapp.MenuListFragment;
-import org.svij.taskwarriorapp.TaskAddActivity;
-import org.svij.taskwarriorapp.TasksActivity;
+import org.svij.taskwarriorapp.activities.TaskAddActivity;
+import org.svij.taskwarriorapp.activities.TasksActivity;
+import org.svij.taskwarriorapp.fragments.MenuListFragment;
 
 import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;

@@ -24,12 +24,16 @@
  *
  */
 
-package org.svij.taskwarriorapp;
+package org.svij.taskwarriorapp.activities;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.fragments.MenuListFragment;
+import org.svij.taskwarriorapp.fragments.TaskListFragment;
+import org.svij.taskwarriorapp.services.NotificationService;
 
 import android.app.ActionBar.OnNavigationListener;
 import android.app.AlarmManager;

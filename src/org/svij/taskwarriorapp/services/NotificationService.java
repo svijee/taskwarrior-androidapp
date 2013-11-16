@@ -1,7 +1,9 @@
-package org.svij.taskwarriorapp;
+package org.svij.taskwarriorapp.services;
 
 import java.util.ArrayList;
 
+import org.svij.taskwarriorapp.R;
+import org.svij.taskwarriorapp.activities.TasksActivity;
 import org.svij.taskwarriorapp.db.TaskDataSource;
 
 import android.app.Notification;

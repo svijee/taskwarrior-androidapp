@@ -24,7 +24,7 @@
  *
  */
 
-package org.svij.taskwarriorapp.ui;
+package org.svij.taskwarriorapp.fragments;
 
 import java.text.DateFormat;
 import java.util.Calendar;

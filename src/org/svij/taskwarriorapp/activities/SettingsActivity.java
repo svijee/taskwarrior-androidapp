@@ -1,8 +1,10 @@
-package org.svij.taskwarriorapp;
+package org.svij.taskwarriorapp.activities;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.svij.taskwarriorapp.R;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;

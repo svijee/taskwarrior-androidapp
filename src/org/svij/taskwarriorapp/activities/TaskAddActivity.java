@@ -24,7 +24,7 @@
  *
  */
 
-package org.svij.taskwarriorapp;
+package org.svij.taskwarriorapp.activities;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -33,10 +33,11 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 
+import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskDataSource;
-import org.svij.taskwarriorapp.ui.DatePickerFragment;
-import org.svij.taskwarriorapp.ui.TimePickerFragment;
+import org.svij.taskwarriorapp.fragments.DatePickerFragment;
+import org.svij.taskwarriorapp.fragments.TimePickerFragment;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
