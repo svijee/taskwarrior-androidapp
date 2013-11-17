@@ -31,7 +31,7 @@
             android:label="@string/title_activity_task_add" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="org.svij.taskwarriorapp.TasksActivity" />
+                android:value="org.svij.taskwarriorapp.activities.TasksActivity" />
 
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />

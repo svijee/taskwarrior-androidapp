@@ -38,14 +38,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -58,7 +57,8 @@ public class TaskDataSource {
 
 	private Context context;
 	SharedPreferences prefs;
-	private File taskDir = new File(Environment.getExternalStorageDirectory(), "taskwarrior");
+	private File taskDir = new File(Environment.getExternalStorageDirectory(),
+			"taskwarrior");
 	private File taskDefault;
 
 	private static String COMPLETED_DATA = "completed.data";
@@ -93,7 +93,7 @@ public class TaskDataSource {
 		}
 
 		taskDefault.mkdirs();
-		writeTaskToData(task, PENDING_DATA);
+		writeTaskToFile(task, PENDING_DATA);
 	}
 
 	private ArrayList<String> getPendingLines() {
@@ -148,7 +148,7 @@ public class TaskDataSource {
 	}
 
 	public void editTask(UUID uuid, String task_description, long due,
-			String status, String project, String priority, String tags) {
+			String status, String project, String priority, ArrayList<String> tags) {
 		Task task = getTask(uuid);
 
 		task.setDescription(task_description);
@@ -159,7 +159,7 @@ public class TaskDataSource {
 		task.setTags(tags);
 
 		removeTaskFromData(uuid);
-		writeTaskToData(task, PENDING_DATA);
+		writeTaskToFile(task, PENDING_DATA);
 	}
 
 	public void deleteTask(UUID uuid) {
@@ -186,9 +186,9 @@ public class TaskDataSource {
 		removeTaskFromData(uuid);
 
 		if (status.equals("completed") || status.equals("deleted")) {
-			writeTaskToData(finishedTask, COMPLETED_DATA);
+			writeTaskToFile(finishedTask, COMPLETED_DATA);
 		} else {
-			writeTaskToData(finishedTask, PENDING_DATA);
+			writeTaskToFile(finishedTask, PENDING_DATA);
 		}
 	}
 
@@ -225,7 +225,7 @@ public class TaskDataSource {
 		}
 	}
 
-	private void writeTaskToData(Task task, String file) {
+	private void writeTaskToFile(Task task, String file) {
 
 		File completedFile = new File(taskDefault, file);
 
@@ -234,13 +234,10 @@ public class TaskDataSource {
 			PrintWriter completedWriter = new PrintWriter(new BufferedWriter(
 					new FileWriter(completedFile, true)));
 
-			String output = task.toString();
-			output = output.replaceAll("/", "\\/");
-			output = output.replaceAll("\b", "\\b");
-			output = output.replaceAll("\f", "\\f");
-			output = output.replaceAll("\n", "\\n");
-			output = output.replaceAll("\r", "\\r");
-			output = output.replaceAll("\t", "\\t");
+			String output = new GsonBuilder()
+					.excludeFieldsWithoutExposeAnnotation().create()
+					.toJson(task).toString();
+
 			completedWriter.println(output);
 			completedWriter.close();
 		} catch (Exception e) {
@@ -266,75 +263,7 @@ public class TaskDataSource {
 
 	public Task parseTask(String data) {
 
-		Task task = new Task();
-		HashMap<String, String> helperMap = new HashMap<String, String>();
-
-		Pattern pattern = Pattern.compile("[\\[ ](.+?):\"(.+?)\"");
-		Matcher matcher = pattern.matcher(data);
-
-		while (matcher.find() == true) {
-			helperMap.put(matcher.group(1).trim(), matcher.group(2).trim());
-		}
-
-		Iterator<String> it = helperMap.keySet().iterator();
-
-		while (it.hasNext()) {
-			String key = it.next().toString();
-			String value = helperMap.get(key).toString();
-
-			if (key.equals("description")) {
-				value = value.replace("\\/", "/");
-				value = value.replace("\\\"", "\"");
-				value = value.replace("\\f", "\f");
-				value = value.replace("\\t", "\t");
-
-				Pattern unicode = Pattern.compile("\\\\u(.{4})");
-				Matcher m = unicode.matcher(value);
-				StringBuffer sb = new StringBuffer();
-				while (m.find()) {
-					int code = Integer.parseInt(m.group(1), 16);
-					m.appendReplacement(sb, new String(Character.toChars(code)));
-				}
-				m.appendTail(sb);
-				task.setDescription(sb.toString());
-			} else if (key.equals("status")) {
-				task.setStatus(value);
-			} else if (key.equals("entry")) {
-				task.setEntry(Long.parseLong(value));
-			} else if (key.equals("uuid")) {
-				task.setUUID(UUID.fromString(value));
-			} else if (key.equals("start")) {
-				task.setStart(Long.parseLong(value));
-			} else if (key.equals("end")) {
-				task.setEnd(Long.parseLong(value));
-			} else if (key.equals("due")) {
-				task.setDue(new Date(Long.valueOf(value) * 1000));
-			} else if (key.equals("until")) {
-				task.setUntil(new Date(Long.valueOf(value) * 1000));
-			} else if (key.equals("wait")) {
-				task.setWait(new Date(Long.valueOf(value) * 1000));
-			} else if (key.equals("recur")) {
-				task.setRecur(value);
-			} else if (key.equals("mask")) {
-				task.setMask(value);
-			} else if (key.equals("imask")) {
-				task.setImask(value);
-			} else if (key.equals("parent")) {
-				task.setParent(UUID.fromString(value));
-				// } else if (key.equals("annotation")) {
-				//
-				// }
-			} else if (key.equals("project")) {
-				task.setProject(value);
-			} else if (key.equals("tags")) {
-				task.setTags(value);
-			} else if (key.equals("priority")) {
-				task.setPriority(value);
-			} else if (key.equals("depends")) {
-				task.setDepends(value);
-			}
-		}
-
+		Task task = new Gson().fromJson(data, Task.class);
 		task.urgency_c();
 
 		return task;
@@ -390,7 +319,6 @@ public class TaskDataSource {
 				}
 				return lhs.compareToIgnoreCase(rhs);
 			}
-
 		});
 
 		return projects;
@@ -422,7 +350,7 @@ public class TaskDataSource {
 			}
 		}
 
-		// Should never happen.
+		// This should never happen:
 		Task task_not_found = new Task();
 		task_not_found.setDescription("Task not found");
 		return task_not_found;

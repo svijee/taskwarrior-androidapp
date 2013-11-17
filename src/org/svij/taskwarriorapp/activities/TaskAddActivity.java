@@ -65,7 +65,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-
 public class TaskAddActivity extends FragmentActivity {
 	private TaskDataSource data;
 	private String taskID = "";
@@ -149,7 +148,8 @@ public class TaskAddActivity extends FragmentActivity {
 		final AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, projects.toArray(new String[projects.size()]));
+				android.R.layout.simple_list_item_1,
+				projects.toArray(new String[projects.size()]));
 		actvProject.setAdapter(adapter);
 		actvProject.setOnTouchListener(new View.OnTouchListener() {
 
@@ -172,8 +172,7 @@ public class TaskAddActivity extends FragmentActivity {
 
 				TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
 				Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
-				TextView etTags = (TextView) findViewById(R.id.etTags);
-
+				
 				etTaskAdd.setText(task.getDescription());
 				if (task.getDue() != null && task.getDue().getTime() != 0) {
 
@@ -192,10 +191,10 @@ public class TaskAddActivity extends FragmentActivity {
 				actvProject.setText(task.getProject());
 				Log.i("PriorityID", ":" + task.getPriorityID());
 				spPriority.setSelection(task.getPriorityID());
-				etTags.setText(task.getTags());
 			} else {
 				String action = intent.getAction();
-				if ((action.equalsIgnoreCase(Intent.ACTION_SEND) || action.equalsIgnoreCase("com.google.android.gm.action.AUTO_SEND"))
+				if ((action.equalsIgnoreCase(Intent.ACTION_SEND) || action
+						.equalsIgnoreCase("com.google.android.gm.action.AUTO_SEND"))
 						&& intent.hasExtra(Intent.EXTRA_TEXT)) {
 					String s = intent.getStringExtra(Intent.EXTRA_TEXT);
 					TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
@@ -235,24 +234,25 @@ public class TaskAddActivity extends FragmentActivity {
 				toast.show();
 			} else {
 				if (taskID == null || TextUtils.isEmpty(taskID)) {
-					data.createTask(etTaskAdd.getText().toString(),
-							timestamp, "pending", actvProject.getText()
-									.toString(), getPriority(spPriority
-									.getSelectedItem().toString()), etTags
-									.getText().toString());
+					data.createTask(
+							etTaskAdd.getText().toString(),
+							timestamp,
+							"pending",
+							actvProject.getText().toString(),
+							getPriority(spPriority.getSelectedItem().toString()),
+							etTags.getText().toString());
 					if (addingTaskFromOtherApp) {
-						Toast addedToast = Toast.makeText(this, getResources().getString(R.string.task_added), Toast.LENGTH_LONG);
+						Toast addedToast = Toast.makeText(this, getResources()
+								.getString(R.string.task_added),
+								Toast.LENGTH_LONG);
 						addedToast.show();
 					}
 				} else {
-					data
-							.editTask(UUID.fromString(taskID), etTaskAdd
-									.getText().toString(), timestamp,
-									"pending",
-									actvProject.getText().toString(),
-									getPriority(spPriority.getSelectedItem()
-											.toString()), etTags.getText()
-											.toString());
+					ArrayList<String> tags = new ArrayList<String>();
+					data.editTask(UUID.fromString(taskID), etTaskAdd.getText()
+							.toString(), timestamp, "pending", actvProject
+							.getText().toString(), getPriority(spPriority
+							.getSelectedItem().toString()), tags);
 				}
 				this.finish();
 				NavUtils.navigateUpFromSameTask(this);
@@ -265,7 +265,6 @@ public class TaskAddActivity extends FragmentActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 
 	public String getPriority(String priority) {
 		Resources res = getResources();
@@ -387,13 +386,13 @@ public class TaskAddActivity extends FragmentActivity {
 	}
 
 	private void safelyDismissActivity() {
-			if (haveUnsavedData()) {
-				UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();
-				alertDialog.show(getSupportFragmentManager(), "dialog");
-			} else {
-				this.finish();
-				NavUtils.navigateUpFromSameTask(this);
-			}
+		if (haveUnsavedData()) {
+			UnsavedDataDialogFragment alertDialog = new UnsavedDataDialogFragment();
+			alertDialog.show(getSupportFragmentManager(), "dialog");
+		} else {
+			this.finish();
+			NavUtils.navigateUpFromSameTask(this);
+		}
 	}
 
 	private boolean haveUnsavedData() {
@@ -403,11 +402,11 @@ public class TaskAddActivity extends FragmentActivity {
 		TextView actvProject = (TextView) findViewById(R.id.actvProject);
 		Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
 		TextView etTags = (TextView) findViewById(R.id.etTags);
-		return	etTaskAdd.getText().length() != 0 ||
-				etTaskDate.getText().length() != 0 ||
-				etTaskTime.getText().length() != 0 ||
-				actvProject.getText().length() != 0 ||
-				!TextUtils.isEmpty(getPriority(spPriority.getSelectedItem().toString())) ||
-				etTags.getText().length() != 0;
+		return etTaskAdd.getText().length() != 0
+				|| etTaskDate.getText().length() != 0
+				|| etTaskTime.getText().length() != 0
+				|| actvProject.getText().length() != 0
+				|| !TextUtils.isEmpty(getPriority(spPriority.getSelectedItem()
+						.toString())) || etTags.getText().length() != 0;
 	}
 }

@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
+import com.google.gson.annotations.Expose;
+
 import android.text.TextUtils;
 
 /*
@@ -46,86 +48,85 @@ public class Task {
 	/*
 	 * Status of a task It can be "pending", "completed" or "deleted"
 	 */
-	private String status;
+	@Expose private String status;
 
 	/*
 	 * Unique identifier for a task. Will be replaced by a uuid in the future.
 	 */
-	private UUID uuid;
+	@Expose private UUID uuid;
 
 	/*
 	 * Entry timestamp – This is automatically generated when creating a task
 	 */
-	private long entry;
+	@Expose private long entry;
 
 	/*
 	 * Description of a task
 	 */
-	private String description;
+	@Expose private String description;
 
 	/*
 	 * Start timestamp
 	 */
-	private Long start;
+	@Expose private Long start;
 	
 	/*
 	 * End timestamp This is automatically generated when marking a task as "done"
 	 *
 	 */
-	private long end;
+	@Expose private long end;
 
 	/*
 	 * A tasks due date
 	 */
-	private Date due;
+	@Expose private Date due;
 
 	/*
 	 * Date until
 	 */
-	private Date until;
+	@Expose private Date until;
 	
 	/*
 	 * Date wait
 	 */
-	private Date wait;
+	@Expose private Date wait;
 	
 	/*
 	 * Type of recurring
 	 */
-	private String recur;
+	@Expose private String recur;
 	
-	private String mask;
-	private String imask;
-	private UUID parent;
-	private ArrayList<String[]> annotation;
+	@Expose private String mask;
+	@Expose private String imask;
+	@Expose private UUID parent;
+	@Expose private ArrayList<String> annotation;
 	
 	/*
 	 * Project of a task
 	 */
-	private String project;
+	@Expose private String project;
 
 	/*
 	 * Tag(s) of a task
 	 */
-	private String tags;
+	@Expose private ArrayList<String> tags;
 
 	/*
 	 * Priority of a task
 	 */
-	private String priority;
+	@Expose private String priority;
 	
 	/*
 	 * Priority ID – needed for the spinner in Edit-Mode
 	 */
 	private int priorityID;
 
-	private String depends;
+	@Expose private String depends;
 	
+	@Expose private boolean active;
+	@Expose private boolean blocked;
+
 	private float urgency;
-
-	private boolean active;
-	private boolean blocked;
-
 	private static final float epsilon = 0.000001f;
 	private float urgencyPriorityCoefficient = 6.0f;
 	private float urgencyProjectCoefficient = 1.0f;
@@ -170,59 +171,6 @@ public class Task {
 
 	public void setPriority(String priority) {
 		this.priority = priority;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder outputString = new StringBuilder();
-
-		outputString.append("[description:\"" + description + "\" ");
-		outputString.append("entry:\"" + entry + "\" ");
-		outputString.append("status:\"" + status + "\" ");
-		outputString.append("uuid:\"" + uuid.toString() + "\" ");
-
-		outputString.append(" end:\"" + System.currentTimeMillis() / 1000 + "\" ");
-
-		if (getStart() != null && getStart() != 0) {
-			outputString.append("start:\"" + getStart() + "\" ");
-		}
-		if (getDue() != null && getDue().getTime() != 0) {
-			outputString.append("due:\"" + getDue().getTime() / 1000 + "\" ");
-		}
-		if (getUntil() != null && getUntil().getTime() != 0) {
-			outputString.append("until:\"" + getUntil().getTime() + "\" ");
-		}
-		if (getWait() != null && getWait().getTime() != 0) {
-			outputString.append("wait:\"" + getWait().getTime() + "\" ");
-		}
-		if (getRecur() != null && TextUtils.isEmpty(getRecur())) {
-			outputString.append("recur:\"" + getRecur() + "\" ");
-		}
-		if (getMask() != null && TextUtils.isEmpty(getMask())) {
-			outputString.append("mask:\"" + getMask() + "\" ");
-		}
-		if (getImask() != null && TextUtils.isEmpty(getImask())) {
-			outputString.append("imask:\"" + getImask() + "\" ");
-		}
-		if (getParent() != null && TextUtils.isEmpty(getParent().toString())) {
-			outputString.append("parent:\"" + getParent().toString() + "\" ");
-		}
-//		if (completedTask.getAnnotation() != null) {
-//
-//		}
-		if (getProject() != null && !TextUtils.isEmpty(getProject())) {
-			outputString.append("project:\"" + getProject() + "\" ");
-		}
-		if (getPriority() != null && !TextUtils.isEmpty(getPriority())) {
-			outputString.append("priority:\"" + getPriority() + "\" ");
-		}
-//		if (completedTask.getTags() != null) {
-//
-//		}
-
-		outputString.append("]");
-
-		return outputString.toString();
 	}
 
 	public Date getDue() {
@@ -466,11 +414,11 @@ public class Task {
 		}
 	}
 
-	public String getTags() {
+	public ArrayList<String> getTags() {
 		return tags;
 	}
 
-	public void setTags(String tags) {
+	public void setTags(ArrayList<String> tags) {
 		this.tags = tags;
 	}
 
@@ -530,11 +478,11 @@ public class Task {
 		this.parent = parent;
 	}
 
-	public ArrayList<String[]> getAnnotation() {
+	public ArrayList<String> getAnnotation() {
 		return annotation;
 	}
 
-	public void setAnnotation(ArrayList<String[]> annotation) {
+	public void setAnnotation(ArrayList<String> annotation) {
 		this.annotation = annotation;
 	}
 
