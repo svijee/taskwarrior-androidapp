@@ -38,7 +38,7 @@ import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.activities.TaskAddActivity;
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskBaseAdapter;
-import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.db.TaskDatabase;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -53,7 +53,7 @@ import android.widget.Toast;
 
 public class TaskListFragment extends ListFragment {
 
-	TaskDataSource data;
+	TaskDatabase data;
 	private long selectedItemId = -1;
 	private String column;
 	TaskBaseAdapter adapter = null;
@@ -81,7 +81,7 @@ public class TaskListFragment extends ListFragment {
 		ArrayList<Task> values;
 		TaskSorter tasksorter = new TaskSorter("urgency");
 
-		data = new TaskDataSource(getActivity());
+		data = new TaskDatabase(getActivity());
 
 		if (column == null || column.equals(getString(R.string.task_next))) {
 			values = data.getPendingTasks();

@@ -30,7 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.svij.taskwarriorapp.R;
-import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.db.TaskDatabase;
 import org.svij.taskwarriorapp.fragments.MenuListFragment;
 import org.svij.taskwarriorapp.fragments.TaskListFragment;
 import org.svij.taskwarriorapp.services.NotificationService;
@@ -75,7 +75,7 @@ public class TasksActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sidebar);
 
-		TaskDataSource data = new TaskDataSource(this);
+		TaskDatabase data = new TaskDatabase(this);
 		data.createDataIfNotExist();
 
 		if (savedInstanceState == null) {

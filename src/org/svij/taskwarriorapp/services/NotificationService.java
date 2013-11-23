@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.activities.TasksActivity;
-import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.db.TaskDatabase;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -23,7 +23,7 @@ public class NotificationService extends Service {
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		TaskDataSource data = new TaskDataSource(getApplicationContext());
+		TaskDatabase data = new TaskDatabase(getApplicationContext());
 		ArrayList<String> tasks = data.getDueTasks();
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());

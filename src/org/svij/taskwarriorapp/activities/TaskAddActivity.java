@@ -36,7 +36,7 @@ import java.util.UUID;
 
 import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
-import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.db.TaskDatabase;
 import org.svij.taskwarriorapp.fragments.DatePickerFragment;
 import org.svij.taskwarriorapp.fragments.TimePickerFragment;
 
@@ -67,7 +67,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class TaskAddActivity extends FragmentActivity {
-	private TaskDataSource data;
+	private TaskDatabase data;
 	private String taskID = "";
 	private long timestamp;
 	private GregorianCalendar cal = new GregorianCalendar();
@@ -143,7 +143,7 @@ public class TaskAddActivity extends FragmentActivity {
 			}
 		});
 
-		TaskDataSource dataSource = new TaskDataSource(this);
+		TaskDatabase dataSource = new TaskDatabase(this);
 		ArrayList<String> projects = dataSource.getProjects();
 		projects.removeAll(Collections.singleton(null));
 		final AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
@@ -168,7 +168,7 @@ public class TaskAddActivity extends FragmentActivity {
 			taskID = extras.getString("taskID");
 
 			if (taskID != null) {
-				data = new TaskDataSource(this);
+				data = new TaskDatabase(this);
 				Task task = data.getTask(UUID.fromString(taskID));
 
 				TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
@@ -231,7 +231,7 @@ public class TaskAddActivity extends FragmentActivity {
 			safelyDismissActivity();
 			return true;
 		case R.id.task_add_done:
-			data = new TaskDataSource(this);
+			data = new TaskDatabase(this);
 
 			EditText etTaskAdd = (EditText) findViewById(R.id.etTaskAdd);
 			AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);

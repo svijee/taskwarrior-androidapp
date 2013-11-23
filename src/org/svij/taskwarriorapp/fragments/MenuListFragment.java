@@ -33,7 +33,7 @@ import java.util.UUID;
 import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.activities.TaskAddActivity;
 import org.svij.taskwarriorapp.data.Task;
-import org.svij.taskwarriorapp.db.TaskDataSource;
+import org.svij.taskwarriorapp.db.TaskDatabase;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,7 +48,7 @@ import android.widget.Toast;
 
 public class MenuListFragment extends ListFragment {
 
-	TaskDataSource data;
+	TaskDatabase data;
 	private long selectedItemId = -1;
 	TaskListFragment taskListFragment;
 
@@ -80,7 +80,7 @@ public class MenuListFragment extends ListFragment {
 	}
 
 	public void setListView() {
-		data = new TaskDataSource(getActivity());
+		data = new TaskDatabase(getActivity());
 		data.createDataIfNotExist();
 
 		ArrayList<String> menuCommands = new ArrayList<String>();

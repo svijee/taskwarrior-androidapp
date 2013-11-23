@@ -53,11 +53,11 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-public class TaskDataSource {
+public class TaskDatabase {
 
 	private Context context;
 	SharedPreferences prefs;
-	private File taskDir = new File(Environment.getExternalStorageDirectory(),
+	private File location = new File(Environment.getExternalStorageDirectory(),
 			"taskwarrior");
 	private File taskDefault;
 
@@ -66,10 +66,10 @@ public class TaskDataSource {
 	private static String UNDO_DATA = "undo.data";
 	private static String TEMP_DATA = "temp.data";
 
-	public TaskDataSource(Context context) {
+	public TaskDatabase(Context context) {
 		this.context = context;
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		taskDefault = new File(taskDir, prefs.getString("pref_database",
+		taskDefault = new File(location, prefs.getString("pref_database",
 				"default"));
 	}
 
@@ -151,7 +151,8 @@ public class TaskDataSource {
 	}
 
 	public void editTask(UUID uuid, String task_description, long due,
-			String status, String project, String priority, ArrayList<String> tags) {
+			String status, String project, String priority,
+			ArrayList<String> tags) {
 		Task task = getTask(uuid);
 
 		task.setDescription(task_description);
