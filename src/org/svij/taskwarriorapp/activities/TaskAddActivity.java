@@ -194,13 +194,15 @@ public class TaskAddActivity extends FragmentActivity {
 				Log.i("PriorityID", ":" + task.getPriorityID());
 				spPriority.setSelection(task.getPriorityID());
 
-				TextView etTags = (TextView) findViewById(R.id.etTags);
-				String tagString = "";
+				if (task.getTags() != null) {
+					TextView etTags = (TextView) findViewById(R.id.etTags);
+					String tagString = "";
 
-				for (String s: task.getTags()) {
-					tagString += s + " ";
+					for (String s: task.getTags()) {
+						tagString += s + " ";
+					}
+					etTags.setText(tagString);
 				}
-				etTags.setText(tagString);
 			} else {
 				String action = intent.getAction();
 				if ((action.equalsIgnoreCase(Intent.ACTION_SEND) || action

@@ -173,8 +173,12 @@ public class TaskBaseAdapter extends BaseAdapter {
 					tagString += s + " ";
 				}
 
-				holder.taskTags.setVisibility(View.VISIBLE);
-				holder.taskTags.setText(tagString.toUpperCase());
+				if (TextUtils.isEmpty(tagString.trim())) {
+					holder.taskTags.setVisibility(View.GONE);
+				} else {
+					holder.taskTags.setVisibility(View.VISIBLE);
+					holder.taskTags.setText(tagString.toUpperCase());
+				}
 			} else {
 				holder.taskTags.setVisibility(View.GONE);
 			}
