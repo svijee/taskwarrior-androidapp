@@ -146,6 +146,7 @@ public class Task {
 
 	@Expose
 	private boolean active;
+
 	@Expose
 	private boolean blocked;
 
