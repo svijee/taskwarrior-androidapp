@@ -152,11 +152,19 @@ public class TaskDataSource {
 		Task task = getTask(uuid);
 
 		task.setDescription(task_description);
-		task.setDue(new Date(due));
 		task.setStatus(status);
-		task.setProject(project);
-		task.setPriority(priority);
-		task.setTags(tags);
+		task.setUUID(UUID.randomUUID());
+		task.setEntry(System.currentTimeMillis() / 1000);
+
+		if (!TextUtils.isEmpty(project)) {
+			task.setProject(project);
+		}
+		if (!TextUtils.isEmpty(priority)) {
+			task.setPriority(priority);
+		}
+		if (due != 0) {
+			task.setDue(new Date(due));
+		}
 
 		removeTaskFromData(uuid);
 		writeTaskToFile(task, PENDING_DATA);

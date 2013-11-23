@@ -172,7 +172,7 @@ public class TaskAddActivity extends FragmentActivity {
 
 				TextView etTaskAdd = (TextView) findViewById(R.id.etTaskAdd);
 				Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
-				
+
 				etTaskAdd.setText(task.getDescription());
 				if (task.getDue() != null && task.getDue().getTime() != 0) {
 
@@ -238,7 +238,7 @@ public class TaskAddActivity extends FragmentActivity {
 							etTaskAdd.getText().toString(),
 							timestamp,
 							"pending",
-							actvProject.getText().toString(),
+							actvProject.getText().toString().trim(),
 							getPriority(spPriority.getSelectedItem().toString()),
 							etTags.getText().toString());
 					if (addingTaskFromOtherApp) {
@@ -249,10 +249,14 @@ public class TaskAddActivity extends FragmentActivity {
 					}
 				} else {
 					ArrayList<String> tags = new ArrayList<String>();
-					data.editTask(UUID.fromString(taskID), etTaskAdd.getText()
-							.toString(), timestamp, "pending", actvProject
-							.getText().toString(), getPriority(spPriority
-							.getSelectedItem().toString()), tags);
+					data.editTask(
+							UUID.fromString(taskID),
+							etTaskAdd.getText().toString(),
+							timestamp,
+							"pending",
+							actvProject.getText().toString().trim(),
+							getPriority(spPriority.getSelectedItem().toString()),
+							tags);
 				}
 				this.finish();
 				NavUtils.navigateUpFromSameTask(this);
