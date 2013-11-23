@@ -43,88 +43,111 @@ public class Task {
 
 	public Task() {
 		super();
+
+		urgency = 0.0f;
+
 	}
 
 	/*
-	 * Status of a task It can be "pending", "completed" or "deleted"
+	 * Status of a task. It can be "pending", "completed" or "deleted"
 	 */
-	@Expose private String status;
+	@Expose
+	private String status;
 
 	/*
 	 * Unique identifier for a task. Will be replaced by a uuid in the future.
 	 */
-	@Expose private UUID uuid;
+	@Expose
+	private UUID uuid;
 
 	/*
 	 * Entry timestamp – This is automatically generated when creating a task
 	 */
-	@Expose private long entry;
+	@Expose
+	private long entry;
 
 	/*
 	 * Description of a task
 	 */
-	@Expose private String description;
+	@Expose
+	private String description;
 
 	/*
 	 * Start timestamp
 	 */
-	@Expose private Long start;
-	
+	@Expose
+	private Long start;
+
 	/*
-	 * End timestamp This is automatically generated when marking a task as "done"
-	 *
+	 * End timestamp This is automatically generated when marking a task as
+	 * "done"
 	 */
-	@Expose private long end;
+	@Expose
+	private long end;
 
 	/*
 	 * A tasks due date
 	 */
-	@Expose private Date due;
+	@Expose
+	private Date due;
 
 	/*
 	 * Date until
 	 */
-	@Expose private Date until;
-	
+	@Expose
+	private Date until;
+
 	/*
 	 * Date wait
 	 */
-	@Expose private Date wait;
-	
+	@Expose
+	private Date wait;
+
 	/*
 	 * Type of recurring
 	 */
-	@Expose private String recur;
-	
-	@Expose private String mask;
-	@Expose private String imask;
-	@Expose private UUID parent;
-	@Expose private ArrayList<String> annotation;
-	
+	@Expose
+	private String recur;
+
+	@Expose
+	private String mask;
+	@Expose
+	private String imask;
+	@Expose
+	private UUID parent;
+	@Expose
+	private ArrayList<String> annotation;
+
 	/*
 	 * Project of a task
 	 */
-	@Expose private String project;
+	@Expose
+	private String project;
 
 	/*
 	 * Tag(s) of a task
 	 */
-	@Expose private ArrayList<String> tags;
+	@Expose
+	private ArrayList<String> tags;
 
 	/*
 	 * Priority of a task
 	 */
-	@Expose private String priority;
-	
+	@Expose
+	private String priority;
+
 	/*
 	 * Priority ID – needed for the spinner in Edit-Mode
 	 */
 	private int priorityID;
 
-	@Expose private String depends;
-	
-	@Expose private boolean active;
-	@Expose private boolean blocked;
+	@Expose
+	private String depends;
+
+	@Expose
+	private boolean active;
+	@Expose
+	private boolean blocked;
 
 	private float urgency;
 	private static final float epsilon = 0.000001f;
@@ -178,7 +201,7 @@ public class Task {
 	}
 
 	public void setDue(Date due) {
-		this.due= due;
+		this.due = due;
 	}
 
 	public long getEntry() {
@@ -254,18 +277,30 @@ public class Task {
 	public float urgency_c() {
 		float value = 0.0f;
 
-		value += Math.abs(urgencyPriorityCoefficient)		> epsilon ? (urgency_priority()		* urgencyPriorityCoefficient)		: 0.0;
-		value += Math.abs(urgencyProjectCoefficient)		> epsilon ? (urgency_project()		* urgencyProjectCoefficient)		: 0.0;
-		value += Math.abs(urgencyActiveCoefficient)			> epsilon ? (urgency_active()		* urgencyActiveCoefficient)			: 0.0;
-		value += Math.abs(urgencyScheduledCoefficient)		> epsilon ? (urgency_scheduled()	* urgencyScheduledCoefficient)		: 0.0;
-		value += Math.abs(urgencyWaitingCoefficient)		> epsilon ? (urgency_waiting()		* urgencyWaitingCoefficient)		: 0.0;
-		value += Math.abs(urgencyBlockedCoefficient)		> epsilon ? (urgency_blocked()		* urgencyBlockedCoefficient)		: 0.0;
-		value += Math.abs(urgencyAnnotationsCoefficient)	> epsilon ? (urgency_annotations()	* urgencyAnnotationsCoefficient)	: 0.0;
-		value += Math.abs(urgencyTagsCoefficient)			> epsilon ? (urgency_tags()			* urgencyTagsCoefficient)			: 0.0;
-		value += Math.abs(urgencyNextCoefficient)			> epsilon ? (urgency_next()			* urgencyNextCoefficient)			: 0.0;
-		value += Math.abs(urgencyDueCoefficient)			> epsilon ? (urgency_due()			* urgencyDueCoefficient)			: 0.0;
-		value += Math.abs(urgencyBlockingCoefficient)		> epsilon ? (urgency_blocking()		* urgencyBlockingCoefficient)		: 0.0;
-		value += Math.abs(urgencyAgeCoefficient)			> epsilon ? (urgency_age()			* urgencyAgeCoefficient)			: 0.0;
+		value += Math.abs(urgencyPriorityCoefficient) > epsilon ? (urgency_priority() * urgencyPriorityCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyProjectCoefficient) > epsilon ? (urgency_project() * urgencyProjectCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyActiveCoefficient) > epsilon ? (urgency_active() * urgencyActiveCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyScheduledCoefficient) > epsilon ? (urgency_scheduled() * urgencyScheduledCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyWaitingCoefficient) > epsilon ? (urgency_waiting() * urgencyWaitingCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyBlockedCoefficient) > epsilon ? (urgency_blocked() * urgencyBlockedCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations() * urgencyAnnotationsCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyTagsCoefficient) > epsilon ? (urgency_tags() * urgencyTagsCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyNextCoefficient) > epsilon ? (urgency_next() * urgencyNextCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyDueCoefficient) > epsilon ? (urgency_due() * urgencyDueCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyBlockingCoefficient) > epsilon ? (urgency_blocking() * urgencyBlockingCoefficient)
+				: 0.0;
+		value += Math.abs(urgencyAgeCoefficient) > epsilon ? (urgency_age() * urgencyAgeCoefficient)
+				: 0.0;
 
 		setUrgency(value);
 		return value;
@@ -280,7 +315,7 @@ public class Task {
 			else if (value.equals("M"))
 				return 0.65f;
 			else if (value.equals("L"))
-				return 0.3f;		
+				return 0.3f;
 		}
 		return 0.0f;
 	}
@@ -328,9 +363,16 @@ public class Task {
 	}
 
 	private float urgency_tags() {
-		// TODO: implement tags
-		// Empty!
-		return 0.0f;
+		switch (getTagCount()) {
+		case 0:
+			return 0.0f;
+		case 1:
+			return 0.8f;
+		case 2:
+			return 0.9f;
+		default:
+			return 1.0f;
+		}
 	}
 
 	private float urgency_next() {
@@ -352,9 +394,9 @@ public class Task {
 			} else if (days_overdue >= 5) {
 				return 0.92f;
 			} else if (days_overdue >= 4) {
-						return 0.88f;
+				return 0.88f;
 			} else if (days_overdue >= 3) {
-						return 0.84f;
+				return 0.84f;
 			} else if (days_overdue >= 2) {
 				return 0.80f;
 			} else if (days_overdue >= 1) {
@@ -396,13 +438,13 @@ public class Task {
 
 	private float urgency_age() {
 		long now = System.currentTimeMillis() / 1000;
-		int  age = (int) ((now - entry) / 86400);
+		int age = (int) ((now - entry) / 86400);
 		float max = 365f;
-		
+
 		if (max == 0 || age > max) {
 			return 1.0f;
 		}
-		
+
 		return (1.0f * age / max);
 	}
 
@@ -420,6 +462,10 @@ public class Task {
 
 	public void setTags(ArrayList<String> tags) {
 		this.tags = tags;
+	}
+
+	public int getTagCount() {
+		return tags.size();
 	}
 
 	public Long getStart() {
