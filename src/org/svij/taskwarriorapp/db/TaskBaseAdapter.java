@@ -70,6 +70,7 @@ public class TaskBaseAdapter extends BaseAdapter {
 		public TextView taskPriority;
 		public TextView taskStatus;
 		public TextView taskUrgency;
+		public TextView taskTags;
 		public RelativeLayout taskRelLayout;
 		public FrameLayout taskFramelayout;
 		public View taskPriorityView;
@@ -110,8 +111,10 @@ public class TaskBaseAdapter extends BaseAdapter {
 					.findViewById(R.id.tvRowTaskDueDate);
 			holder.taskRelLayout = (RelativeLayout) v
 					.findViewById(R.id.taskRelLayout);
+			holder.taskTags = (TextView) v.findViewById(R.id.tvRowTaskTags);
 			holder.taskPriorityView = (View) v
 					.findViewById(R.id.horizontal_line_priority);
+
 			v.setTag(holder);
 		} else {
 			holder = (ViewHolder) v.getTag();
@@ -162,6 +165,18 @@ public class TaskBaseAdapter extends BaseAdapter {
 				}
 			} else {
 				holder.taskDueDate.setVisibility(View.GONE);
+			}
+
+			if (task.getTags() != null) {
+				String tagString = "";
+				for (String s : task.getTags()) {
+					tagString += s + " ";
+				}
+
+				holder.taskTags.setVisibility(View.VISIBLE);
+				holder.taskTags.setText(tagString.toUpperCase());
+			} else {
+				holder.taskTags.setVisibility(View.GONE);
 			}
 
 			if (!TextUtils.isEmpty(task.getPriority())) {

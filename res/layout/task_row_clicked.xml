@@ -34,11 +34,20 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textIsSelectable="false" />
 
+    <TextView
+        android:id="@+id/tvRowTaskTags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvRowTaskDueDate"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textIsSelectable="false" />
+
     <View
         android:id="@+id/horizontal_line"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/tvRowTaskDueDate"
+        android:layout_below="@id/tvRowTaskTags"
         android:layout_margin="7dp"
         android:background="@android:color/darker_gray" />
 

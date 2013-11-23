@@ -28,6 +28,7 @@ package org.svij.taskwarriorapp.activities;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -189,8 +190,17 @@ public class TaskAddActivity extends FragmentActivity {
 
 				}
 				actvProject.setText(task.getProject());
+
 				Log.i("PriorityID", ":" + task.getPriorityID());
 				spPriority.setSelection(task.getPriorityID());
+
+				TextView etTags = (TextView) findViewById(R.id.etTags);
+				String tagString = "";
+
+				for (String s: task.getTags()) {
+					tagString += s + " ";
+				}
+				etTags.setText(tagString);
 			} else {
 				String action = intent.getAction();
 				if ((action.equalsIgnoreCase(Intent.ACTION_SEND) || action
@@ -226,7 +236,7 @@ public class TaskAddActivity extends FragmentActivity {
 			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
 			EditText etTags = (EditText) findViewById(R.id.etTags);
 
-			if (etTaskAdd.getText().toString().equals("")) {
+			if (TextUtils.isEmpty(etTaskAdd.getText().toString())) {
 				Toast toast = Toast.makeText(
 						getApplicationContext(),
 						getApplicationContext().getString(
@@ -234,13 +244,17 @@ public class TaskAddActivity extends FragmentActivity {
 				toast.show();
 			} else {
 				if (taskID == null || TextUtils.isEmpty(taskID)) {
+					ArrayList<String> tags = new ArrayList<String>(
+							Arrays.asList(etTags.getText().toString()
+									.split(" ")));
+
 					data.createTask(
 							etTaskAdd.getText().toString(),
 							timestamp,
 							"pending",
 							actvProject.getText().toString().trim(),
 							getPriority(spPriority.getSelectedItem().toString()),
-							etTags.getText().toString());
+							tags);
 					if (addingTaskFromOtherApp) {
 						Toast addedToast = Toast.makeText(this, getResources()
 								.getString(R.string.task_added),
@@ -248,7 +262,10 @@ public class TaskAddActivity extends FragmentActivity {
 						addedToast.show();
 					}
 				} else {
-					ArrayList<String> tags = new ArrayList<String>();
+					ArrayList<String> tags = new ArrayList<String>(
+							Arrays.asList(etTags.getText().toString()
+									.split(" ")));
+
 					data.editTask(
 							UUID.fromString(taskID),
 							etTaskAdd.getText().toString(),

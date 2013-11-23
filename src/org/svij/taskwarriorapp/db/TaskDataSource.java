@@ -74,7 +74,7 @@ public class TaskDataSource {
 	}
 
 	public void createTask(String description, long due, String status,
-			String project, String priority, String tags) {
+			String project, String priority, ArrayList<String> tags) {
 
 		Task task = new Task();
 		task.setDescription(description);
@@ -90,6 +90,9 @@ public class TaskDataSource {
 		}
 		if (due != 0) {
 			task.setDue(new Date(due));
+		}
+		if (!tags.isEmpty()) {
+			task.setTags(tags);
 		}
 
 		taskDefault.mkdirs();
@@ -164,6 +167,9 @@ public class TaskDataSource {
 		}
 		if (due != 0) {
 			task.setDue(new Date(due));
+		}
+		if (!tags.isEmpty()) {
+			task.setTags(tags);
 		}
 
 		removeTaskFromData(uuid);
