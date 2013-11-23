@@ -201,7 +201,7 @@ public class TaskAddActivity extends FragmentActivity {
 					for (String s: task.getTags()) {
 						tagString += s + " ";
 					}
-					etTags.setText(tagString);
+					etTags.setText(tagString.trim());
 				}
 			} else {
 				String action = intent.getAction();

@@ -27,7 +27,7 @@
         android:key="notifications_due_task_vibrate"
         android:title="@string/pref_title_vibrate" />
 
-    <org.svij.taskwarriorapp.ui.TimePreference
+    <org.svij.taskwarriorapp.fragments.TimeDialogPreference
         style="@android:style/TextAppearance.Large"
         android:dependency="notifications_due_task"
         android:key="notifications_alarm_time"

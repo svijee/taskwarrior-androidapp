@@ -3,10 +3,10 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="org.svij.taskwarriorapp.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="org.svij.taskwarriorapp.activities.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
     <header
-        android:fragment="org.svij.taskwarriorapp.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="org.svij.taskwarriorapp.activities.SettingsActivity$NotificationPreferenceFragment"
         android:title="@string/pref_header_notifications" />
 
 </preference-headers>

@@ -28,8 +28,8 @@
 	<string name="pref_appearance_descriptionTextSize_large">Groß</string>
 
 	<string-array name="pref_default_report">
-        <item>task next</item>
-        <item>task long</item>
+        <item>Next</item>
+        <item>Long</item>
     </string-array>
 
     <string-array name="pref_appearance_descripTionTextSizeArray">

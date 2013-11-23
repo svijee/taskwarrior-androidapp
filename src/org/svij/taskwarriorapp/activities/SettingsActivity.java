@@ -27,7 +27,6 @@ import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
 
-
 public class SettingsActivity extends PreferenceActivity {
 	/**
 	 * Determines whether to always show the simplified settings UI, where
@@ -114,6 +113,20 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	public boolean onIsMultiPane() {
 		return isXLargeTablet(this) && !isSimplePreferences(this);
+	}
+
+	@TargetApi(Build.VERSION_CODES.KITKAT)
+	@Override
+	protected boolean isValidFragment(String fragmentName) {
+		if (fragmentName.contains("NotificationPreferenceFragment")) {
+			return true;
+		}
+
+		if (fragmentName.contains("GeneralPreferenceFragment")) {
+			return true;
+		}
+
+		return super.isValidFragment(fragmentName);
 	}
 
 	/**
