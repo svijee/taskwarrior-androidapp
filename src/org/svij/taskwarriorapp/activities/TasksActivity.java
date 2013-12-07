@@ -251,8 +251,14 @@ public class TasksActivity extends FragmentActivity implements
 		drawerList.setItemChecked(position, true);
 		TextView selectedTextView = (TextView) drawerList.getChildAt(position);
 		column = selectedTextView.getText().toString();
-		setTitle(column);
 		taskListFragment.setColumn(column);
+
+		int numberOfTasks = taskListFragment.getListView().getCount();
+		if (numberOfTasks == 0) {
+			setTitle(column + " (" + numberOfTasks + " " + getResources().getString(R.string.task) +")");
+		} else if (numberOfTasks > 0) {
+			setTitle(column + " (" + numberOfTasks + " " + getResources().getString(R.string.task) +"s)");
+		}
 
 		taskListFragment.setListView();
 		drawerLayout.closeDrawers();
