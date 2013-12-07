@@ -242,8 +242,8 @@ public class TaskListFragment extends ListFragment {
 				}
 				return task1.getDue().compareTo(task2.getDue());
 			} else if (sortType.equals("oldest")) {
-				Date task1date = new Date(task1.getEntry());
-				Date task2date = new Date(task2.getEntry());
+				Date task1date = task1.getEntry();
+				Date task2date = task2.getEntry();
 				if (task1date.before(task2date)) {
 					return -1;
 				} else if (task1date.after(task2date)) {
@@ -252,8 +252,8 @@ public class TaskListFragment extends ListFragment {
 					return 0;
 				}
 			} else if (sortType.equals("newest")) {
-				Date task1date = new Date(task1.getEntry());
-				Date task2date = new Date(task2.getEntry());
+				Date task1date = task1.getEntry();
+				Date task2date = task2.getEntry();
 				if (task2date.before(task1date)) {
 					return -1;
 				} else if (task2date.after(task1date)) {

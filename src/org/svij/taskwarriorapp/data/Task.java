@@ -64,7 +64,7 @@ public class Task {
 	 * Entry timestamp – This is automatically generated when creating a task
 	 */
 	@Expose
-	private long entry;
+	private Date entry;
 
 	/*
 	 * Description of a task
@@ -76,14 +76,14 @@ public class Task {
 	 * Start timestamp
 	 */
 	@Expose
-	private Long start;
+	private Date start;
 
 	/*
 	 * End timestamp This is automatically generated when marking a task as
 	 * "done"
 	 */
 	@Expose
-	private long end;
+	private Date end;
 
 	/*
 	 * A tasks due date
@@ -205,11 +205,11 @@ public class Task {
 		this.due = due;
 	}
 
-	public long getEntry() {
+	public Date getEntry() {
 		return entry;
 	}
 
-	public void setEntry(long entry) {
+	public void setEntry(Date entry) {
 		this.entry = entry;
 	}
 
@@ -221,11 +221,11 @@ public class Task {
 		this.status = status;
 	}
 
-	public long getEnd() {
+	public Date getEnd() {
 		return end;
 	}
 
-	public void setEnd(long end) {
+	public void setEnd(Date end) {
 		this.end = end;
 	}
 
@@ -438,8 +438,8 @@ public class Task {
 	}
 
 	private float urgency_age() {
-		long now = System.currentTimeMillis() / 1000;
-		int age = (int) ((now - entry) / 86400);
+		Date now = new Date(System.currentTimeMillis());
+		int age = (int) ((now.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24));
 		float max = 365f;
 
 		if (max == 0 || age > max) {
@@ -473,11 +473,11 @@ public class Task {
 		}
 	}
 
-	public Long getStart() {
+	public Date getStart() {
 		return start;
 	}
 
-	public void setStart(Long start) {
+	public void setStart(Date start) {
 		this.start = start;
 	}
 

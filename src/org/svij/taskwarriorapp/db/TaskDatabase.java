@@ -43,15 +43,14 @@ import java.util.UUID;
 import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.widget.Toast;
+
+import com.google.gson.GsonBuilder;
 
 public class TaskDatabase {
 
@@ -80,7 +79,7 @@ public class TaskDatabase {
 		task.setDescription(description.trim());
 		task.setStatus(status);
 		task.setUUID(UUID.randomUUID());
-		task.setEntry(System.currentTimeMillis() / 1000);
+		task.setEntry(new Date(System.currentTimeMillis()));
 
 		if (!TextUtils.isEmpty(project)) {
 			task.setProject(project);
@@ -158,7 +157,7 @@ public class TaskDatabase {
 		task.setDescription(task_description);
 		task.setStatus(status);
 		task.setUUID(UUID.randomUUID());
-		task.setEntry(System.currentTimeMillis() / 1000);
+		task.setEntry(new Date(System.currentTimeMillis()));
 
 		if (!TextUtils.isEmpty(project)) {
 			task.setProject(project);
@@ -250,7 +249,8 @@ public class TaskDatabase {
 					new FileWriter(completedFile, true)));
 
 			String output = new GsonBuilder()
-					.excludeFieldsWithoutExposeAnnotation().create()
+					.excludeFieldsWithoutExposeAnnotation()
+					.setDateFormat("yyyyMMdd'T'HHmmss'Z'").create()
 					.toJson(task).toString();
 
 			completedWriter.println(output);
@@ -278,7 +278,9 @@ public class TaskDatabase {
 
 	public Task parseTask(String data) {
 
-		Task task = new Gson().fromJson(data, Task.class);
+		Task task = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
+				.setDateFormat("yyyyMMdd'T'HHmmss'Z'").create()
+				.fromJson(data, Task.class);
 		task.urgency_c();
 
 		return task;
