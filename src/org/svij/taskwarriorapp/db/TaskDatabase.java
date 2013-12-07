@@ -77,7 +77,7 @@ public class TaskDatabase {
 			String project, String priority, ArrayList<String> tags) {
 
 		Task task = new Task();
-		task.setDescription(description);
+		task.setDescription(description.trim());
 		task.setStatus(status);
 		task.setUUID(UUID.randomUUID());
 		task.setEntry(System.currentTimeMillis() / 1000);

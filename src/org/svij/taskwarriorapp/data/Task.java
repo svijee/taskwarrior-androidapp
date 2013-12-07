@@ -466,7 +466,11 @@ public class Task {
 	}
 
 	public int getTagCount() {
-		return tags.size();
+		if (tags != null) {
+			return tags.size();
+		} else {
+			return 0;
+		}
 	}
 
 	public Long getStart() {
