@@ -78,6 +78,12 @@ public class TasksActivity extends FragmentActivity implements
 		TaskDatabase data = new TaskDatabase(this);
 		data.createDataIfNotExist();
 
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		String defaultReport = prefs.getString("settings_date_alignment",
+				getResources().getString(R.string.task_next));
+		column = defaultReport;
+
 		if (savedInstanceState == null) {
 			FragmentManager fManager = getSupportFragmentManager();
 			FragmentTransaction fTransaction = fManager.beginTransaction();
@@ -89,11 +95,6 @@ public class TasksActivity extends FragmentActivity implements
 			fTransaction.replace(R.id.right_drawer, menuListFragment);
 			fTransaction.commit();
 
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(this);
-			String defaultReport = prefs.getString("settings_date_alignment",
-					getResources().getString(R.string.task_next));
-			column = defaultReport;
 			taskListFragment.setColumn(defaultReport);
 		} else {
 			taskListFragment = (TaskListFragment) getSupportFragmentManager()
@@ -132,7 +133,8 @@ public class TasksActivity extends FragmentActivity implements
 		drawerLayout.setDrawerListener(drawerToggle);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setDisplayShowTitleEnabled(true);
-		setTitle(column + " (" + drawerList.getCount() + " " + getResources().getString(R.string.task) +")");
+		setTitle(column + " (" + drawerList.getCount() + " "
+				+ getResources().getString(R.string.task) + ")");
 	}
 
 	@Override
@@ -256,9 +258,11 @@ public class TasksActivity extends FragmentActivity implements
 
 		int numberOfTasks = taskListFragment.getListView().getCount();
 		if (numberOfTasks == 0) {
-			setTitle(column + " (" + numberOfTasks + " " + getResources().getString(R.string.task) +")");
+			setTitle(column + " (" + numberOfTasks + " "
+					+ getResources().getString(R.string.task) + ")");
 		} else if (numberOfTasks > 0) {
-			setTitle(column + " (" + numberOfTasks + " " + getResources().getString(R.string.task) +"s)");
+			setTitle(column + " (" + numberOfTasks + " "
+					+ getResources().getString(R.string.task) + "s)");
 		}
 
 		taskListFragment.setListView();
