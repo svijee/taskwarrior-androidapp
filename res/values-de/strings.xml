@@ -1,8 +1,8 @@
 <resources>
 
-    <string name="ab_cancel">Task abbrechen</string>
+    <string name="ab_cancel">Abbrechen</string>
     <string name="ab_createTask">Task erstellen</string>
-    <string name="ab_submit">Task erstellen</string>
+    <string name="ab_submit">Anlegen</string>
     <string name="ab_syncTasks">Sync tasks</string>
     <string name="app_name">Taskwarrior-App</string>
     <string name="cancel">Abbrechen</string>

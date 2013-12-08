@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="ab_cancel">Cancel task</string>
-    <string name="ab_createTask">Create task</string>
+    <string name="ab_cancel">Cancel</string>
+    <string name="ab_createTask">Add</string>
     <string name="ab_submit">Submit task</string>
     <string name="ab_syncTasks">Sync tasks</string>
     <string name="app_name">Taskwarrior-App</string>
@@ -35,6 +35,7 @@
     <string name="setTag">Set a tag</string>
     <string name="setTime">Pick a time</string>
     <string name="status">Status</string>
+    <string name="recur">Recurring</string>
     <string name="tags">Tags</string>
     <string name="task">Task</string>
     <string name="task_action_done">Task done:</string>
