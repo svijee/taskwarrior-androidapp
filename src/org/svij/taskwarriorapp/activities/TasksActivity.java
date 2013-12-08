@@ -132,6 +132,7 @@ public class TasksActivity extends FragmentActivity implements
 		drawerLayout.setDrawerListener(drawerToggle);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setDisplayShowTitleEnabled(true);
+		setTitle(column + " (" + drawerList.getCount() + " " + getResources().getString(R.string.task) +")");
 	}
 
 	@Override
