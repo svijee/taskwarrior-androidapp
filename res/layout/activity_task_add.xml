@@ -82,17 +82,44 @@
             android:textIsSelectable="false" />
 
         <TextView
-            android:id="@+id/tvProjectStatic"
+            android:id="@+id/tvRecurStatic"
             style="@style/listViewHeaderItem"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tvDueTime"
-            android:text="@string/project"
+            android:text="@string/recur"
             android:textIsSelectable="false" />
 
         <View
             android:id="@+id/item_separator3"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/lvDividerHeight"
+            android:layout_below="@id/tvRecurStatic"
+            android:layout_marginTop="@dimen/lvSectionDividerMarginTop"
+            android:background="@android:color/holo_blue_dark" />
+
+        <Spinner
+            android:id="@+id/spRecurring"
+            style="@style/listViewItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvRecurStatic"
+            android:layout_margin="10dp"
+            android:entries="@array/recurring_list" />
+
+        <TextView
+            android:id="@+id/tvProjectStatic"
+            style="@style/listViewHeaderItem"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/spRecurring"
+            android:text="@string/project"
+            android:textIsSelectable="false" />
+
+        <View
+            android:id="@+id/item_separator4"
             android:layout_width="match_parent"
             android:layout_height="@dimen/lvDividerHeight"
             android:layout_below="@id/tvProjectStatic"
