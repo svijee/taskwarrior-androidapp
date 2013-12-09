@@ -255,7 +255,9 @@ public class TasksActivity extends FragmentActivity implements
 		TextView selectedTextView = (TextView) drawerList.getChildAt(position);
 		column = selectedTextView.getText().toString();
 		taskListFragment.setColumn(column);
-
+		taskListFragment.setListView();
+		drawerLayout.closeDrawers();
+		
 		int numberOfTasks = taskListFragment.getListView().getCount();
 		if (numberOfTasks == 0) {
 			setTitle(column + " (" + numberOfTasks + " "
@@ -264,8 +266,5 @@ public class TasksActivity extends FragmentActivity implements
 			setTitle(column + " (" + numberOfTasks + " "
 					+ getResources().getString(R.string.task) + "s)");
 		}
-
-		taskListFragment.setListView();
-		drawerLayout.closeDrawers();
 	}
 }
