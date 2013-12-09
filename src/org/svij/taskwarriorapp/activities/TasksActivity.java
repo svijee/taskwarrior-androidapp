@@ -80,9 +80,8 @@ public class TasksActivity extends FragmentActivity implements
 
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		String defaultReport = prefs.getString("settings_date_alignment",
+		column = prefs.getString("settings_date_alignment",
 				getResources().getString(R.string.task_next));
-		column = defaultReport;
 
 		if (savedInstanceState == null) {
 			FragmentManager fManager = getSupportFragmentManager();
@@ -95,7 +94,7 @@ public class TasksActivity extends FragmentActivity implements
 			fTransaction.replace(R.id.right_drawer, menuListFragment);
 			fTransaction.commit();
 
-			taskListFragment.setColumn(defaultReport);
+			taskListFragment.setColumn(column);
 		} else {
 			taskListFragment = (TaskListFragment) getSupportFragmentManager()
 					.getFragment(savedInstanceState,
@@ -133,8 +132,6 @@ public class TasksActivity extends FragmentActivity implements
 		drawerLayout.setDrawerListener(drawerToggle);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setDisplayShowTitleEnabled(true);
-		setTitle(column + " (" + drawerList.getCount() + " "
-				+ getResources().getString(R.string.task) + ")");
 	}
 
 	@Override
@@ -165,6 +162,7 @@ public class TasksActivity extends FragmentActivity implements
 					calendar.getTimeInMillis(), 24 * 60 * 60 * 1000,
 					pendingIntent);
 		}
+		setTitle(column + " (" + taskListFragment.getListView().getCount() +")");
 	}
 
 	@Override
@@ -257,14 +255,6 @@ public class TasksActivity extends FragmentActivity implements
 		taskListFragment.setColumn(column);
 		taskListFragment.setListView();
 		drawerLayout.closeDrawers();
-		
-		int numberOfTasks = taskListFragment.getListView().getCount();
-		if (numberOfTasks == 0) {
-			setTitle(column + " (" + numberOfTasks + " "
-					+ getResources().getString(R.string.task) + ")");
-		} else if (numberOfTasks > 0) {
-			setTitle(column + " (" + numberOfTasks + " "
-					+ getResources().getString(R.string.task) + "s)");
-		}
+		setTitle(column + " (" + taskListFragment.getListView().getCount() +")");
 	}
 }
