@@ -4,7 +4,7 @@
     <string name="ab_createTask">Task erstellen</string>
     <string name="ab_submit">Anlegen</string>
     <string name="ab_syncTasks">Sync tasks</string>
-    <string name="app_name">Taskwarrior-App</string>
+    <string name="app_name">Taskwarrior</string>
     <string name="cancel">Abbrechen</string>
     <string name="database_default">Default</string>
     <string name="dialog_unsaved_data">Task verwerfen?</string>
