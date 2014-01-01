@@ -103,18 +103,13 @@ public class TaskBaseAdapter extends BaseAdapter {
 				v = vi.inflate(R.layout.task_row_clicked, null);
 			}
 			holder = new ViewHolder();
-			holder.taskDescription = (TextView) v
-					.findViewById(R.id.tvRowTaskDescription);
-			holder.taskProject = (TextView) v
-					.findViewById(R.id.tvRowTaskProject);
-			holder.taskDueDate = (TextView) v
-					.findViewById(R.id.tvRowTaskDueDate);
-			holder.taskRelLayout = (RelativeLayout) v
-					.findViewById(R.id.taskRelLayout);
+			holder.taskDescription = (TextView) v.findViewById(R.id.tvRowTaskDescription);
+			holder.taskProject = (TextView) v.findViewById(R.id.tvRowTaskProject);
+			holder.taskDueDate = (TextView) v.findViewById(R.id.tvRowTaskDueDate);
+			holder.taskRelLayout = (RelativeLayout) v.findViewById(R.id.taskRelLayout);
 			holder.taskTags = (TextView) v.findViewById(R.id.tvRowTaskTags);
-			holder.taskPriorityView = (View) v
-					.findViewById(R.id.horizontal_line_priority);
-
+			holder.taskPriorityView = (View) v.findViewById(R.id.horizontal_line_priority);
+			holder.taskStatus = (TextView) v.findViewById(R.id.tvRowTaskStatus);
 			v.setTag(holder);
 		} else {
 			holder = (ViewHolder) v.getTag();
@@ -209,6 +204,10 @@ public class TaskBaseAdapter extends BaseAdapter {
 					View horizBar = v.findViewById(R.id.horizontal_line);
 					horizBar.setVisibility(View.GONE);
 				}
+				holder.taskStatus.setVisibility(View.VISIBLE);
+				holder.taskStatus.setText(task.getStatus());
+			} else {
+				holder.taskStatus.setVisibility(View.GONE);
 			}
 		}
 
