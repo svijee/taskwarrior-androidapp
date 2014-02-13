@@ -71,15 +71,16 @@
             android:layout_below="@+id/tvDueTime"
             android:text="@string/recur" />
 
-        <Spinner
-            android:id="@+id/spRecurring"
-            style="@style/listViewItem"
+        <TextView
+            android:id="@+id/tvRecurring"
+            style="@style/Dropdown.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvRecurStatic"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:entries="@array/recurring_list" />
+            android:paddingLeft="8dp"
+            android:hint="@string/setRecurring" />
 
         <TextView
             android:id="@+id/tvProjectStatic"
@@ -87,7 +88,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/spRecurring"
+            android:layout_below="@+id/tvRecurring"
             android:text="@string/project" />
 
         <AutoCompleteTextView
