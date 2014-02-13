@@ -37,19 +37,16 @@ import java.util.UUID;
 import org.svij.taskwarriorapp.R;
 import org.svij.taskwarriorapp.data.Task;
 import org.svij.taskwarriorapp.db.TaskDatabase;
-import org.svij.taskwarriorapp.fragments.DatePickerFragment;
-import org.svij.taskwarriorapp.fragments.TimePickerFragment;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
-import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.util.Log;
@@ -57,16 +54,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
-public class TaskAddActivity extends FragmentActivity {
+import com.doomonafireball.betterpickers.calendardatepicker.CalendarDatePickerDialog;
+import com.doomonafireball.betterpickers.radialtimepicker.RadialPickerLayout;
+import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
+
+public class TaskAddActivity extends FragmentActivity implements
+		CalendarDatePickerDialog.OnDateSetListener,
+		RadialTimePickerDialog.OnTimeSetListener {
 	private TaskDatabase data;
 	private String taskID = "";
 	private long timestamp;
@@ -78,18 +79,18 @@ public class TaskAddActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_task_add);
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-
 		final TextView tvDueDate = (TextView) findViewById(R.id.tvDueDate);
 		tvDueDate.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				DatePickerFragment date = new DatePickerFragment();
-				date.setCallBack(onDate);
-				date.setTimestamp(timestamp);
-				date.show(getSupportFragmentManager().beginTransaction(),
-						"date_dialog");
+				FragmentManager fm = getSupportFragmentManager();
+				CalendarDatePickerDialog calendarDatePickerDialog = CalendarDatePickerDialog
+						.newInstance(TaskAddActivity.this, Calendar
+								.getInstance().get(Calendar.YEAR), Calendar
+								.getInstance().get(Calendar.MONTH), Calendar
+								.getInstance().get(Calendar.DAY_OF_MONTH));
+				calendarDatePickerDialog.show(fm, "fragment_date_picker");
 			}
 		});
 
@@ -98,11 +99,15 @@ public class TaskAddActivity extends FragmentActivity {
 
 			@Override
 			public void onClick(View v) {
-				TimePickerFragment date = new TimePickerFragment();
-				date.setCallBack(onTime);
-				date.setTimestamp(timestamp);
-				date.show(getSupportFragmentManager().beginTransaction(),
-						"time_dialog");
+
+				FragmentManager fm = getSupportFragmentManager();
+				RadialTimePickerDialog timePickerDialog = RadialTimePickerDialog
+						.newInstance(TaskAddActivity.this, Calendar
+								.getInstance().get(Calendar.HOUR_OF_DAY),
+								Calendar.getInstance().get(Calendar.MINUTE),
+								android.text.format.DateFormat
+										.is24HourFormat(TaskAddActivity.this));
+				timePickerDialog.show(fm, "fragment_time_picker_name");
 			}
 		});
 
@@ -198,7 +203,7 @@ public class TaskAddActivity extends FragmentActivity {
 					TextView etTags = (TextView) findViewById(R.id.etTags);
 					String tagString = "";
 
-					for (String s: task.getTags()) {
+					for (String s : task.getTags()) {
 						tagString += s + " ";
 					}
 					etTags.setText(tagString.trim());
@@ -315,45 +320,6 @@ public class TaskAddActivity extends FragmentActivity {
 		safelyDismissActivity();
 	}
 
-	OnDateSetListener onDate = new OnDateSetListener() {
-
-		@Override
-		public void onDateSet(DatePicker view, int year, int monthOfYear,
-				int dayOfMonth) {
-			TextView tvDueTime = (TextView) findViewById(R.id.tvDueTime);
-			if (TextUtils.isEmpty(tvDueTime.getText().toString())) {
-				cal = new GregorianCalendar(year, monthOfYear, dayOfMonth);
-			} else {
-				cal.set(year, monthOfYear, dayOfMonth);
-			}
-			timestamp = cal.getTimeInMillis();
-
-			TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
-			etTaskDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
-					.format(timestamp));
-
-		}
-	};
-
-	OnTimeSetListener onTime = new OnTimeSetListener() {
-
-		@Override
-		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-			cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
-			cal.set(Calendar.MINUTE, minute);
-			cal.set(Calendar.SECOND, 0);
-
-			timestamp = cal.getTimeInMillis();
-
-			TextView etTaskTime = (TextView) findViewById(R.id.tvDueTime);
-			etTaskTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT)
-					.format(timestamp));
-			TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
-			etTaskDate.setText(DateFormat.getDateInstance(DateFormat.SHORT)
-					.format(timestamp));
-		}
-	};
-
 	public static class UnsavedDataDialogFragment extends DialogFragment {
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -431,5 +397,37 @@ public class TaskAddActivity extends FragmentActivity {
 				|| actvProject.getText().length() != 0
 				|| !TextUtils.isEmpty(getPriority(spPriority.getSelectedItem()
 						.toString())) || etTags.getText().length() != 0;
+	}
+
+	@Override
+	public void onDateSet(CalendarDatePickerDialog dialog, int year,
+			int monthOfYear, int dayOfMonth) {
+		TextView tvDueTime = (TextView) findViewById(R.id.tvDueTime);
+		if (TextUtils.isEmpty(tvDueTime.getText().toString())) {
+			cal = new GregorianCalendar(year, monthOfYear, dayOfMonth);
+		} else {
+			cal.set(year, monthOfYear, dayOfMonth);
+		}
+		timestamp = cal.getTimeInMillis();
+
+		TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
+		etTaskDate.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(
+				timestamp));
+	}
+
+	@Override
+	public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+		cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		cal.set(Calendar.MINUTE, minute);
+		cal.set(Calendar.SECOND, 0);
+
+		timestamp = cal.getTimeInMillis();
+
+		TextView etTaskTime = (TextView) findViewById(R.id.tvDueTime);
+		etTaskTime.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(
+				timestamp));
+		TextView etTaskDate = (TextView) findViewById(R.id.tvDueDate);
+		etTaskDate.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(
+				timestamp));
 	}
 }
