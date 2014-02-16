@@ -49,7 +49,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,22 +64,15 @@ import android.widget.Toast;
 import com.doomonafireball.betterpickers.calendardatepicker.CalendarDatePickerDialog;
 import com.doomonafireball.betterpickers.radialtimepicker.RadialPickerLayout;
 import com.doomonafireball.betterpickers.radialtimepicker.RadialTimePickerDialog;
-import com.doomonafireball.betterpickers.recurrencepicker.EventRecurrence;
-import com.doomonafireball.betterpickers.recurrencepicker.EventRecurrenceFormatter;
-import com.doomonafireball.betterpickers.recurrencepicker.RecurrencePickerDialog;
 
 public class TaskAddActivity extends FragmentActivity implements
 		CalendarDatePickerDialog.OnDateSetListener,
-		RadialTimePickerDialog.OnTimeSetListener,
-		RecurrencePickerDialog.OnRecurrenceSetListener {
+		RadialTimePickerDialog.OnTimeSetListener {
 	private TaskDatabase data;
 	private String taskID = "";
 	private long timestamp;
 	private GregorianCalendar cal = new GregorianCalendar();
 	private boolean addingTaskFromOtherApp = false;
-	private static final String FRAG_TAG_RECUR_PICKER = "recurrencePickerDialogFragment";
-	private String recurRule;
-	private EventRecurrence eventRecurrence = new EventRecurrence();
 
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
@@ -153,36 +145,6 @@ public class TaskAddActivity extends FragmentActivity implements
 				}
 				tvDueTime.setText("");
 				return true;
-			}
-		});
-
-		final TextView tvRecurring = (TextView) findViewById(R.id.tvRecurring);
-
-		tvRecurring.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				FragmentManager fm = getSupportFragmentManager();
-				Bundle b = new Bundle();
-				Time t = new Time();
-				t.setToNow();
-				b.putLong(RecurrencePickerDialog.BUNDLE_START_TIME_MILLIS,
-						t.toMillis(false));
-				b.putString(RecurrencePickerDialog.BUNDLE_TIME_ZONE, t.timezone);
-
-				// may be more efficient to serialize and pass in
-				// EventRecurrence
-				b.putString(RecurrencePickerDialog.BUNDLE_RRULE, recurRule);
-
-				RecurrencePickerDialog rpd = (RecurrencePickerDialog) fm
-						.findFragmentByTag(FRAG_TAG_RECUR_PICKER);
-				if (rpd != null) {
-					rpd.dismiss();
-				}
-				rpd = new RecurrencePickerDialog();
-				rpd.setArguments(b);
-				rpd.setOnRecurrenceSetListener(TaskAddActivity.this);
-				rpd.show(fm, FRAG_TAG_RECUR_PICKER);
 			}
 		});
 
@@ -468,23 +430,4 @@ public class TaskAddActivity extends FragmentActivity implements
 		etTaskDate.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(
 				timestamp));
 	}
-
-	@Override
-	public void onRecurrenceSet(String recurRule) {
-        this.recurRule = recurRule;
-        if (this.recurRule != null) {
-            eventRecurrence.parse(this.recurRule);
-        }
-        populateRepeats();
-	}
-
-    private void populateRepeats() {
-        Resources r = getResources();
-        String repeatString = "";
-        if (!TextUtils.isEmpty(recurRule)) {
-            repeatString = EventRecurrenceFormatter.getRepeatString(this, r, eventRecurrence, true);
-        }
-
-        Toast.makeText(this, recurRule + "\n" + repeatString, Toast.LENGTH_LONG).show();
-    }
 }

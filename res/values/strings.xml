@@ -32,7 +32,6 @@
     <string name="setDate">Pick a date</string>
     <string name="setPriority">Set priority</string>
     <string name="setProject">Set a project</string>
-    <string name="setRecurring">Set recurring</string>
     <string name="setTag">Set a tag</string>
     <string name="setTime">Pick a time</string>
     <string name="status">Status</string>
@@ -61,6 +60,18 @@
     <string name="valid_description">A task must have a description.</string>
     <string name="task_added">Task added</string>
 
+    <string-array name="recurring_list">
+        <item>no recurring</item>
+        <item>user-defined</item>
+        <item>daily</item>
+        <item>weekly</item>
+        <item>biweekly</item>
+        <item>monthly</item>
+        <item>quartarly</item>
+        <item>semiannual</item>
+        <item>annual</item>
+        <item>biannual</item>
+    </string-array>
     <string-array name="priority_list">
         <item>no priority</item>
         <item>High</item>
