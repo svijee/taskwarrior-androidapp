@@ -65,6 +65,55 @@ public class TaskDatabase {
 	private static String UNDO_DATA = "undo.data";
 	private static String TEMP_DATA = "temp.data";
 
+	private TF pending;
+	private TF completed;
+	private TF undo;
+	private TF backlog;
+
+	public void setLocation(String location) {
+		this.location = new File(location);
+	}
+	
+	public void add(Task task, boolean addToBacklog) {
+		
+	}
+
+	public void modify(Task task, boolean addToBacklog) {
+		
+	}
+	
+	public void commit() {
+		
+	}
+
+	public void merge(String string) {
+		
+	}
+
+	public void revert() {
+		
+	}
+
+	public int gc() {
+		return 0;
+		
+	}
+
+	public int nextId() {
+		return 0;
+		
+	}
+
+	public boolean readOnly() {
+		return false;
+		
+	}
+
+	private void revert_undo() {}
+	private void revert_pending() {}
+	private void revert_completed() {}
+	private void revert_backlog() {}
+
 	public TaskDatabase(Context context) {
 		this.context = context;
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -424,5 +473,92 @@ public class TaskDatabase {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+}
+
+class TF {
+	private boolean loadedLines;
+	private boolean loadedTasks;
+	private boolean dirty;
+	private File file;
+	private ArrayList<Task> tasks;
+	private ArrayList<Task> addedTasks;
+	private ArrayList<Task> modifiedTasks;
+
+	private ArrayList<String> lines;
+	private ArrayList<String> addedLines;
+
+	public TF() {
+		loadedLines = false;
+	}
+	
+	public void target(String location) {
+		file = new File(location);
+	}
+	public ArrayList<Task> getTasks() {
+		if(!loadedTasks) {
+			loadTasks();
+		}
+		
+		return tasks;
+	}
+
+	public ArrayList<String> getLines() {
+		if (!loadedLines) {
+			loadLines();
+		}
+		
+		return lines;
+	}
+
+	public void addTask(Task task) {
+		tasks.add(task);
+		addedTasks.add(task);
+		dirty = true;
+	}
+	
+	public boolean modifyTask(Task task) {
+		for(Task t: tasks) {
+			if(task.getUuid().equals(t.getUuid())) {
+				modifiedTasks.add(task);
+				dirty = true;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void addLine(String line) {
+		lines.add(line);
+		addedLines.add(line);
+		dirty = true;
+	}
+	
+	public void commit() {
+		if(dirty) {
+			if(modifiedTasks.size() == 0 && addedTasks.size() > 0 || addedLines.size() > 0) {
+				
+			} else {
+				
+			}
+		}
+	}
+	
+	public void loadTasks() {
+		if(!loadedLines) {
+			loadLines();
+			
+			lines.addAll(addedLines);
+		}
+		
+		try {
+			
+		} catch(Exception e) {
+			
+		}
+	}
+	
+	public void loadLines() {
+		
 	}
 }
