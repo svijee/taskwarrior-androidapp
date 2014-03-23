@@ -36,6 +36,16 @@
     <string name="setTime">Pick a time</string>
     <string name="status">Status</string>
     <string name="recur">Recurring</string>
+    <string name="recur_norecur">no recurring</string>
+    <string name="recur_userdefined">user-defined</string>
+    <string name="recur_daily">daily</string>
+    <string name="recur_weekly">weekly</string>
+    <string name="recur_biweekly">biweekly</string>
+    <string name="recur_monthly">monthly</string>
+    <string name="recur_quartarly">quartarly</string>
+    <string name="recur_semiannual">semiannual</string>
+    <string name="recur_annual">annual</string>
+    <string name="recur_biannual">biannual</string>
     <string name="tags">Tags</string>
     <string name="task">Task</string>
     <string name="task_action_done">Task done:</string>
@@ -61,16 +71,16 @@
     <string name="task_added">Task added</string>
 
     <string-array name="recurring_list">
-        <item>no recurring</item>
-        <item>user-defined</item>
-        <item>daily</item>
-        <item>weekly</item>
-        <item>biweekly</item>
-        <item>monthly</item>
-        <item>quartarly</item>
-        <item>semiannual</item>
-        <item>annual</item>
-        <item>biannual</item>
+        <item>@string/recur_norecur</item>
+        <item>@string/recur_userdefined</item>
+        <item>@string/recur_daily</item>
+        <item>@string/recur_weekly</item>
+        <item>@string/recur_biweekly</item>
+        <item>@string/recur_monthly</item>
+        <item>@string/recur_quartarly</item>
+        <item>@string/recur_semiannual</item>
+        <item>@string/recur_annual</item>
+        <item>@string/recur_biannual</item>
     </string-array>
     <string-array name="priority_list">
         <item>no priority</item>

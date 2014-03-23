@@ -242,6 +242,7 @@ public class TaskAddActivity extends FragmentActivity implements
 			AutoCompleteTextView actvProject = (AutoCompleteTextView) findViewById(R.id.actvProject);
 			Spinner spPriority = (Spinner) findViewById(R.id.spPriority);
 			EditText etTags = (EditText) findViewById(R.id.etTags);
+			Spinner spRecurring = (Spinner) findViewById(R.id.spRecurring);
 
 			if (TextUtils.isEmpty(etTaskAdd.getText().toString())) {
 				Toast toast = Toast.makeText(
@@ -255,18 +256,30 @@ public class TaskAddActivity extends FragmentActivity implements
 							Arrays.asList(etTags.getText().toString()
 									.split(" ")));
 
-					data.createTask(
-							etTaskAdd.getText().toString(),
-							timestamp,
-							"pending",
-							actvProject.getText().toString().trim(),
-							getPriority(spPriority.getSelectedItem().toString()),
-							tags);
-					if (addingTaskFromOtherApp) {
-						Toast addedToast = Toast.makeText(this, getResources()
-								.getString(R.string.task_added),
-								Toast.LENGTH_LONG);
-						addedToast.show();
+					if (spRecurring.getSelectedItem().toString().equals(getResources().getString(R.string.recur_norecur))) {
+						data.createTask(
+								etTaskAdd.getText().toString(),
+								timestamp,
+								"pending",
+								null,
+								actvProject.getText().toString().trim(),
+								getPriority(spPriority.getSelectedItem().toString()),
+								tags);
+						if (addingTaskFromOtherApp) {
+							Toast addedToast = Toast.makeText(this, getResources()
+									.getString(R.string.task_added),
+									Toast.LENGTH_LONG);
+							addedToast.show();
+						}
+					} else {
+						data.createTask(
+								etTaskAdd.getText().toString(),
+								timestamp,
+								"Recurring",
+								spRecurring.getSelectedItem().toString(),
+								actvProject.getText().toString().trim(),
+								getPriority(spPriority.getSelectedItem().toString()),
+								tags);
 					}
 				} else {
 					ArrayList<String> tags = new ArrayList<String>(
@@ -278,6 +291,7 @@ public class TaskAddActivity extends FragmentActivity implements
 							etTaskAdd.getText().toString(),
 							timestamp,
 							"pending",
+							null,
 							actvProject.getText().toString().trim(),
 							getPriority(spPriority.getSelectedItem().toString()),
 							tags);

@@ -73,7 +73,8 @@ public class TaskDatabase {
 	}
 
 	public void createTask(String description, long due, String status,
-			String project, String priority, ArrayList<String> tags) {
+			String recurrence, String project, String priority,
+			ArrayList<String> tags) {
 
 		Task task = new Task();
 		task.setDescription(description.trim());
@@ -92,6 +93,9 @@ public class TaskDatabase {
 		}
 		if (!tags.isEmpty()) {
 			task.setTags(tags);
+		}
+		if (recurrence != null) {
+			task.setRecur(recurrence);
 		}
 
 		taskDefault.mkdirs();
@@ -150,7 +154,7 @@ public class TaskDatabase {
 	}
 
 	public void editTask(UUID uuid, String task_description, long due,
-			String status, String project, String priority,
+			String status, String recurrence, String project, String priority,
 			ArrayList<String> tags) {
 		Task task = getTask(uuid);
 
@@ -170,6 +174,9 @@ public class TaskDatabase {
 		}
 		if (!tags.isEmpty()) {
 			task.setTags(tags);
+		}
+		if (recurrence != null) {
+			task.setRecur(recurrence);
 		}
 
 		removeTaskFromData(uuid);
@@ -293,7 +300,9 @@ public class TaskDatabase {
 		for (String data : allTasks) {
 			Task task = parseTask(data);
 			if (task.getWait() == null || task.getWait().before(new Date())) {
-				tasks.add(task);
+				if (!task.getStatus().equals("Recurring")) {
+					tasks.add(task);
+				}
 			}
 		}
 
