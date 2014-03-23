@@ -27,7 +27,9 @@
 package org.svij.taskwarriorapp.data;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import com.google.gson.annotations.Expose;
@@ -41,116 +43,84 @@ import android.text.TextUtils;
  */
 public class Task {
 
+	private static String completed = "completed";
+	private static String deleted = "deleted";
+
 	public Task() {
 		super();
 
-		urgency = 0.0f;
-
+		urgencyValue = 0.0f;
+		setRecalcUrgency(true);
+		isBlocked = false;
+		isBlocking = false;
 	}
 
-	/*
-	 * Status of a task. It can be "pending", "completed" or "deleted"
-	 */
 	@Expose
 	private String status;
 
-	/*
-	 * Unique identifier for a task. Will be replaced by a uuid in the future.
-	 */
 	@Expose
 	private UUID uuid;
 
-	/*
-	 * Entry timestamp – This is automatically generated when creating a task
-	 */
 	@Expose
 	private Date entry;
 
-	/*
-	 * Description of a task
-	 */
 	@Expose
 	private String description;
 
-	/*
-	 * Start timestamp
-	 */
 	@Expose
 	private Date start;
 
-	/*
-	 * End timestamp This is automatically generated when marking a task as
-	 * "done"
-	 */
 	@Expose
 	private Date end;
 
-	/*
-	 * A tasks due date
-	 */
 	@Expose
 	private Date due;
 
-	/*
-	 * Date until
-	 */
 	@Expose
 	private Date until;
 
-	/*
-	 * Date wait
-	 */
 	@Expose
 	private Date wait;
 
-	/*
-	 * Type of recurring
-	 */
+	@Expose
+	private Date modified;
+
 	@Expose
 	private String recur;
 
 	@Expose
 	private String mask;
+
 	@Expose
 	private String imask;
+
 	@Expose
 	private UUID parent;
-	@Expose
-	private ArrayList<String> annotation;
 
-	/*
-	 * Project of a task
-	 */
+	@Expose
+	private ArrayList<String> annotations;
+
 	@Expose
 	private String project;
 
-	/*
-	 * Tag(s) of a task
-	 */
 	@Expose
 	private ArrayList<String> tags;
 
-	/*
-	 * Priority of a task
-	 */
 	@Expose
 	private String priority;
 
-	/*
-	 * Priority ID – needed for the spinner in Edit-Mode
-	 */
 	private int priorityID;
 
 	@Expose
-	private String depends;
+	private ArrayList<UUID> depends;
 
 	@Expose
 	private boolean active;
 
-	@Expose
-	private boolean blocked;
+	private boolean isBlocked;
+	private boolean isBlocking;
 
-	private float urgency;
+	private float urgencyValue;
 	private static final float epsilon = 0.000001f;
 	private float urgencyPriorityCoefficient = 6.0f;
 	private float urgencyProjectCoefficient = 1.0f;
@@ -164,6 +134,8 @@ public class Task {
 	private float urgencyDueCoefficient = 12.0f;
 	private float urgencyBlockingCoefficient = 8.0f;
 	private float urgencyAgeCoefficient = 2.0f;
+
+	private boolean recalcUrgency;
 
 	public UUID getUuid() {
 		return uuid;
@@ -211,6 +183,7 @@ public class Task {
 
 	public void setEntry(Date entry) {
 		this.entry = entry;
+		setRecalcUrgency(true);
 	}
 
 	public String getStatus() {
@@ -219,6 +192,7 @@ public class Task {
 
 	public void setStatus(String status) {
 		this.status = status;
+		setRecalcUrgency(true);
 	}
 
 	public Date getEnd() {
@@ -227,6 +201,7 @@ public class Task {
 
 	public void setEnd(Date end) {
 		this.end = end;
+		setRecalcUrgency(true);
 	}
 
 	public void setActive(boolean active) {
@@ -238,19 +213,19 @@ public class Task {
 	}
 
 	public boolean isBlocked() {
-		return blocked;
+		return isBlocked;
 	}
 
 	public void setBlocked(boolean blocked) {
-		this.blocked = blocked;
+		this.isBlocked = blocked;
 	}
 
 	public float getUrgency() {
-		return urgency;
+		return urgencyValue;
 	}
 
 	public void setUrgency(float urgency) {
-		this.urgency = urgency;
+		this.urgencyValue = urgency;
 	}
 
 	public int getPriorityID() {
@@ -278,36 +253,32 @@ public class Task {
 	public float urgency_c() {
 		float value = 0.0f;
 
-		value += Math.abs(urgencyPriorityCoefficient) > epsilon ? (urgency_priority() * urgencyPriorityCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyProjectCoefficient) > epsilon ? (urgency_project() * urgencyProjectCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyActiveCoefficient) > epsilon ? (urgency_active() * urgencyActiveCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyScheduledCoefficient) > epsilon ? (urgency_scheduled() * urgencyScheduledCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyWaitingCoefficient) > epsilon ? (urgency_waiting() * urgencyWaitingCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyBlockedCoefficient) > epsilon ? (urgency_blocked() * urgencyBlockedCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyAnnotationsCoefficient) > epsilon ? (urgency_annotations() * urgencyAnnotationsCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyTagsCoefficient) > epsilon ? (urgency_tags() * urgencyTagsCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyNextCoefficient) > epsilon ? (urgency_next() * urgencyNextCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyDueCoefficient) > epsilon ? (urgency_due() * urgencyDueCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyBlockingCoefficient) > epsilon ? (urgency_blocking() * urgencyBlockingCoefficient)
-				: 0.0;
-		value += Math.abs(urgencyAgeCoefficient) > epsilon ? (urgency_age() * urgencyAgeCoefficient)
-				: 0.0;
+		value += Math.abs(urgencyPriorityCoefficient)	> epsilon ? (urgencyPriority()		* urgencyPriorityCoefficient)		: 0.0;
+		value += Math.abs(urgencyProjectCoefficient)	> epsilon ? (urgencyProject()		* urgencyProjectCoefficient)		: 0.0;
+		value += Math.abs(urgencyActiveCoefficient)		> epsilon ? (urgencyActive()		* urgencyActiveCoefficient)			: 0.0;
+		value += Math.abs(urgencyScheduledCoefficient)	> epsilon ? (urgencyScheduled()		* urgencyScheduledCoefficient)		: 0.0;
+		value += Math.abs(urgencyWaitingCoefficient)	> epsilon ? (urgencyWaiting() 		* urgencyWaitingCoefficient)		: 0.0;
+		value += Math.abs(urgencyBlockedCoefficient)	> epsilon ? (urgencyBlocked() 		* urgencyBlockedCoefficient)		: 0.0;
+		value += Math.abs(urgencyAnnotationsCoefficient)> epsilon ? (urgencyAnnotations() 	* urgencyAnnotationsCoefficient)	: 0.0;
+		value += Math.abs(urgencyTagsCoefficient) 		> epsilon ? (urgencyTags() 			* urgencyTagsCoefficient)			: 0.0;
+		value += Math.abs(urgencyNextCoefficient) 		> epsilon ? (urgencyNext() 			* urgencyNextCoefficient)			: 0.0;
+		value += Math.abs(urgencyDueCoefficient) 		> epsilon ? (urgencyDue() 			* urgencyDueCoefficient)			: 0.0;
+		value += Math.abs(urgencyBlockingCoefficient) 	> epsilon ? (urgencyBlocking() 		* urgencyBlockingCoefficient)		: 0.0;
+		value += Math.abs(urgencyAgeCoefficient) 		> epsilon ? (urgencyAge() 			* urgencyAgeCoefficient)			: 0.0;
 
-		setUrgency(value);
 		return value;
 	}
 
-	private float urgency_priority() {
+	public float urgency() {
+		if(recalcUrgency) {
+			urgencyValue = urgency_c();
+			recalcUrgency = false;
+		}
+
+		return urgencyValue;
+	}
+
+	private float urgencyPriority() {
 		String value = getPriority();
 
 		if (value != null) {
@@ -321,7 +292,7 @@ public class Task {
 		return 0.0f;
 	}
 
-	private float urgency_project() {
+	private float urgencyProject() {
 		if (TextUtils.isEmpty(project)) {
 			return 0.0f;
 		} else {
@@ -329,7 +300,7 @@ public class Task {
 		}
 	}
 
-	private float urgency_active() {
+	private float urgencyActive() {
 		if (active) {
 			return 1.0f;
 		} else {
@@ -337,19 +308,20 @@ public class Task {
 		}
 	}
 
-	private float urgency_scheduled() {
+	private float urgencyScheduled() {
 		// TODO: implement scheduled
 		// Empty!
 		return 0.0f;
 	}
 
-	private float urgency_waiting() {
-		// TODO: implement waiting
-		// Empty!
+	private float urgencyWaiting() {
+		if (status == "waiting") {
+			return 1.0f;
+		}
 		return 0.0f;
 	}
 
-	private float urgency_blocked() {
+	private float urgencyBlocked() {
 		if (isBlocked()) {
 			return 1.0f;
 		} else {
@@ -357,13 +329,21 @@ public class Task {
 		}
 	}
 
-	private float urgency_annotations() {
-		// TODO: implement annotations
-		// Empty!
-		return 0.0f;
+	private float urgencyAnnotations() {
+		if (annotations == null) {
+			return 0.0f;
+		} else if (annotations.size() >= 3) {
+			return 1.0f;
+		} else if (annotations.size() == 2) {
+			return 0.9f;
+		} else if (annotations.size() == 1) {
+			return 0.8f;
+		} else {
+			return 0.0f;
+		}
 	}
 
-	private float urgency_tags() {
+	private float urgencyTags() {
 		switch (getTagCount()) {
 		case 0:
 			return 0.0f;
@@ -376,13 +356,13 @@ public class Task {
 		}
 	}
 
-	private float urgency_next() {
+	private float urgencyNext() {
 		// TODO: implement next
 		// Empty!
 		return 0.0f;
 	}
 
-	private float urgency_due() {
+	private float urgencyDue() {
 		if (due != null && due.getTime() != 0) {
 			long now = System.currentTimeMillis() / 1000;
 			long duedate = due.getTime() / 1000;
@@ -437,7 +417,7 @@ public class Task {
 		return 0.0f;
 	}
 
-	private float urgency_age() {
+	private float urgencyAge() {
 		Date now = new Date(System.currentTimeMillis());
 		int age = (int) ((now.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24));
 		float max = 365f;
@@ -449,8 +429,8 @@ public class Task {
 		return (1.0f * age / max);
 	}
 
-	private float urgency_blocking() {
-		if (isBlocked()) {
+	private float urgencyBlocking() {
+		if (isBlocking()) {
 			return 1.0f;
 		} else {
 			return 0.0f;
@@ -463,6 +443,14 @@ public class Task {
 
 	public void setTags(ArrayList<String> tags) {
 		this.tags = tags;
+	}
+
+	public void addTags(String tag) {
+		this.tags.add(tag);
+	}
+
+	public void removeTag(String tag) {
+		this.tags.remove(tag);
 	}
 
 	public int getTagCount() {
@@ -479,6 +467,7 @@ public class Task {
 
 	public void setStart(Date start) {
 		this.start = start;
+		setRecalcUrgency(true);
 	}
 
 	public Date getUntil() {
@@ -530,18 +519,149 @@ public class Task {
 	}
 
 	public ArrayList<String> getAnnotation() {
-		return annotation;
+		return annotations;
 	}
 
 	public void setAnnotation(ArrayList<String> annotation) {
-		this.annotation = annotation;
+		this.annotations = annotation;
 	}
 
-	public String getDepends() {
+	public ArrayList<UUID> getDepends() {
 		return depends;
 	}
 
-	public void setDepends(String depends) {
+	public void setDepends(ArrayList<UUID> depends) {
 		this.depends = depends;
+	}
+
+	public void addDependency(UUID depends) {
+		this.depends.add(depends);
+	}
+
+	public void removeDependency(UUID depends) {
+		this.depends.remove(depends);
+	}
+
+	public boolean isBlocking() {
+		return isBlocking;
+	}
+
+	public void setBlocking(boolean isBlocking) {
+		this.isBlocking = isBlocking;
+	}
+
+	public Date getModified() {
+		return modified;
+	}
+
+	public void setModified(Date modified) {
+		this.modified = modified;
+		setRecalcUrgency(true);
+	}
+
+	public boolean isRecalcUrgency() {
+		return recalcUrgency;
+	}
+
+	public void setRecalcUrgency(boolean recalcUrgency) {
+		this.recalcUrgency = recalcUrgency;
+	}
+
+	public boolean isDue() {
+		if (due != null) {
+			if (status != completed &&
+				status != deleted) {
+				if (Recur.getDueState(due) == 1) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isDueToday() {
+		if (due != null) {
+			if (status != completed &&
+				status != deleted) {
+				if (Recur.getDueState(due) == 2) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isDueWeek() {
+		if (due != null) {
+			if (status != completed &&
+				status != deleted) {
+					Calendar now = Calendar.getInstance();
+					Calendar caldue = new GregorianCalendar();
+					caldue.setTime(due);
+
+					if (now.get(Calendar.YEAR) == caldue.get(Calendar.YEAR) &&
+						now.get(Calendar.WEEK_OF_YEAR) == caldue.get(Calendar.WEEK_OF_YEAR)) {
+							return true;
+					}
+			}
+		}
+		return false;
+	}
+
+	public boolean isDueMonth() {
+		if (due != null) {
+			if (status != completed &&
+				status != deleted) {
+					Calendar now = Calendar.getInstance();
+					Calendar caldue = new GregorianCalendar();
+					caldue.setTime(due);
+
+					if (now.get(Calendar.YEAR) == caldue.get(Calendar.YEAR) &&
+						now.get(Calendar.MONTH) == caldue.get(Calendar.MONTH)) {
+							return true;
+					}
+			}
+		}
+		return false;
+	}
+
+	public boolean isDueYear() {
+		if (due != null) {
+			if (status != completed &&
+				status != deleted) {
+					Calendar now = Calendar.getInstance();
+					Calendar caldue = new GregorianCalendar();
+					caldue.setTime(due);
+
+					if (now.get(Calendar.YEAR) == caldue.get(Calendar.YEAR)) {
+							return true;
+					}
+			}
+		}
+		return false;
+	}
+
+	public boolean isOverDue() {
+		if (due != null) {
+			if (status != completed &&
+				status != deleted) {
+				if (Recur.getDueState(due) == 3) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean hasAnnotations() {
+		if (annotations.size() == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void addAnnotation(String description) {
+		annotations.add(description);
 	}
 }

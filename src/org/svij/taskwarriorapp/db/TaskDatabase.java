@@ -288,7 +288,7 @@ public class TaskDatabase {
 		Task task = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
 				.setDateFormat("yyyyMMdd'T'HHmmss'Z'").create()
 				.fromJson(data, Task.class);
-		task.urgency_c();
+		task.urgency();
 
 		return task;
 	}
