@@ -10,15 +10,6 @@ Developed By
 
 * Sujeevan Vijayakumaran - <mail@svij.org>
 
-Screenshots
-============
-**Main screen**
-
-![Main screen](img/screenshot_main.png)
-
-**Add task**
-
-![Add task](img/screenshot_addtask.png)
 
 License
 =======
