@@ -20,8 +20,7 @@ public class TaskFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
 
     public static TaskFragment newInstance() {
-        TaskFragment fragment = new TaskFragment();
-        return fragment;
+        return new TaskFragment();
     }
 
     @Override
