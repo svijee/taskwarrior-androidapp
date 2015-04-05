@@ -4,6 +4,8 @@ package org.svij.taskwarriorapp;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.app.ListFragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,11 @@ import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 
-public class TaskFragment extends ListFragment {
+public class TaskFragment extends Fragment {
+
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
 
     public static TaskFragment newInstance() {
         TaskFragment fragment = new TaskFragment();
@@ -24,17 +30,16 @@ public class TaskFragment extends ListFragment {
 
         ArrayList<Task> taskList = new ArrayList<>();
         Task task1 = new Task();
-        task1.setDescription("Task 1");
-        Task task2 = new Task();
-        task2.setDescription("Task 2");
-        Task task3 = new Task();
-        task3.setDescription("Task 3");
+        task1.setDescription("Example Task");
         taskList.add(task1);
-        taskList.add(task2);
-        taskList.add(task3);
+        taskList.add(task1);
+        taskList.add(task1);
 
-        setListAdapter(new ArrayAdapter<Task>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, taskList));
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.task_recycler_view);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new TaskAdapter(taskList);
+        recyclerView.setAdapter(adapter);
 
     }
 
