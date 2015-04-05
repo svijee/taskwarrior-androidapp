@@ -29,3 +29,6 @@ Thumbs.db
 .idea
 .gradle
 build/
+
+# Others
+.directory
