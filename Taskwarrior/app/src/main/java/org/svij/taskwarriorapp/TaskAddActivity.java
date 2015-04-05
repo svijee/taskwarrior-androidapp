@@ -1,5 +1,6 @@
 package org.svij.taskwarriorapp;
 
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -35,9 +36,11 @@ public class TaskAddActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_save_task) {
             return true;
+        } else if (id == R.id.action_cancel_task) {
+            this.finish();
+            NavUtils.navigateUpFromSameTask(this);
         }
 
         return super.onOptionsItemSelected(item);

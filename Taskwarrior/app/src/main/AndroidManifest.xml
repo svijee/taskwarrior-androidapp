@@ -18,7 +18,8 @@
         </activity>
         <activity
             android:name=".TaskAddActivity"
-            android:label="@string/title_activity_task_add" >
+            android:label="@string/title_activity_task_add"
+            android:parentActivityName=".TaskActivity">
         </activity>
     </application>
 

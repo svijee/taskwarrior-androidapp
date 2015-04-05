@@ -2,6 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="org.svij.taskwarriorapp.TaskAddActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item
+        android:id="@+id/action_cancel_task"
+        android:title="@string/action_cancel_task"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_cancel"/>
+    <item
+        android:id="@+id/action_save_task"
+        android:title="@string/action_save_task"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_ok"/>
 </menu>
