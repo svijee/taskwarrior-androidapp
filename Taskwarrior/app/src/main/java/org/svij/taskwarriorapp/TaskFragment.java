@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import org.svij.taskwarriorapp.data.TaskDataSource;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class TaskFragment extends Fragment {
@@ -18,6 +21,7 @@ public class TaskFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    private TaskDataSource dataSource;
 
     public static TaskFragment newInstance() {
         return new TaskFragment();
@@ -27,19 +31,24 @@ public class TaskFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ArrayList<Task> taskList = new ArrayList<>();
-        Task task1 = new Task();
-        task1.setDescription("Example Task");
-        taskList.add(task1);
-        taskList.add(task1);
-        taskList.add(task1);
+        dataSource = new TaskDataSource(getActivity());
 
-        recyclerView = (RecyclerView) getActivity().findViewById(R.id.task_recycler_view);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new TaskAdapter(taskList);
-        recyclerView.setAdapter(adapter);
+        try {
+            dataSource.open();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
+        ArrayList<Task> taskList = dataSource.getAllTasks();
+        dataSource.close();
+
+        if (taskList != null) {
+            recyclerView = (RecyclerView) getActivity().findViewById(R.id.task_recycler_view);
+            layoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(layoutManager);
+            adapter = new TaskAdapter(taskList);
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     public TaskFragment() {

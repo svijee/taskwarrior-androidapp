@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import org.svij.taskwarriorapp.Task;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +30,7 @@ public class TaskDataSource {
         dbHelper = new TaskDbHelper(context);
     }
 
-    public void open() {
+    public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
     }
 
@@ -47,8 +48,8 @@ public class TaskDataSource {
         long insertId = database.insert(TaskDbHelper.TABLE_TASK, null, values);
     }
 
-    public List<Task> getAllTasks() {
-        List<Task> taskList = new ArrayList<Task>();
+    public ArrayList<Task> getAllTasks() {
+        ArrayList<Task> taskList = new ArrayList<Task>();
 
         Cursor cursor = database.query(TaskDbHelper.TABLE_TASK, columns, null, null, null, null, null);
         cursor.moveToFirst();
