@@ -26,6 +26,10 @@ public class Task {
 		setRecalcUrgency(true);
 		isBlocked = false;
 		isBlocking = false;
+
+        this.uuid = UUID.randomUUID();
+        this.entry = new Date();
+        this.status = "pending";
 	}
 
 	private String status;

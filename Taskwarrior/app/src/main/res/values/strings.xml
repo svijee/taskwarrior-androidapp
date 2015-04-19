@@ -8,4 +8,7 @@
 
     <string name="title_activity_task_add">Add Task</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="task_description">Description</string>
+    <string name="valid_description">Set a description.</string>
 </resources>
