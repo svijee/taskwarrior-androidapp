@@ -16,7 +16,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textAllCaps="true"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -27,5 +28,30 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/tv_task_description"
         android:layout_alignEnd="@+id/tv_task_description"
-        android:inputType="text" />
+        android:inputType="text"
+        android:hint="@string/hint_description"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/task_project"
+        android:id="@+id/tv_task_project"
+        android:layout_below="@+id/et_task_description"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/et_task_description"
+        android:layout_alignEnd="@+id/et_task_description"
+        android:textAllCaps="true"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_task_project"
+        android:layout_below="@+id/tv_task_project"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignRight="@+id/et_task_description"
+        android:layout_alignEnd="@+id/et_task_description"
+        android:hint="@string/hint_project"/>
+
 </RelativeLayout>

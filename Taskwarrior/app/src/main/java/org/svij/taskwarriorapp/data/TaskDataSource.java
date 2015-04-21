@@ -23,7 +23,8 @@ public class TaskDataSource {
             TaskDbHelper.COLUMN_UUID,
             TaskDbHelper.COLUMN_ENTRY,
             TaskDbHelper.COLUMN_STATUS,
-            TaskDbHelper.COLUMN_DESCRIPTION
+            TaskDbHelper.COLUMN_DESCRIPTION,
+            TaskDbHelper.COLUMN_PROJECT
     };
 
     public TaskDataSource(Context context) {
@@ -44,6 +45,7 @@ public class TaskDataSource {
         values.put(TaskDbHelper.COLUMN_ENTRY, task.getEntry().getTime());
         values.put(TaskDbHelper.COLUMN_STATUS, task.getStatus());
         values.put(TaskDbHelper.COLUMN_DESCRIPTION, task.getDescription());
+        values.put(TaskDbHelper.COLUMN_PROJECT, task.getProject());
 
         long insertId = database.insert(TaskDbHelper.TABLE_TASK, null, values);
     }
@@ -69,12 +71,14 @@ public class TaskDataSource {
         int entryIndex = cursor.getColumnIndex(TaskDbHelper.COLUMN_ENTRY);
         int statusIndex = cursor.getColumnIndex(TaskDbHelper.COLUMN_STATUS);
         int descriptionIndex = cursor.getColumnIndex(TaskDbHelper.COLUMN_DESCRIPTION);
+        int projectIndex = cursor.getColumnIndex(TaskDbHelper.COLUMN_PROJECT);
 
         Task task = new Task();
         task.setUUID(UUID.fromString(cursor.getString(uuidIndex)));
         task.setEntry(new Date(cursor.getLong(entryIndex)));
         task.setStatus(cursor.getString(statusIndex));
         task.setDescription(cursor.getString(descriptionIndex));
+        task.setProject(cursor.getString(projectIndex));
 
         return task;
     }

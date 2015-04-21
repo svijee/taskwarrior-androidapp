@@ -55,8 +55,14 @@ public class TaskAddActivity extends ActionBarActivity {
             EditText editText = (EditText) findViewById(R.id.et_task_description);
             String etDescription = editText.getText().toString();
 
+            editText = (EditText) findViewById(R.id.et_task_project);
+            String etProject = editText.getText().toString();
+
             if (!TextUtils.isEmpty(etDescription)) {
                 task.setDescription(etDescription);
+                if (!TextUtils.isEmpty(etProject)) {
+                    task.setProject(etProject);
+                }
                 database.insertTask(task);
                 NavUtils.navigateUpFromSameTask(this);
             } else {

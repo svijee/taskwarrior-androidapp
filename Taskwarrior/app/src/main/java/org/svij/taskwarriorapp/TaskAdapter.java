@@ -1,6 +1,7 @@
 package org.svij.taskwarriorapp;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         Task task = taskList.get(position);
         holder.tvDescription.setText(task.getDescription());
-        holder.tvProject.setText("PROJECT");
+
+        if (!TextUtils.isEmpty(task.getProject())) {
+            holder.tvProject.setText("Project: " + task.getProject());
+        }
         holder.tvDuedate.setText("DUEDATE");
     }
 
