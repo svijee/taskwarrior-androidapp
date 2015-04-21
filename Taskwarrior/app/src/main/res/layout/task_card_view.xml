@@ -20,8 +20,7 @@
             android:gravity="center_vertical"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"/>
+            android:layout_margin="5dp"/>
 
         <TextView
             android:id="@+id/tv_task_project"
@@ -31,9 +30,7 @@
             android:gravity="center_vertical"
             android:textSize="12sp"
             android:layout_below="@id/tv_task_description"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"/>
+            android:layout_margin="5dp"/>
 
         <TextView
             android:id="@+id/tv_task_duedate"
@@ -43,10 +40,7 @@
             android:gravity="center_vertical"
             android:textSize="12sp"
             android:layout_below="@id/tv_task_project"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginBottom="5dp"/>
+            android:layout_margin="5dp"/>
 
     </RelativeLayout>
 
