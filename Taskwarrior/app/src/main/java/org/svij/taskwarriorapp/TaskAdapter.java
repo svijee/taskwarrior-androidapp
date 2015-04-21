@@ -45,8 +45,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         if (!TextUtils.isEmpty(task.getProject())) {
             holder.tvProject.setText("Project: " + task.getProject());
+        } else {
+            holder.tvProject.setVisibility(View.GONE);
         }
-        holder.tvDuedate.setText("DUEDATE");
+
+        if (task.getDue() != null) {
+            holder.tvDuedate.setText(task.getDue().toString());
+        } else {
+            holder.tvDuedate.setVisibility(View.GONE);
+        }
     }
 
     @Override
