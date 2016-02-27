@@ -1,3 +1,6 @@
+**This project is abandoned. See the [Taskwarrior Android App!](https://bitbucket.org/kvorobyev/taskwarriorandroid/) by Konstantin Vorobyev**
+======================
+
 Taskwarrior for Android
 =======================
 
@@ -17,6 +20,5 @@ Development
 ## Mailinglist
 
 You can find development information on our [Mailinglist on Google Groups](https://groups.google.com/forum/#!forum/taskwarrior-android).
-Mailinglist subscribers can activate their Testers-Account for this App on [Google Play](https://play.google.com/apps/testing/org.svij.taskwarriorapp).
 
 A big thanks goes to pbeckingham and the Taskwarrior Developer-Team for creating [Taskwarrior](http://taskwarrior.org).
